@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Edit Hostel - Hostelio</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url('bg.jpeg') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      background: rgba(0, 0, 0, 0.8);
+    }
+    .title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #ffd700;
+    }
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-size: 16px;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover {
+      color: #ffd700;
+    }
+    main {
+      flex: 1;
+      max-width: 600px;
+      margin: 40px auto;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.6);
+    }
+    h1 {
+      text-align: center;
+      color: #ffd700;
+      margin-bottom: 20px;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    label {
+      font-weight: bold;
+      font-size: 16px;
+    }
+    input[type="text"],
+    input[type="number"],
+    textarea {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: none;
+      outline: none;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      padding: 14px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #0069d9;
+    }
+    .message {
+      margin-top: 15px;
+      text-align: center;
+      color: #28a745;
+      font-weight: bold;
+      display: none;
+    }
+    footer {
+      text-align: center;
+      padding: 10px 0;
+      background: rgba(0, 0, 0, 0.8);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title">Hostelio</div>
+    <div class="nav-links">
+      <a href="admin_home.html">Home</a>
+      <a href="add_hostel.html">Add Hostel</a>
+      <a href="edit_hostel.html">Edit Hostel</a>
+      <a href="show_history.html">Show History</a>
+      <a href="index.html">Logout</a>
+    </div>
+  </header>
+
+  <main>
+    <h1>Edit Hostel</h1>
+    <form id="editHostelForm">
+      <label for="hostelName">Hostel Name</label>
+      <input type="text" id="hostelName" name="hostelName" value="Sunrise Hostel" required />
+
+      <label for="location">Location</label>
+      <input type="text" id="location" name="location" value="Mumbai" required />
+
+      <label for="description">Description</label>
+      <textarea id="description" name="description" rows="3" required>Cozy hostel near the beach with comfortable rooms and friendly staff.</textarea>
+
+      <label for="rooms">Number of Rooms</label>
+      <input type="number" id="rooms" name="rooms" value="10" required />
+
+      <label for="price">Price per Night (₹)</label>
+      <input type="number" id="price" name="price" value="500" required />
+
+      <button type="submit">Update Hostel</button>
+    </form>
+    <p class="message" id="successMessage">Hostel details updated successfully!</p>
+  </main>
+
+  <footer>
+    &copy; 2025 Hostelio. All rights reserved.
+  </footer>
+
+  <script>
+    const form = document.getElementById('editHostelForm');
+    const message = document.getElementById('successMessage');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      message.style.display = 'block';
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>User Profile - Hostelio</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: url('bg.jpeg') no-repeat center center fixed;
+    background-size: cover;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background: rgba(0,0,0,0.8);
+  }
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffd700;
+  }
+  .nav-links a {
+    color: white;
+    margin-left: 20px;
+    text-decoration: none;
+  }
+  .nav-links a:hover {
+    color: #ffd700;
+  }
+  main {
+    flex: 1;
+    background: rgba(0,0,0,0.6);
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 30px;
+    border-radius: 10px;
+  }
+  h1 {
+    text-align: center;
+    color: #ffd700;
+    margin-bottom: 20px;
+  }
+  .profile-info {
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  .profile-info p {
+    margin: 8px 0;
+  }
+  .button-row {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .button {
+    background-color: #28a745;
+    color: white;
+    padding: 14px 20px;
+    font-size: 17px;
+    border: none;
+    border-radius: 10px;
+    text-decoration: none;
+    text-align: center;
+    width: 220px;
+  }
+  .button:hover {
+    background-color: #218838;
+  }
+  footer {
+    text-align: center;
+    padding: 10px;
+    background: rgba(0,0,0,0.8);
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="title">Hostelio</div>
+  <div class="nav-links">
+    <a href="user_home.html">Home</a>
+    <a href="index.html">Logout</a>
+  </div>
+</header>
+<main>
+  <h1>User Profile</h1>
+  <div class="profile-info">
+    <p><strong>Name:</strong> Bharathi Reddy</p>
+    <p><strong>Email:</strong> bharathi@example.com</p>
+    <p><strong>Member Since:</strong> June 2025</p>
+  </div>
+  <div class="button-row">
+    <a class="button" href="my_bookings.html">View My Bookings</a>
+    <a class="button" href="#">Edit Profile</a>
+  </div>
+</main>
+<footer>
+  &copy; 2025 Hostelio. All rights reserved.
+</footer>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Explore Hostels - Hostelio</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url('bg.jpeg') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      background: rgba(0, 0, 0, 0.8);
+    }
+    .title {
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-size: 16px;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover {
+      color: #ffd700;
+    }
+    main {
+      flex: 1;
+      background: rgba(0, 0, 0, 0.6);
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 30px;
+      border-radius: 10px;
+    }
+    h1 {
+      font-size: 36px;
+      margin-bottom: 20px;
+      color: #ffd700;
+      text-align: center;
+    }
+    form {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+      gap: 10px;
+    }
+    input[type="text"] {
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      width: 300px;
+    }
+    button {
+      padding: 14px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background-color: #28a745;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+    tr:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title">Hostelio</div>
+    <div class="nav-links">
+      <a href="user_home.html">Home</a>
+      <a href="user_profile.html">Profile</a>
+      <a href="index.html">Logout</a>
+    </div>
+  </header>
+
+  <main>
+    <h1>Explore Hostels</h1>
+
+    <form id="searchForm">
+      <input type="text" id="locationInput" placeholder="Enter location (e.g., Mumbai)" />
+      <button type="submit">Search</button>
+    </form>
+
+    <table id="resultsTable" style="display:none;">
+      <thead>
+        <tr>
+          <th>Hostel Name</th>
+          <th>Location</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Results go here -->
+      </tbody>
+    </table>
+  </main>
+
+  <script>
+    const hostels = [
+      { name: "Sunrise Hostel", location: "Mumbai", description: "Cozy hostel near the beach." },
+      { name: "Green Garden Hostel", location: "Delhi", description: "Peaceful hostel with garden views." },
+      { name: "City Lights Hostel", location: "Bangalore", description: "Modern hostel in city center." },
+      { name: "River View Hostel", location: "Mumbai", description: "Hostel with river views and great food." },
+      { name: "Hilltop Hostel", location: "Shimla", description: "Beautiful hilltop stay with mountain views." },
+    ];
+
+    const form = document.getElementById('searchForm');
+    const resultsTable = document.getElementById('resultsTable');
+    const tbody = resultsTable.querySelector('tbody');
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const location = document.getElementById('locationInput').value.trim().toLowerCase();
+      tbody.innerHTML = '';
+
+      if (!location) {
+        alert('Please enter a location to search.');
+        resultsTable.style.display = 'none';
+        return;
+      }
+
+      const filtered = hostels.filter(h => h.location.toLowerCase().includes(location));
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">No hostels found for "${location}"</td></tr>`;
+      } else {
+        filtered.forEach(h => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${h.name}</td><td>${h.location}</td><td>${h.description}</td>`;
+          tbody.appendChild(tr);
+        });
+      }
+
+      resultsTable.style.display = 'table';
+    });
+  </script>
+</body>
+</html>

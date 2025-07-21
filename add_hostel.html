@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Add Hostel - Hostelio</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: url('bg.jpeg') no-repeat center center fixed;
+    background-size: cover;
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0,0,0,0.8);
+    padding: 15px 30px;
+  }
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffd700;
+  }
+  .nav-links a {
+    color: white;
+    margin-left: 20px;
+    text-decoration: none;
+  }
+  .nav-links a:hover {
+    color: #ffd700;
+  }
+  main {
+    flex: 1;
+    background: rgba(0,0,0,0.6);
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 30px;
+    border-radius: 10px;
+  }
+  h1 {
+    text-align: center;
+    color: #ffd700;
+    margin-bottom: 20px;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  input, textarea {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: none;
+    outline: none;
+  }
+  button {
+    background-color: #28a745;
+    color: white;
+    padding: 14px;
+    font-size: 18px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #218838;
+  }
+  footer {
+    text-align: center;
+    padding: 10px;
+    background: rgba(0,0,0,0.8);
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="title">Hostelio Admin</div>
+  <div class="nav-links">
+    <a href="admin_home.html">Dashboard</a>
+    <a href="index.html">Logout</a>
+  </div>
+</header>
+<main>
+  <h1>Add Hostel</h1>
+  <form>
+    <input type="text" placeholder="Hostel Name" required>
+    <input type="text" placeholder="Location" required>
+    <textarea placeholder="Description" rows="3" required></textarea>
+    <input type="number" placeholder="Available Rooms" min="1" required>
+    <input type="number" placeholder="Price per Night (₹)" min="1" required>
+    <button type="submit">Add Hostel</button>
+  </form>
+</main>
+<footer>
+  &copy; 2025 Hostelio. All rights reserved.
+</footer>
+</body>
+</html>
