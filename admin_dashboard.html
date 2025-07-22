@@ -1,91 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Admin Dashboard - Hostelio</title>
-<style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: url('bg.jpeg') no-repeat center center fixed;
-    background-size: cover;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-  header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 30px;
-    background: rgba(0,0,0,0.8);
-  }
-  .title {
-    font-size: 24px;
-    font-weight: bold;
-    color: #ffd700;
-  }
-  .nav-links a {
-    color: white;
-    margin-left: 20px;
-    text-decoration: none;
-    font-size: 16px;
-  }
-  .nav-links a:hover {
-    color: #ffd700;
-  }
-  main {
-    flex: 1;
-    background: rgba(0,0,0,0.6);
-    max-width: 700px;
-    margin: 40px auto;
-    padding: 30px;
-    border-radius: 10px;
-    text-align: center;
-  }
-  h1 {
-    color: #ffd700;
-    margin-bottom: 30px;
-  }
-  .button {
-    display: inline-block;
-    margin: 15px;
-    padding: 14px 25px;
-    font-size: 18px;
-    color: white;
-    background-color: #28a745;
-    border: none;
-    border-radius: 10px;
-    text-decoration: none;
-    transition: background-color 0.3s;
-  }
-  .button:hover {
-    background-color: #218838;
-  }
-  footer {
-    text-align: center;
-    padding: 10px;
-    background: rgba(0,0,0,0.8);
-    font-size: 14px;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Dashboard - Hostelio</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url('bg.jpeg') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 15px 30px; background: rgba(0,0,0,0.8);
+    }
+    .title { font-size: 24px; font-weight: bold; color: #ffd700; }
+    .nav-links a {
+      color: white; text-decoration: none; margin-left: 20px;
+    }
+    .nav-links a:hover { color: #ffd700; }
+    main {
+      flex: 1; background: rgba(0,0,0,0.6); margin: 40px auto;
+      max-width: 800px; padding: 30px; border-radius: 10px;
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 30px;
+      color: #ffd700;
+    }
+    .button-row {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .button {
+      background-color: #28a745;
+      color: white;
+      padding: 14px 22px;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.3s;
+    }
+    .button:hover {
+      background-color: #218838;
+    }
+  </style>
 </head>
 <body>
+
 <header>
-  <div class="title">Hostelio Admin</div>
+  <div class="title">Hostelio - Admin</div>
   <div class="nav-links">
     <a href="index.html">Logout</a>
   </div>
 </header>
+
 <main>
-  <h1>Welcome to the Admin Dashboard</h1>
-  <a href="add_hostel.html" class="button">Add Hostel</a>
-  <a href="view_history.html" class="button">View Booking History</a>
+  <h1>Admin Dashboard</h1>
+  <div class="button-row">
+    <a class="button" href="view_users.html">View Registered Users</a>
+    <a class="button" href="view_bookings.html">View Bookings</a>
+    <a class="button" href="add_hostels.html">Add Hostel</a>
+  </div>
 </main>
-<footer>
+
+<footer style="text-align:center; padding:10px; background: rgba(0,0,0,0.8);">
   &copy; 2025 Hostelio. All rights reserved.
 </footer>
+
 </body>
 </html>

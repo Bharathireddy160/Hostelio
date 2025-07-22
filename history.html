@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin History - Hostelio</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: url('bg.jpeg') no-repeat center center fixed;
+    background-size: cover;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 15px 30px; background: rgba(0,0,0,0.8);
+  }
+  .title { font-size: 24px; font-weight: bold; color: #ffd700; }
+  .nav-links a {
+    color: white; text-decoration: none; margin-left: 20px;
+  }
+  .nav-links a:hover { color: #ffd700; }
+  main {
+    flex: 1;
+    background: rgba(0,0,0,0.6);
+    margin: 30px auto;
+    max-width: 800px;
+    padding: 20px;
+    border-radius: 10px;
+  }
+  h1 {
+    text-align: center; color: #ffd700; margin-bottom: 25px;
+  }
+  table {
+    width: 100%; border-collapse: collapse; color: white;
+  }
+  th, td {
+    padding: 12px; text-align: left; border-bottom: 1px solid #444;
+  }
+  th {
+    background-color: rgba(40,167,69,0.8);
+  }
+  tr:nth-child(even) {
+    background-color: rgba(255,255,255,0.1);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="title">Hostelio - Admin</div>
+  <div class="nav-links">
+    <a href="admin_dashboard.html">Dashboard</a>
+    <a href="index.html">Logout</a>
+  </div>
+</header>
+
+<main>
+  <h1>Booking & Hostel History</h1>
+  <table>
+    <tr>
+      <th>Date</th>
+      <th>Action</th>
+      <th>Details</th>
+    </tr>
+    <tr>
+      <td>2025-07-10</td>
+      <td>Added Hostel</td>
+      <td>Sunrise Hostel in Mumbai</td>
+    </tr>
+    <tr>
+      <td>2025-07-11</td>
+      <td>Approved Registration</td>
+      <td>Student: Bharathi Reddy</td>
+    </tr>
+    <tr>
+      <td>2025-07-12</td>
+      <td>Booking</td>
+      <td>Chennai Comfort Hostel - 2 nights</td>
+    </tr>
+    <!-- You can add more rows dynamically or manually -->
+  </table>
+</main>
+
+<footer style="text-align:center; padding:10px; background: rgba(0,0,0,0.8);">
+  &copy; 2025 Hostelio. All rights reserved.
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - Accept Registrations | Hostelio</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: url('bg.jpeg') no-repeat center center fixed;
+    background-size: cover;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 15px 30px; background: rgba(0,0,0,0.8);
+  }
+  .title { font-size: 24px; font-weight: bold; color: #ffd700; }
+  .nav-links a {
+    color: white; text-decoration: none; margin-left: 20px;
+  }
+  .nav-links a:hover { color: #ffd700; }
+  main {
+    flex: 1;
+    background: rgba(0,0,0,0.6);
+    margin: 30px auto;
+    max-width: 800px;
+    padding: 20px;
+    border-radius: 10px;
+  }
+  h1 {
+    text-align: center;
+    color: #ffd700;
+    margin-bottom: 20px;
+  }
+  .registration {
+    background: rgba(255,255,255,0.1);
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+  }
+  .registration p { margin: 5px 0; }
+  .actions {
+    margin-top: 10px;
+  }
+  .actions button {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: none;
+    border-radius: 6px;
+    margin-right: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  .accept {
+    background-color: #28a745;
+    color: white;
+  }
+  .accept:hover { background-color: #218838; }
+  .reject {
+    background-color: #dc3545;
+    color: white;
+  }
+  .reject:hover { background-color: #c82333; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="title">Hostelio</div>
+  <div class="nav-links">
+    <a href="admin_dashboard.html">Dashboard</a>
+    <a href="index.html">Logout</a>
+  </div>
+</header>
+
+<main>
+  <h1>Pending Student Registrations</h1>
+
+  <div class="registration">
+    <p><strong>Name:</strong> Rahul Kumar</p>
+    <p><strong>Email:</strong> rahul@example.com</p>
+    <p><strong>Course:</strong> B.Tech CSE</p>
+    <div class="actions">
+      <button class="accept" onclick="alert('Accepted Rahul Kumar')">Accept</button>
+      <button class="reject" onclick="alert('Rejected Rahul Kumar')">Reject</button>
+    </div>
+  </div>
+
+  <div class="registration">
+    <p><strong>Name:</strong> Priya Sharma</p>
+    <p><strong>Email:</strong> priya@example.com</p>
+    <p><strong>Course:</strong> MBA</p>
+    <div class="actions">
+      <button class="accept" onclick="alert('Accepted Priya Sharma')">Accept</button>
+      <button class="reject" onclick="alert('Rejected Priya Sharma')">Reject</button>
+    </div>
+  </div>
+
+  <!-- Add more student entries here -->
+</main>
+
+<footer style="text-align:center; padding:10px; background: rgba(0,0,0,0.8);">
+  &copy; 2025 Hostelio. All rights reserved.
+</footer>
+
+</body>
+</html>
