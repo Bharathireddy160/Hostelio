@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Add Hostel - Hostelio Admin</title>
+<title>Admin Dashboard - Hostelio</title>
 <style>
   body {
     margin: 0;
@@ -31,6 +31,7 @@
     color: white;
     margin-left: 20px;
     text-decoration: none;
+    font-size: 16px;
   }
   .nav-links a:hover {
     color: #ffd700;
@@ -38,42 +39,29 @@
   main {
     flex: 1;
     background: rgba(0,0,0,0.6);
-    max-width: 600px;
+    max-width: 700px;
     margin: 40px auto;
     padding: 30px;
     border-radius: 10px;
+    text-align: center;
   }
   h1 {
-    text-align: center;
     color: #ffd700;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
   }
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  input, textarea {
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 6px;
-    border: none;
-    outline: none;
-  }
-  input[type="file"] {
-    background-color: white;
-    color: black;
-  }
-  button {
-    background-color: #28a745;
-    color: white;
-    padding: 14px;
+  .button {
+    display: inline-block;
+    margin: 15px;
+    padding: 14px 25px;
     font-size: 18px;
+    color: white;
+    background-color: #28a745;
     border: none;
     border-radius: 10px;
-    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s;
   }
-  button:hover {
+  .button:hover {
     background-color: #218838;
   }
   footer {
@@ -88,25 +76,13 @@
 <header>
   <div class="title">Hostelio Admin</div>
   <div class="nav-links">
-    <a href="admin_dashboard.html">Dashboard</a>
     <a href="index.html">Logout</a>
   </div>
 </header>
 <main>
-  <h1>Add New Hostel</h1>
-  <form>
-    <input type="text" placeholder="Hostel Name" required>
-    <input type="text" placeholder="Location" required>
-    <textarea placeholder="Description" rows="4" required></textarea>
-    <input type="number" placeholder="Available Rooms" min="1" required>
-    <input type="number" placeholder="Price per Night" min="1" required>
-    
-    <!-- New field to upload images -->
-    <label style="font-weight:bold; font-size:16px;">Upload Hostel Images</label>
-    <input type="file" multiple accept="image/*">
-
-    <button type="submit">Add Hostel</button>
-  </form>
+  <h1>Welcome to the Admin Dashboard</h1>
+  <a href="add_hostel.html" class="button">Add Hostel</a>
+  <a href="view_history.html" class="button">View Booking History</a>
 </main>
 <footer>
   &copy; 2025 Hostelio. All rights reserved.
