@@ -90,26 +90,12 @@
     </div>
   </div>
 
+  
   <script>
-    function validateForm() {
-      var username = document.getElementById('adminUsername').value.trim();
-      var email = document.getElementById('adminEmail').value.trim();
-      var password = document.getElementById('adminPassword').value;
-      var confirmPassword = document.getElementById('adminConfirmPassword').value;
-
-      if (!username || !email || !password || !confirmPassword) {
-        alert('Please fill in all fields.');
-        return false;
-      }
-
-      if (password !== confirmPassword) {
-        alert('Passwords do not match.');
-        return false;
-      }
-
-      alert('Admin account created successfully!');
-      return true; // form submits normally
-    }
-  </script>
+document.getElementById('adminRegisterForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  window.location.href = 'admin_success.html';
+});
+</script>
 </body>
 </html>

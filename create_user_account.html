@@ -103,7 +103,7 @@
   <div class="container">
     <div class="content">
       <h1>Create User Account</h1>
-      <form action="user_home.html" method="get">
+      <form action="success.html" method="get">
         <input type="text" name="fullname" placeholder="Full Name" required />
         <input type="email" name="email" placeholder="Email Address" required />
         <input type="tel" name="phone" placeholder="Phone Number" pattern="[0-9]{10}" title="Enter 10 digit phone number" required />
@@ -113,6 +113,13 @@
       </form>
     </div>
   </div>
+  <script>
+document.getElementById('userRegisterForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  // You can add validation or send data to server here
+  window.location.href = 'success.html';
+});
+</script>
 
   <footer>
     &copy; 2025 Hostelio. All rights reserved.

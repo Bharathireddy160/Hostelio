@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>View Registered Users - Hostelio</title>
+  <style>
+    body {
+      margin: 0; font-family: Arial, sans-serif;
+      background: url('bg.jpeg') no-repeat center center fixed;
+      background-size: cover; color: white;
+      display: flex; flex-direction: column; min-height: 100vh;
+    }
+    header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 15px 30px; background: rgba(0,0,0,0.8);
+    }
+    .title { font-size: 24px; font-weight: bold; color: #ffd700; }
+    .nav-links a {
+      color: white; text-decoration: none; margin-left: 20px; font-size: 16px;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover { color: #ffd700; }
+    main {
+      flex: 1; background: rgba(0,0,0,0.7); padding: 40px;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    h1 { margin-bottom: 20px; font-size: 36px; }
+    table {
+      width: 90%; max-width: 900px; border-collapse: collapse; margin-top: 20px;
+      background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden;
+    }
+    th, td {
+      padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    th {
+      background-color: rgba(0,0,0,0.5); color: #ffd700;
+    }
+    tr:hover { background-color: rgba(255,255,255,0.1); }
+  </style>
+</head>
+<body>
+<header>
+  <div class="title">Hostelio Admin</div>
+  <div class="nav-links">
+    <a href="admin_home.html">Home</a>
+    <a href="add_hostels.html">Add Hostel</a>
+    <a href="view_users.html">View Users</a>
+    <a href="index.html" onclick="logout()">Logout</a>
+  </div>
+</header>
+
+<main>
+  <h1>Registered Users</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Location</th>
+        <th>Registration Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Amit Kumar</td>
+        <td>amit@example.com</td>
+        <td>Mumbai</td>
+        <td>2025-07-10</td>
+      </tr>
+      <tr>
+        <td>Priya Sharma</td>
+        <td>priya@example.com</td>
+        <td>Delhi</td>
+        <td>2025-07-12</td>
+      </tr>
+      <tr>
+        <td>Rahul Singh</td>
+        <td>rahul@example.com</td>
+        <td>Bangalore</td>
+        <td>2025-07-15</td>
+      </tr>
+      <!-- You can add more users here -->
+    </tbody>
+  </table>
+</main>
+
+<script>
+  function logout() {
+    localStorage.removeItem('username');
+  }
+</script>
+</body>
+</html>
