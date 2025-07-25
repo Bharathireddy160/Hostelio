@@ -6,106 +6,90 @@
 <title>User Profile - Hostelio</title>
 <style>
   body {
-    margin: 0;
-    font-family: Arial, sans-serif;
+    margin: 0; font-family: Arial, sans-serif;
     background: url('bg.jpeg') no-repeat center center fixed;
-    background-size: cover;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+    background-size: cover; color: white; min-height: 100vh; display: flex; flex-direction: column;
   }
   header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 30px;
-    background: rgba(0,0,0,0.8);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 15px 30px; background: rgba(0,0,0,0.8);
   }
-  .title {
-    font-size: 24px;
-    font-weight: bold;
-    color: #ffd700;
-  }
+  .left-section { display: flex; align-items: center; }
+  .logo { height: 40px; margin-right: 10px; }
+  .title { font-size: 24px; font-weight: bold; color: #ffd700; }
   .nav-links a {
-    color: white;
-    margin-left: 20px;
-    text-decoration: none;
+    color: white; text-decoration: none; margin-left: 20px; font-size: 16px; transition: color 0.3s;
   }
-  .nav-links a:hover {
-    color: #ffd700;
-  }
+  .nav-links a:hover { color: #ffd700; }
   main {
-    flex: 1;
-    background: rgba(0,0,0,0.6);
-    max-width: 700px;
-    margin: 40px auto;
-    padding: 30px;
-    border-radius: 10px;
+    flex: 1; display: flex; justify-content: center; align-items: center; padding: 40px;
+  }
+  .profile-card {
+    background: rgba(0,0,0,0.7); padding: 30px; border-radius: 10px;
+    text-align: center; max-width: 400px; width: 100%;
+    box-shadow: 0 0 15px rgba(0,0,0,0.6);
+    animation: fadeIn 1s ease;
+  }
+  .profile-img {
+    width: 120px; height: 120px; border-radius: 50%;
+    border: 3px solid #ffd700; margin-bottom: 10px;
   }
   h1 {
-    text-align: center;
-    color: #ffd700;
-    margin-bottom: 20px;
+    margin-bottom: 10px; color: #ffd700; display: flex; justify-content: center; align-items: center;
+    gap: 8px;
   }
-  .profile-info {
-    font-size: 18px;
-    line-height: 1.6;
-    margin-bottom: 20px;
+  .badge {
+    background: #28a745; color: white; font-size: 12px;
+    padding: 2px 6px; border-radius: 6px;
   }
-  .profile-info p {
-    margin: 8px 0;
+  .info {
+    text-align: left; margin-top: 20px;
   }
-  .button-row {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    flex-wrap: wrap;
+  .info p {
+    margin: 8px 0; font-size: 16px;
   }
-  .button {
-    background-color: #28a745;
-    color: white;
-    padding: 14px 20px;
-    font-size: 17px;
-    border: none;
-    border-radius: 10px;
+  .action-buttons {
+    display: flex; justify-content: center; gap: 15px; margin-top: 20px;
+  }
+  .btn {
+    background-color: #28a745; color: white;
+    border: none; padding: 8px 14px; border-radius: 6px;
+    cursor: pointer; font-size: 14px; transition: background-color 0.3s;
     text-decoration: none;
-    text-align: center;
-    width: 220px;
   }
-  .button:hover {
-    background-color: #218838;
-  }
-  footer {
-    text-align: center;
-    padding: 10px;
-    background: rgba(0,0,0,0.8);
-    font-size: 14px;
-  }
+  .btn:hover { background-color: #218838; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 </style>
 </head>
 <body>
 <header>
-  <div class="title">Hostelio</div>
+  <div class="left-section">
+    <img src="ic.png" alt="Hostelio Logo" class="logo">
+    <div class="title">Hostelio</div>
+  </div>
   <div class="nav-links">
     <a href="user_home.html">Home</a>
+    <a href="explore_hostels.html">Explore</a>
+    <a href="user_history.html">History</a>
     <a href="index.html">Logout</a>
   </div>
 </header>
+
 <main>
-  <h1>User Profile</h1>
-  <div class="profile-info">
-    <p><strong>Name:</strong> Bharathi Reddy</p>
-    <p><strong>Email:</strong> bharathi@example.com</p>
-    <p><strong>Member Since:</strong> June 2025</p>
-  </div>
-  <div class="button-row">
-    <a class="button" href="my_bookings.html">View My Bookings</a>
-    <a class="button" href="edit_profile.html">Edit Profile</a>
+  <div class="profile-card">
+    <img src="p3.png" alt="User Photo" class="profile-img">
+    <h1>John Doe <span class="badge">Verified</span></h1>
+    <div class="info">
+      <p><strong>Email:</strong> john@example.com</p>
+      <p><strong>Phone:</strong> +91-9876543210</p>
+      <p><strong>Location:</strong> Mumbai, India</p>
+      <p><strong>Joined:</strong> Jan 2025</p>
+    </div>
+    <div class="action-buttons">
+      <a class="btn" href="edit_profile.html">Edit Profile</a>
+      <a class="btn" href="change_password.html">Change Password</a>
+    </div>
   </div>
 </main>
-<footer>
-  &copy; 2025 Hostelio. All rights reserved.
-</footer>
 </body>
 </html>
