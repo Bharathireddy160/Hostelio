@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Add Hostel - Hostelio Admin</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: url('bg.jpeg') no-repeat center center fixed;
+    background-size: cover;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background: rgba(0,0,0,0.8);
+  }
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffd700;
+  }
+  .nav-links a {
+    color: white;
+    margin-left: 20px;
+    text-decoration: none;
+  }
+  .nav-links a:hover {
+    color: #ffd700;
+  }
+  main {
+    flex: 1;
+    background: rgba(0,0,0,0.6);
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 30px;
+    border-radius: 10px;
+  }
+  h1 {
+    text-align: center;
+    color: #ffd700;
+    margin-bottom: 20px;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  input, textarea {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: none;
+    outline: none;
+  }
+  input[type="file"] {
+    background-color: white;
+    color: black;
+  }
+  button {
+    background-color: #28a745;
+    color: white;
+    padding: 14px;
+    font-size: 18px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #218838;
+  }
+  footer {
+    text-align: center;
+    padding: 10px;
+    background: rgba(0,0,0,0.8);
+    font-size: 14px;
+  }
+   @media(max-width:600px){ .title{font-size:20px;} }
+</style>
+</head>
+<body>
+<header>
+  <div class="title">Hostelio Admin</div>
+  <div class="nav-links">
+    <a href="admin_dashboard.html">Dashboard</a>
+    <a href="index.html">Logout</a>
+  </div>
+</header>
+<main>
+  <h1>Add New Hostel</h1>
+  <form>
+    <input type="text" placeholder="Hostel Name" required>
+    <input type="text" placeholder="Location" required>
+    <textarea placeholder="Description" rows="4" required></textarea>
+    <input type="number" placeholder="Available Rooms" min="1" required>
+    <input type="number" placeholder="Price per Night" min="1" required>
+    
+    <!-- New field to upload images -->
+    <label style="font-weight:bold; font-size:16px;">Upload Hostel Images</label>
+    <input type="file" multiple accept="image/*">
+
+    <button type="submit">Add Hostel</button>
+  </form>
+</main>
+<footer>
+  &copy; 2025 Hostelio. All rights reserved.
+</footer>
+</body>
+</html>

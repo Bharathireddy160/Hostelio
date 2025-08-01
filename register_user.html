@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student Registration - Hostelio</title>
+  <style>
+    body {
+      margin: 0; font-family: Arial, sans-serif;
+      background: url('bg.jpeg') no-repeat center center fixed;
+      background-size: cover; color: white;
+      display: flex; flex-direction: column; min-height: 100vh;
+    }
+    header {
+      background: rgba(0,0,0,0.8); padding: 15px 30px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .title { font-size: 24px; font-weight: bold; color: #ffd700; }
+    .nav-links a {
+      color: white; text-decoration: none; margin-left: 20px;
+    }
+    .nav-links a:hover { color: #ffd700; }
+    main {
+      flex: 1; background: rgba(0,0,0,0.6);
+      max-width: 600px; margin: 40px auto; padding: 30px; border-radius: 10px;
+    }
+    h1 { text-align: center; color: #ffd700; margin-bottom: 20px; }
+    form { display: flex; flex-direction: column; gap: 12px; }
+    label { font-weight: bold; }
+    input, select, textarea {
+      padding: 10px; border-radius: 6px; border: none; font-size: 16px;
+    }
+    button {
+      background-color: #28a745; color: white; padding: 14px;
+      font-size: 18px; border: none; border-radius: 8px; cursor: pointer;
+    }
+    button:hover { background-color: #218838; }
+    .logo {
+      width: 70px; height: 70px;
+      border-radius: 50%; object-fit: cover;}
+  </style>
+</head>
+<body>
+<header>
+    <div class="left-section">
+    <img src="ic.png" alt="Logo" class="logo">
+  </div>
+  <div class="title">Hostelio</div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+  </div>
+</header>
+<main>
+  <h1>Student Registration</h1>
+  <form action="admin_pending.html" method="get">
+    <label>Full Name</label>
+    <input type="text" name="fullname" required>
+
+    <label>Email</label>
+    <input type="email" name="email" required>
+
+    <label>Phone</label>
+    <input type="text" name="phone" required>
+
+    <label>Date of Birth</label>
+    <input type="date" name="dob" required>
+
+    <label>Gender</label>
+    <select name="gender" required>
+      <option value="">Select</option>
+      <option>Male</option>
+      <option>Female</option>
+      <option>Other</option>
+    </select>
+
+    <label>Address</label>
+    <textarea name="address" rows="3" required></textarea>
+
+    <label>Hostel Preference</label>
+    <select name="hostel" required>
+      <option value="">Select</option>
+      <option>Sunrise Hostel</option>
+      <option>Blue Sky Hostel</option>
+      <option>Green View Hostel</option>
+    </select>
+
+    <label>Room Type</label>
+    <select name="roomtype" required>
+      <option value="">Select</option>
+      <option>Single</option>
+      <option>Double Sharing</option>
+      <option>Triple Sharing</option>
+    </select>
+
+    <label>Upload ID Proof</label>
+    <input type="file" name="idproof" required>
+
+    <button type="submit">Register</button>
+  </form>
+</main>
+</body>
+</html>

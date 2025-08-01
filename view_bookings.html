@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>View Bookings - Hostelio</title>
+  <style>
+    body {
+      margin: 0; font-family: Arial, sans-serif;
+      background: url('bg.jpeg') no-repeat center center fixed;
+      background-size: cover; color: white;
+      display: flex; flex-direction: column; min-height: 100vh;
+    }
+    header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 15px 30px; background: rgba(0,0,0,0.8);
+    }
+    .title { font-size: 24px; font-weight: bold; color: #ffd700; }
+    .nav-links a {
+      color: white; text-decoration: none; margin-left: 20px; font-size: 16px;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover { color: #ffd700; }
+    main {
+      flex: 1; background: rgba(0,0,0,0.7); padding: 40px;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    h1 { margin-bottom: 20px; font-size: 36px; }
+    table {
+      width: 90%; max-width: 900px; border-collapse: collapse; margin-top: 20px;
+      background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden;
+    }
+    th, td {
+      padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    th {
+      background-color: rgba(0,0,0,0.5); color: #ffd700;
+    }
+    tr:hover { background-color: rgba(255,255,255,0.1); }
+     .logo {
+      width: 70px; height: 70px;
+      border-radius: 50%; object-fit: cover;}
+       @media(max-width:600px){ .title{font-size:20px;} table,th,td{font-size:14px;} }
+  </style>
+</head>
+<body>
+<header>
+  <div class ="left-section">
+    <img src="ic.png" alt="Logo" class="logo">
+  </div>
+  <div class="title">Hostelio Admin</div>
+  <div class="nav-links">
+    <a href="admin_home.html">Home</a>
+    <a href="add_hostels.html">Add Hostel</a>
+    <a href="view_users.html">View Users</a>
+    <a href="view_bookings.html">View Bookings</a>
+    <a href="index.html" onclick="logout()">Logout</a>
+  </div>
+</header>
+<header>
+  <div class="title">Hostelio - Admin</div>
+  <div class="nav-links">
+    <a href="admin_dashboard.html">Dashboard</a>
+    <a href="index.html">Logout</a>
+  </div>
+</header>
+
+<main>
+  <h1>Bookings</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>User Email</th>
+        <th>Hostel</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody id="bookings-table">
+      <!-- Loaded by JS -->
+    </tbody>
+  </table>
+</main>
+
+<script type="module" src="view_bookings.js"></script>
+
+
+  
+    
+
+
+<script>
+  function logout() {
+    localStorage.removeItem('username');
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>User Account Created - Hostelio</title>
+<style>
+  body {
+    margin: 0; font-family: Arial, sans-serif;
+    background: url('bg.jpeg') no-repeat center center fixed;
+    background-size: cover; color: white; display: flex; flex-direction: column; min-height: 100vh;
+    animation: fadeSlide 1s ease;
+  }
+  header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 15px 30px; background: rgba(0,0,0,0.8);
+  }
+  .logo {
+    width: 40px; height: 40px;
+    border-radius: 50%; object-fit: cover;
+  }
+  .title { font-size: 24px; font-weight: bold; color: #ffd700; }
+  main {
+    flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
+    background: rgba(0,0,0,0.6); padding: 40px; text-align: center;
+  }
+  h1 { font-size: 36px; color: #28a745; margin-bottom: 10px; }
+  p { font-size: 18px; margin-bottom: 20px; }
+  a.button {
+    text-decoration: none; color: white; background: #28a745; padding: 12px 20px;
+    border-radius: 8px; font-size: 16px; transition: background 0.3s;
+  }
+  a.button:hover { background: #218838; }
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+<header>
+  <img src="p1.png" alt="Logo" class="logo">
+  <div class="title">Hostelio</div>
+</header>
+
+<main>
+  <h1>User Account Created Successfully!</h1>
+  <p>You can now log in to manage hostels and view bookings.</p>
+  <a class="button" href="userlogin.html">Go to User Login</a>
+</main>
+
+<script>
+  // Wait 2 seconds then navigate to user dashboard
+  setTimeout(() => {
+    window.location.href = 'user_dashboard.html';
+  }, 2000);
+</script>
+</body>
+</html>

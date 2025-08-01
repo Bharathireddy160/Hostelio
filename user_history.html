@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>User Booking History - Hostelio</title>
+<style>
+  body {
+    margin: 0; font-family: Arial, sans-serif;
+    background: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?fit=crop&w=1400&q=80') no-repeat center center fixed;
+    background-size: cover; color: white; min-height: 100vh; display: flex; flex-direction: column;
+  }
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 15px 30px; background: rgba(0,0,0,0.8);
+  }
+  .left-section { display: flex; align-items: center; }
+ .logo {
+      width: 70px; height: 70px;
+      border-radius: 50%; object-fit: cover;}
+  .title { font-size: 24px; font-weight: bold; color: #ffd700; }
+  .nav-links a {
+    color: white; text-decoration: none; margin-left: 20px; font-size: 16px; transition: color 0.3s;
+  }
+  .nav-links a:hover { color: #ffd700; }
+  main {
+    flex: 1; background: rgba(0,0,0,0.6); padding: 30px;
+    max-width: 900px; margin: 40px auto; border-radius: 10px;
+    animation: fadeIn 1s ease;
+  }
+  h1 { text-align: center; color: #ffd700; margin-bottom: 20px; }
+  table {
+    width: 100%; border-collapse: collapse;
+  }
+  th, td {
+    border: 1px solid #555; padding: 10px; text-align: center;
+  }
+  th { background: rgba(255,215,0,0.2); }
+  .action-btn {
+    background-color: #28a745; color: white;
+    border: none; padding: 6px 12px; border-radius: 6px;
+    cursor: pointer; transition: background-color 0.3s;
+  }
+  .action-btn:hover { background-color: #218838; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="left-section">
+    <img src="ic.png" alt="Logo" class="logo">
+  </div>
+  <div class="title">Hostelio</div>
+  <div class="nav-links">
+    <a href="user_home.html">Home</a>
+    <a href="explore_hostels.html">Explore</a>
+    <a href="index.html">Logout</a>
+  </div>
+</header>
+
+<main>
+  <h1>Your Booking History</h1>
+  <table>
+    <tr>
+      <th>Hostel Name</th>
+      <th>Location</th>
+      <th>Check-in Date</th>
+      <th>months</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+    <tr>
+      <td>Sunrise Hostel</td>
+      <td>Mumbai</td>
+      <td>2025-07-10</td>
+      <td>3</td>
+      <td>Confirmed</td>
+      <td><button class="action-btn">View</button></td>
+    </tr>
+    <tr>
+      <td>City Center Hostel</td>
+      <td>Delhi</td>
+      <td>2025-06-15</td>
+      <td>2</td>
+      <td>Completed</td>
+      <td><button class="action-btn">View</button></td>
+    </tr>
+  </table>
+</main>
+</body>
+</html>

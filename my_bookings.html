@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Bookings - Hostelio</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: url('bg.jpeg') no-repeat center center fixed;
+    background-size: cover;
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0,0,0,0.8);
+    padding: 15px 30px;
+  }
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffd700;
+  }
+  .nav-links a {
+    color: white;
+    margin-left: 20px;
+    text-decoration: none;
+    font-size: 16px;
+  }
+  .nav-links a:hover {
+    color: #ffd700;
+  }
+  main {
+    flex: 1;
+    padding: 30px;
+    background: rgba(0,0,0,0.6);
+  }
+  h1 {
+    text-align: center;
+    color: #ffd700;
+    margin-bottom: 20px;
+  }
+  .booking-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .booking-card {
+    background: rgba(0,0,0,0.7);
+    padding: 20px;
+    border-radius: 8px;
+    font-size: 16px;
+  }
+  footer {
+    text-align: center;
+    padding: 10px;
+    background: rgba(0,0,0,0.8);
+    font-size: 14px;
+  }
+  .logo {
+      width: 70px; height: 70px;
+      border-radius: 50%; object-fit: cover;}
+</style>
+</head>
+<body>
+<header>
+    <div class="left-section">
+    <img src="ic.png" alt="Logo" class="logo">
+  </div>
+  <div class="title">Hostelio</div>
+  <div class="nav-links">
+    <a href="user_home.html">Home</a>
+    <a href="index.html">Logout</a>
+  </div>
+</header>
+<main>
+  <h1>My Bookings</h1>
+  <div class="booking-list">
+    <div class="booking-card">
+      <strong>Hostel:</strong> Sunrise Hostel, Mumbai<br>
+      <strong>Check-in:</strong> 2025-07-21<br>
+      <strong>Nights:</strong> 3
+    </div>
+    <div class="booking-card">
+      <strong>Hostel:</strong> City View Hostel, Delhi<br>
+      <strong>Check-in:</strong> 2025-08-10<br>
+      <strong>Nights:</strong> 2
+    </div>
+  </div>
+</main>
+<footer>
+  &copy; 2025 Hostelio. All rights reserved.
+</footer>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manage Hostels - Hostelio</title>
+<style>
+  body { margin:0; font-family:Arial,sans-serif; background:url('bg.jpeg') no-repeat center center fixed; background-size:cover; color:white; }
+  header { display:flex; justify-content:space-between; align-items:center; padding:15px 30px; background:rgba(0,0,0,0.8); }
+  .title { font-size:24px; font-weight:bold; color:#ffd700; }
+  .nav-links a { color:white; text-decoration:none; margin-left:20px; }
+  .nav-links a:hover { color:#ffd700; }
+  main { max-width:800px; margin:30px auto; background:rgba(0,0,0,0.6); padding:20px; border-radius:10px; }
+  h1 { text-align:center; color:#ffd700; margin-bottom:20px; }
+  table { width:100%; border-collapse:collapse; color:white; }
+  th,td { padding:10px; border:1px solid #ddd; text-align:center; }
+  button { background:#28a745; color:white; border:none; padding:6px 10px; border-radius:6px; cursor:pointer; font-size:14px; margin:0 2px; }
+  button.delete { background:#dc3545; }
+  button:hover { opacity:0.9; }
+  @media(max-width:600px){ .title{font-size:20px;} table,th,td{font-size:13px;} }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="title">Hostelio - Admin</div>
+  <div class="nav-links">
+    <a href="admin_dashboard.html">Dashboard</a>
+    <a href="index.html">Logout</a>
+  </div>
+</header>
+
+<main>
+  <h1>Manage Hostels</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th><th>Location</th><th>Price</th><th>Image</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="hostels-table"></tbody>
+  </table>
+</main>
+
+<script type="module" src="view_hostels.js"></script>
+</body>
+</html>

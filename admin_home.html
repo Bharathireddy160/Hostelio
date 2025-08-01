@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin Dashboard - Hostelio</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: url('bg.jpeg') no-repeat center center fixed;
+    background-size: cover;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+   .logo {
+    width: 40px; height: 40px;
+    border-radius: 50%; object-fit: cover;
+  }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background: rgba(0,0,0,0.8);
+  }
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffd700;
+  }
+  .nav-links a {
+    color: white;
+    margin-left: 20px;
+    text-decoration: none;
+    font-size: 16px;
+  }
+  .nav-links a:hover {
+    color: #ffd700;
+  }
+  main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0,0,0,0.6);
+  }
+  h1 {
+    font-size: 36px;
+    color: #ffd700;
+    margin-bottom: 20px;
+  }
+  .button-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .button {
+    background-color: #28a745;
+    color: white;
+    padding: 14px 20px;
+    font-size: 18px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    width: 220px;
+    text-align: center;
+  }
+  .button:hover {
+    background-color: #218838;
+  }
+   .logo {
+      width: 70px; height: 70px;
+      border-radius: 50%; object-fit: cover;
+    }
+  footer {
+    text-align: center;
+    padding: 10px;
+    background: rgba(0,0,0,0.8);
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+<header>
+   <!-- ✅ Welcome screen for animation -->
+  <div id="welcome-screen" style="display:none; text-align:center;">
+    <p>✨ Logging you in...</p>
+  </div>
+    <img src="ic.png" alt="Logo" class="logo">
+  </div>
+  <div class="title">Hostelio Admin</div>
+  <div class="nav-links">
+    <a href="index.html">Logout</a>
+  </div>
+</header>
+<main>
+  <h1>Admin Dashboard</h1>
+  <div class="button-row">
+    <a class="button" href="add_hostel.html">Add Hostel</a>
+    <a class="button" href="show_history.html">Show Booking History</a>
+  </div>
+</main>
+<footer>
+  &copy; 2025 Hostelio. All rights reserved.
+</footer>
+</body>
+</html>
