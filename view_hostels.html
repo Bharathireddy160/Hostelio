@@ -18,11 +18,18 @@
   button.delete { background:#dc3545; }
   button:hover { opacity:0.9; }
   @media(max-width:600px){ .title{font-size:20px;} table,th,td{font-size:13px;} }
+  .logo {
+    width: 70px; height: 70px;
+    border-radius: 50%; object-fit: cover;
+  }
 </style>
 </head>
 <body>
 
 <header>
+  <div class="right-section">
+    <img src="ic.png" alt="Logo" class="logo">
+  </div>
   <div class="title">Hostelio - Admin</div>
   <div class="nav-links">
     <a href="admin_dashboard.html">Dashboard</a>

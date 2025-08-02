@@ -27,11 +27,7 @@
   }
   h1 { text-align: center; color: #ffd700; margin-bottom: 20px; }
   label { display: block; margin-bottom: 8px; font-weight: bold; }
-<<<<<<< HEAD
-  input[type="email"], input[type="password"] {
-=======
-  input[type="text"], input[type="password"] {
->>>>>>> 6622ce50f7cec99cc601ab5edb6285a2e1da9a8c
+  input[type="email"], input[type="password"], input[type="text"] {
     width: 100%; padding: 10px; margin-bottom: 15px;
     border: none; border-radius: 6px; font-size: 16px;
   }
@@ -48,11 +44,11 @@
     color: #ffd700; text-decoration: none;
   }
   .create-account a:hover { text-decoration: underline; }
-<<<<<<< HEAD
+
   .logo {
-    width: 70px; height: 70px;
-    border-radius: 50%; object-fit: cover;
-  }
+      width: 80px; height: 80px;
+      border-radius: 50%; object-fit: cover;
+    }
   #welcome-screen {
     display: none; text-align: center;
     animation: fadeIn 1s;
@@ -62,34 +58,25 @@
     .title { font-size: 20px; }
   }
   @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
-=======
+
   .logo { height: 100px; margin-right: 10px; }
->>>>>>> 6622ce50f7cec99cc601ab5edb6285a2e1da9a8c
 </style>
 </head>
 <body>
 <header>
   <div class="left-section">
-<<<<<<< HEAD
     <img src="ic.png" alt="Logo" class="logo">
   </div>
   <div class="title">Hostelio - Admin</div>
-=======
-    <img src="ic.png" alt="Hostelio Logo" class="logo">
-  </div>
-  <div class="title">Hostelio</div>
->>>>>>> 6622ce50f7cec99cc601ab5edb6285a2e1da9a8c
   <div class="nav-links">
     <a href="index.html">Home</a>
   </div>
 </header>
 <main>
-<<<<<<< HEAD
   <div id="welcome-screen">
     <p>✅ Successfully logged in! Redirecting...</p>
     <p id="admin-email"></p>
   </div>
-
   <div id="auth-section">
     <h1>Admin Login</h1>
     <form id="admin-login-form">
@@ -104,25 +91,11 @@
       <p>Don't have an account? <a href="create_admin_account.html">Create Admin Account</a></p>
     </div>
   </div>
-
   <div style="margin-top:10px;">
     <button id="sign-out" style="display:none; background-color:#dc3545;">Sign Out</button>
   </div>
-
   <script type="module" src="admin.js"></script>
-=======
-  <h1>Admin Login</h1>
-  <form>
-    <label for="username">Username</label>
-    <input type="text" id="username" required>
-    <label for="password">Password</label>
-    <input type="password" id="password" required>
-    <button type="submit">Login</button>
-  </form>
-  <div class="create-account">
-    <p>Don't have an account? <a href="create_admin_account.html">Create Admin Account</a></p>
-  </div>
->>>>>>> 6622ce50f7cec99cc601ab5edb6285a2e1da9a8c
+  
 </main>
 </body>
 </html>
