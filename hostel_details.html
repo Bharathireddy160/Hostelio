@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Explore Hostels - Hostelio</title>
+  <title>Hostel Details | Hostelio</title>
   <style>
     body {
       margin: 0;
@@ -11,9 +11,9 @@
       background: url('bg.jpeg') no-repeat center center fixed;
       background-size: cover;
       color: white;
-      min-height: 100vh;
       display: flex;
       flex-direction: column;
+      min-height: 100vh;
     }
     header {
       display: flex;
@@ -31,11 +31,6 @@
       color: white;
       text-decoration: none;
       margin-left: 20px;
-      font-size: 16px;
-      transition: color 0.3s;
-    }
-    .nav-links a:hover {
-      color: #ffd700;
     }
     main {
       flex: 1;
@@ -45,104 +40,163 @@
       padding: 30px;
       border-radius: 10px;
       box-shadow: 0 0 15px rgba(0,0,0,0.6);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
     }
     h1 {
-      margin-bottom: 20px;
       text-align: center;
       color: #ffd700;
     }
-    ul.hostel-list {
-      list-style-type: none;
-      padding: 0;
+    .details img {
       width: 100%;
+      max-height: 300px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 20px;
     }
-    ul.hostel-list li {
-      margin-bottom: 15px;
+    .details p {
       font-size: 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(255, 255, 255, 0.1);
-      padding: 12px 20px;
-      border-radius: 8px;
+      margin-bottom: 10px;
     }
-    ul.hostel-list li a {
-      color: #28a745;
-      text-decoration: underline;
-      font-weight: bold;
-      cursor: pointer;
-      transition: color 0.3s;
-    }
-    ul.hostel-list li a:hover {
-      color: #1e7e34;
-    }
-    .back-button {
+    form {
       margin-top: 30px;
-      padding: 12px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    input, select {
+      padding: 10px;
       font-size: 16px;
-      color: white;
+      border-radius: 6px;
+      border: none;
+      outline: none;
+    }
+    button {
       background-color: #28a745;
+      color: white;
+      padding: 12px;
+      font-size: 18px;
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      text-decoration: none;
-      transition: background-color 0.3s;
     }
-    .back-button:hover {
+    button:hover {
       background-color: #218838;
+    }
+    #successMessage {
+      color: lightgreen;
+      font-weight: bold;
+      text-align: center;
     }
     footer {
       text-align: center;
-      padding: 10px 0;
+      padding: 10px;
       background: rgba(0, 0, 0, 0.8);
       font-size: 14px;
-    }
-
-    .logo {
-      width: 70px; height: 70px;
-      border-radius: 50%; object-fit: cover;
     }
   </style>
 </head>
 <body>
   <header>
-    <div class="left-section">
-    <img src="ic.png" alt="Logo" class="logo">
-  </div>
     <div class="title">Hostelio</div>
     <div class="nav-links">
-      <a href="index.html">Main Home</a>
-      <a href="user_home.html">User Home</a>
-      <a href="user_profile.html">Profile</a>
+      <a href="explore_hostels.html">Back to Explore</a>
       <a href="index.html">Logout</a>
     </div>
   </header>
 
   <main>
-    <h1>Explore Hostels</h1>
-    <ul class="hostel-list">
-      <li>
-        <span>Sunrise Hostel - Mumbai</span>
-        <a href="hostel_details.html">View Details</a>
-      </li>
-      <li>
-        <span>Green Leaf Hostel - Bangalore</span>
-        <a href="#">View Details</a>
-      </li>
-      <li>
-        <span>Ocean View Hostel - Goa</span>
-        <a href="#">View Details</a>
-      </li>
-    </ul>
+    <h1>Hostel Details</h1>
+    <div class="details" id="hostelDetails">
+      <!-- Hostel info will load here -->
+    </div>
 
-    <a href="user_home.html" class="back-button">Back to Home</a>
+    <form id="bookingForm">
+      <h2>Book Now</h2>
+      <input type="text" id="name" placeholder="Your Name" required />
+      <input type="email" id="email" placeholder="Your Email" required />
+      <input type="date" id="bookingDate" required />
+      <select id="roomType" required>
+        <option value="">Select Room Type</option>
+        <option value="Single">Single</option>
+        <option value="Double">Double</option>
+        <option value="Dormitory">Dormitory</option>
+      </select>
+      <button type="submit">Confirm Booking</button>
+      <div id="successMessage"></div>
+    </form>
   </main>
 
   <footer>
     &copy; 2025 Hostelio. All rights reserved.
   </footer>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { db } from 'firebase.js';
+    import {
+      doc, getDoc, collection, addDoc, serverTimestamp
+    } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+    // Get hostel ID from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const hostelId = urlParams.get('id');
+
+    const hostelDetails = document.getElementById('hostelDetails');
+    const successMessage = document.getElementById('successMessage');
+
+    async function loadHostel() {
+      if (!hostelId) {
+        hostelDetails.innerHTML = "<p>No hostel selected.</p>";
+        return;
+      }
+
+      const docRef = doc(db, "hostels", hostelId);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const h = docSnap.data();
+        const img = h.imageUrls?.[0] || 'images/default.jpg';
+        hostelDetails.innerHTML = `
+          <img src="${img}" alt="${h.name}">
+          <p><strong>Name:</strong> ${h.name}</p>
+          <p><strong>Location:</strong> ${h.location}</p>
+          <p><strong>Price per Month:</strong> ₹${h.price}</p>
+          <p><strong>Description:</strong> ${h.description}</p>
+        `;
+      } else {
+        hostelDetails.innerHTML = "<p>Hostel not found.</p>";
+      }
+    }
+
+    loadHostel();
+
+    // Handle Booking
+    document.getElementById("bookingForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const bookingDate = document.getElementById("bookingDate").value;
+      const roomType = document.getElementById("roomType").value;
+
+      if (!name || !email || !bookingDate || !roomType) return;
+
+      try {
+        await addDoc(collection(db, "bookings"), {
+          hostelId,
+          name,
+          email,
+          bookingDate,
+          roomType,
+          createdAt: serverTimestamp()
+        });
+
+        successMessage.textContent = "✅ Booking successful!";
+        document.getElementById("bookingForm").reset();
+      } catch (err) {
+        successMessage.textContent = "❌ Error booking hostel.";
+        console.error("Booking error:", err);
+      }
+    });
+  </script>
 </body>
 </html>

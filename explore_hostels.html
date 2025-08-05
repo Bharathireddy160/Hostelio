@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Explore Hostels - Hostelio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explore Hostels | Hostelio</title>
   <style>
     body {
       margin: 0;
@@ -11,164 +11,189 @@
       background: url('bg.jpeg') no-repeat center center fixed;
       background-size: cover;
       color: white;
-      min-height: 100vh;
       display: flex;
       flex-direction: column;
+      min-height: 100vh;
     }
     header {
+      background-color: rgba(44, 62, 80, 0.8);
+      color: white;
+      padding: 1rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 15px 30px;
-      background: rgba(0, 0, 0, 0.8);
+      flex-wrap: wrap;
     }
-    .title {
+    .logo {
       font-size: 24px;
       font-weight: bold;
+      color: #ffd700;
     }
-    .nav-links a {
+    nav a {
       color: white;
-      text-decoration: none;
       margin-left: 20px;
-      font-size: 16px;
-      transition: color 0.3s;
+      text-decoration: none;
     }
-    .nav-links a:hover {
+    nav a:hover {
       color: #ffd700;
     }
-    main {
-      flex: 1;
-      background: rgba(0, 0, 0, 0.6);
-      max-width: 900px;
-      margin: 30px auto;
-      padding: 30px;
-      border-radius: 10px;
-    }
-    h1 {
-      font-size: 36px;
-      margin-bottom: 20px;
-      color: #ffd700;
+
+    .search-bar {
+      padding: 20px;
       text-align: center;
+      background-color: #ecf0f1;
     }
-    form {
+    .search-bar input {
+      width: 80%;
+      max-width: 400px;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    .hostel-grid {
       display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding: 30px;
       justify-content: center;
-      margin-bottom: 30px;
-      gap: 10px;
     }
-    input[type="text"] {
-      padding: 12px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: none;
+    .hostel-card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
       width: 300px;
+      transition: transform 0.3s;
+      color: black;
     }
-    button {
-      padding: 14px 24px;
-      font-size: 16px;
-      border: none;
-      border-radius: 8px;
-      background-color: #28a745;
-      color: white;
-      cursor: pointer;
-      transition: background-color 0.3s;
+    .hostel-card:hover {
+      transform: scale(1.02);
     }
-    button:hover {
-      background-color: #218838;
-    }
-    table {
+    .hostel-card img {
       width: 100%;
-      border-collapse: collapse;
+      height: 180px;
+      object-fit: cover;
+    }
+    .hostel-info {
+      padding: 15px;
+    }
+    .hostel-info h3 {
+      margin: 0 0 8px;
+    }
+    .hostel-info p {
+      margin: 5px 0;
+      color: #555;
+    }
+    .hostel-info .price {
+      font-weight: bold;
+      color: #28a745;
+    }
+    .explore-btn {
+      display: inline-block;
       margin-top: 10px;
+      padding: 10px 15px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      text-decoration: none;
     }
-    th, td {
-      padding: 12px;
-      border-bottom: 1px solid #ddd;
-      text-align: left;
-    }
-    tr:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .logo {
-      width: 70px; height: 70px;
-      border-radius: 50%; object-fit: cover;
+    .explore-btn:hover {
+      background-color: #0056b3;
     }
 
+    footer {
+      background-color: #2c3e50;
+      color: white;
+      text-align: center;
+      padding: 10px 0;
+      font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .search-bar input {
+        width: 95%;
+      }
+      .hostel-grid {
+        padding: 15px;
+      }
+    }
   </style>
 </head>
 <body>
+
   <header>
-    <div class="left-section">
-    <img src="ic.png" alt="Logo" class="logo">
-  </div>
-    <div class="title">Hostelio</div>
-    <div class="nav-links">
-      <a href="user_home.html">Home</a>
-      <a href="user_profile.html">Profile</a>
-      <a href="index.html">Logout</a>
-    </div>
+    <div class="logo">Hostelio</div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="explore.html">Explore</a>
+      <a href="dashboard.html">Dashboard</a>
+    </nav>
   </header>
 
-  <main>
-    <h1>Explore Hostels</h1>
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search by location or name..." />
+  </div>
 
-    <form id="searchForm">
-      <input type="text" id="locationInput" placeholder="Enter location (e.g., Mumbai)" />
-      <button type="submit">Search</button>
-    </form>
+  <div class="hostel-grid" id="hostelGrid">
+    <!-- Hostel cards will be loaded here -->
+  </div>
 
-    <table id="resultsTable" style="display:none;">
-      <thead>
-        <tr>
-          <th>Hostel Name</th>
-          <th>Location</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Results go here -->
-      </tbody>
-    </table>
-  </main>
+  <!-- Firebase SDKs -->
+  <script type="module">
+    import { db } from 'firebase.js';
+    import { collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-  <script>
-    const hostels = [
-      { name: "Sunrise Hostel", location: "Mumbai", description: "Cozy hostel near the beach." },
-      { name: "Green Garden Hostel", location: "Delhi", description: "Peaceful hostel with garden views." },
-      { name: "City Lights Hostel", location: "Bangalore", description: "Modern hostel in city center." },
-      { name: "River View Hostel", location: "Mumbai", description: "Hostel with river views and great food." },
-      { name: "Hilltop Hostel", location: "Shimla", description: "Beautiful hilltop stay with mountain views." },
-    ];
+    const hostelGrid = document.getElementById("hostelGrid");
+    const searchInput = document.getElementById("searchInput");
 
-    const form = document.getElementById('searchForm');
-    const resultsTable = document.getElementById('resultsTable');
-    const tbody = resultsTable.querySelector('tbody');
+    async function loadHostels() {
+      const querySnapshot = await getDocs(collection(db, "hostels"));
+      const hostels = [];
 
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      const location = document.getElementById('locationInput').value.trim().toLowerCase();
-      tbody.innerHTML = '';
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        hostels.push({ id: doc.id, ...data });
+      });
 
-      if (!location) {
-        alert('Please enter a location to search.');
-        resultsTable.style.display = 'none';
-        return;
-      }
+      displayHostels(hostels);
 
-      const filtered = hostels.filter(h => h.location.toLowerCase().includes(location));
-      if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">No hostels found for "${location}"</td></tr>`;
-      } else {
-        filtered.forEach(h => {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `<td>${h.name}</td><td>${h.location}</td><td>${h.description}</td>`;
-          tbody.appendChild(tr);
-        });
-      }
+      // Search functionality
+      searchInput.addEventListener("input", () => {
+        const value = searchInput.value.toLowerCase();
+        const filtered = hostels.filter(h =>
+          h.name.toLowerCase().includes(value) ||
+          h.location.toLowerCase().includes(value)
+        );
+        displayHostels(filtered);
+      });
+    }
 
-      resultsTable.style.display = 'table';
-    });
+    function displayHostels(hostels) {
+      hostelGrid.innerHTML = ""; // clear previous
+      hostels.forEach(h => {
+        const img = h.imageUrls?.[0] || 'images/default.jpg';
+        hostelGrid.innerHTML += `
+          <div class="hostel-card">
+            <img src="${img}" alt="${h.name}">
+            <div class="hostel-info">
+              <h3>${h.name}</h3>
+              <p>${h.location}</p>
+              <p class="price">₹${h.price}/month</p>
+              <a class="explore-btn" href="hostel-details.html?id=${h.id}">View Details</a>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    loadHostels();
   </script>
+  <div><footer>
+    &copy; @2025 Hostelio. All rights reserved.
+  </footer></div>
+  
 </body>
 </html>
