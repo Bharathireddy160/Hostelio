@@ -10,42 +10,55 @@
       font-family: Arial, sans-serif;
       background: url('bg.jpeg') no-repeat center center fixed;
       background-size: cover;
-      color: white;
+      color: #333;
       display: flex;
       flex-direction: column;
       min-height: 100vh;
     }
     header {
-      background: rgba(0, 0, 0, 0.8);
+      background: #333;
+      color: white;
       padding: 15px 30px;
-      text-align: center;
-      font-size: 24px;
+      display: flex;
+      align-items: center;
+    }
+    .logo {
+      width: 50px; 
+      height: 50px;
+      border-radius: 50%; 
+      object-fit: cover;
+      margin-right: 15px;
+    }
+    .title {
+      font-size: 20px;
       font-weight: bold;
+      color: #ffd700;
     }
     .container {
       flex: 1;
       display: flex;
       justify-content: center;
       align-items: center;
-      background: rgba(0,0,0,0.6);
       padding: 20px;
     }
     .form-box {
-      background: rgba(0,0,0,0.7);
+      background: white;
       padding: 30px;
       border-radius: 10px;
       width: 100%;
       max-width: 400px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
     }
     .form-box h2 {
       margin-bottom: 20px;
       text-align: center;
+      color: #333;
     }
     input[type="text"], input[type="password"], input[type="email"] {
       width: 100%;
       padding: 12px;
       margin: 8px 0;
-      border: none;
+      border: 1px solid #ccc;
       border-radius: 6px;
       font-size: 16px;
     }
@@ -64,50 +77,55 @@
     .button:hover {
       background-color: #218838;
     }
-    .back-link {
-      display: block;
+ .content {
+      width: 100%;
+      max-width: 450px;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 30px;
+      border-radius: 10px;
       text-align: center;
-      margin-top: 15px;
-      color: white;
-      text-decoration: none;
     }
-
-    .logo {
-      width: 70px; height: 70px;
-      border-radius: 50%; object-fit: cover;
+     h1 {
+      color: #ffd700;
+      margin-bottom: 20px;
     }
   </style>
 </head>
 <body>
-  <div class="left-section">
-    <img src="ic.png" alt="Logo" class="logo">
-
-  </style>
-</head>
-<body>
-
-  <header>Hostelio - Create Admin Account</header>
+  <header>
+    <div class="left-section">
+      <img src="ic.png" alt="Logo" class="logo">
+    </div>
+    <div class="title">Hostelio</div>
+  </header>
 
   <div class="container">
-    <div class="form-box">
-      <h2>Create Admin Account</h2>
-      <form onsubmit="return validateForm()">
+    <div class="content">
+      <h1>Create Admin Account</h1>
+      <form id="adminRegisterForm">
         <input type="text" id="adminUsername" placeholder="Admin Username" required>
         <input type="email" id="adminEmail" placeholder="Email" required>
         <input type="password" id="adminPassword" placeholder="Password" required>
         <input type="password" id="adminConfirmPassword" placeholder="Confirm Password" required>
         <button type="submit" class="button">Create Account</button>
       </form>
-      <a class="back-link" href="index.html">Back to Home</a>
+  /
     </div>
-  </div>
+</div>
 
-  
   <script>
-document.getElementById('adminRegisterForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  window.location.href = 'admin_success.html';
-});
-</script>
+    document.getElementById('adminRegisterForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      // Simple password match validation
+      const password = document.getElementById('adminPassword').value;
+      const confirm = document.getElementById('adminConfirmPassword').value;
+      if(password !== confirm){
+        alert('Passwords do not match!');
+        return;
+      }
+      // Go to success page
+      window.location.href = 'admin_success.html';
+    });
+  </script>
 </body>
 </html>
