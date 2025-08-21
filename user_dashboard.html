@@ -96,5 +96,13 @@
 <footer>
   &copy; 2025 Hostelio. All rights reserved.
 </footer>
+<script>
+  // Sample logic — assumes these were set on login
+  const userName = localStorage.getItem('userName') || 'User';
+  const userEmail = localStorage.getItem('userEmail') || 'example@example.com';
+
+  document.getElementById('userName').textContent = userName;
+  document.getElementById('userEmail').textContent = userEmail;
+</script>
 </body>
 </html>
