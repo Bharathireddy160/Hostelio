@@ -8,7 +8,8 @@
     body {
       margin: 0; font-family: Arial, sans-serif;
       background: url('bg.jpeg') no-repeat center center fixed;
-      background-size: cover; color: white; min-height: 100vh; display: flex; flex-direction: column;
+      background-size: cover; color: white; min-height: 100vh;
+      display: flex; flex-direction: column;
     }
     header {
       display: flex; align-items: center; justify-content: space-between;
@@ -18,7 +19,8 @@
     .logo { height: 40px; margin-right: 10px; border-radius: 50%; }
     .title { font-size: 24px; font-weight: bold; color: #ffd700; }
     .nav-links a {
-      color: white; text-decoration: none; margin-left: 20px; font-size: 16px; transition: color 0.3s;
+      color: white; text-decoration: none; margin-left: 20px; font-size: 16px;
+      transition: color 0.3s;
     }
     .nav-links a:hover { color: #ffd700; }
     main {
@@ -26,39 +28,43 @@
     }
     .profile-card {
       background: rgba(0,0,0,0.7); padding: 30px; border-radius: 10px;
-      text-align: center; max-width: 400px; width: 100%;
+      text-align: center; max-width: 450px; width: 100%;
       box-shadow: 0 0 15px rgba(0,0,0,0.6);
       animation: fadeIn 1s ease;
     }
     .profile-img {
       width: 120px; height: 120px; border-radius: 50%;
-      border: 3px solid #ffd700; margin-bottom: 10px;
-      object-fit: cover;
+      border: 3px solid #ffd700; margin-bottom: 10px; object-fit: cover;
     }
     h1 {
-      margin-bottom: 10px; color: #ffd700; display: flex; justify-content: center; align-items: center;
-      gap: 8px;
+      margin-bottom: 10px; color: #ffd700;
+      display: flex; justify-content: center; align-items: center; gap: 8px;
     }
-    .badge {
+    .verified-badge {
       background: #28a745; color: white; font-size: 12px;
-      padding: 2px 6px; border-radius: 6px;
+      padding: 2px 6px; border-radius: 6px; display: none;
     }
-    .info {
-      text-align: left; margin-top: 20px;
-    }
-    .info p {
-      margin: 8px 0; font-size: 16px;
-    }
+    .info { text-align: left; margin-top: 20px; }
+    .info p { margin: 8px 0; font-size: 16px; }
     .action-buttons {
-      display: flex; justify-content: center; gap: 15px; margin-top: 20px;
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: 15px; margin-top: 20px;
     }
     .btn {
       background-color: #28a745; color: white;
-      border: none; padding: 8px 14px; border-radius: 6px;
+      border: none; padding: 10px 16px; border-radius: 6px;
       cursor: pointer; font-size: 14px; transition: background-color 0.3s;
-      text-decoration: none;
+      text-decoration: none; display: inline-block;
     }
     .btn:hover { background-color: #218838; }
+    .back-btn {
+      margin-top: 15px; background-color: #ffd700; color: black;
+      font-weight: bold;
+    }
+    .back-btn:hover { background-color: #e6c200; }
+    footer {
+      text-align: center; padding: 10px; background: rgba(0,0,0,0.7);
+    }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   </style>
 </head>
@@ -66,8 +72,8 @@
 <header>
   <div class="left-section">
     <img src="ic.png" alt="Logo" class="logo">
+    <div class="title">Hostelio</div>
   </div>
-  <div class="title">Hostelio</div>
   <div class="nav-links">
     <a href="user_home.html">Home</a>
     <a href="explore_hostels.html">Explore</a>
@@ -79,7 +85,7 @@
 <main>
   <div class="profile-card">
     <img id="profilePic" src="https://www.gravatar.com/avatar?d=mp" alt="User Photo" class="profile-img">
-    <h1 id="userName">Loading... <span class="badge">Verified</span></h1>
+    <h1 id="userName">Loading... <span class="verified-badge" id="verifiedBadge">✔ Verified</span></h1>
     <div class="info">
       <p><strong>Email:</strong> <span id="userEmail">Loading...</span></p>
       <p><strong>Phone:</strong> <span id="userPhone">+91-Not set</span></p>
@@ -89,12 +95,16 @@
     <div class="action-buttons">
       <a class="btn" href="edit_profile.html">Edit Profile</a>
       <a class="btn" href="change_password.html">Change Password</a>
+      <a class="btn back-btn" href="user_dashboard.html">⬅ Back to Dashboard</a>
     </div>
   </div>
 </main>
 
+<footer>
+  &copy; 2025 Hostelio. All rights reserved.
+</footer>
+
 <script type="module">
-  // Firebase SDK imports
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
@@ -113,17 +123,39 @@
   const userName = document.getElementById("userName");
   const userEmail = document.getElementById("userEmail");
   const userPic = document.getElementById("profilePic");
+  const verifiedBadge = document.getElementById("verifiedBadge");
 
-  onAuthStateChanged(auth, user => {
+  function loadProfile(user) {
+    let name = user?.displayName || localStorage.getItem("userName") || "Hostelio User";
+    let email = user?.email || localStorage.getItem("userEmail") || "example@example.com";
+    let photo = user?.photoURL || localStorage.getItem("userPhoto") || "https://www.gravatar.com/avatar?d=mp";
+    let verified = user?.emailVerified || localStorage.getItem("userVerified") === "true";
+
+    userName.innerHTML = `${name} <span class="verified-badge" id="verifiedBadge">✔ Verified</span>`;
+    document.getElementById("userEmail").textContent = email;
+    userPic.src = photo;
+    document.getElementById("verifiedBadge").style.display = verified ? "inline-block" : "none";
+  }
+
+  onAuthStateChanged(auth, (user) => {
     if (user) {
-      userName.innerHTML = `${user.displayName || "User"} <span class="badge">Verified</span>`;
-      userEmail.textContent = user.email;
-      userPic.src = user.photoURL || "https://www.gravatar.com/avatar?d=mp";
+      localStorage.setItem("userName", user.displayName || "Hostelio User");
+      localStorage.setItem("userEmail", user.email);
+      localStorage.setItem("userPhoto", user.photoURL || "https://www.gravatar.com/avatar?d=mp");
+      localStorage.setItem("userVerified", user.emailVerified);
 
-      // Optionally add phone/location/joined if stored in Firestore (can be added later)
+      loadProfile(user);
     } else {
-      window.location.href = "login.html";
+      if (localStorage.getItem("userEmail")) {
+        loadProfile(null);
+      } else {
+        window.location.href = "login.html";
+      }
     }
+  });
+
+  window.addEventListener("storage", () => {
+    loadProfile(null);
   });
 </script>
 </body>

@@ -2,75 +2,152 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Available Hostels - Hostelio</title>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
   <style>
-    body { margin:0; font-family: Arial,sans-serif; background:url('bg.jpeg') no-repeat center/cover fixed; color:white; }
-    header, footer { background:rgba(0,0,0,0.8); padding:15px 30px; display:flex; justify-content:space-between; align-items:center; }
-    .logo { width:60px; height:60px; border-radius:50%; }
-    .title { font-size:24px; font-weight:bold; color:#ffd700; }
-    .nav-links a { color:white; margin-left:20px; text-decoration:none; }
-    .nav-links a:hover { color:#ffd700; }
-    main { padding:30px; background:rgba(0,0,0,0.6); min-height:80vh; }
-    h1 { text-align:center; color:#ffd700; margin-bottom:20px; }
-    .hostel-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px; }
-    .hostel-card { background:rgba(0,0,0,0.75); padding:20px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.5); }
-    .hostel-card h3 { margin:0; color:#ffd700; }
-    button { margin-top:10px; padding:8px 15px; background:#ffd700; color:black; border:none; border-radius:5px; cursor:pointer; }
-    button:hover { background:orange; }
+    body {
+      margin: 0; font-family: Arial, sans-serif;
+      background: url('bg.jpeg') no-repeat center center fixed;
+      background-size: cover; color: white;
+      display: flex; flex-direction: column; min-height: 100vh;
+    }
+
+    header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 15px 30px; background: rgba(0,0,0,0.8);
+    }
+
+    .logo { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+    .title { font-size: 24px; font-weight: bold; color: #ffd700; }
+
+    .nav-links a {
+      color: white; text-decoration: none; margin-left: 20px; font-weight: bold;
+    }
+    .nav-links a:hover { color: #ffd700; }
+
+    main {
+      flex: 1; max-width: 1100px; margin: 30px auto; padding: 20px;
+      background: rgba(0,0,0,0.6); border-radius: 10px;
+    }
+
+    h1 { text-align: center; color: #ffd700; margin-bottom: 30px; }
+
+    .hostel-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .hostel-card {
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: transform 0.2s;
+    }
+    .hostel-card:hover { transform: translateY(-5px); }
+
+    .hostel-card img {
+      width: 100%; height: 180px; object-fit: cover;
+    }
+
+    .hostel-info {
+      padding: 15px;
+    }
+    .hostel-info h2 { margin: 0; font-size: 20px; color: #ffd700; }
+    .hostel-info p { font-size: 15px; margin: 8px 0; }
+
+    .book-btn {
+      display: inline-block; text-decoration: none;
+      background: #ffd700; color: black; padding: 10px 18px;
+      border-radius: 6px; font-weight: bold;
+      transition: background 0.3s;
+    }
+    .book-btn:hover { background: #e6c200; }
+
+    footer {
+      text-align: center; padding: 10px;
+      background: rgba(0,0,0,0.7); font-size: 14px;
+    }
   </style>
 </head>
 <body>
-  <header>
-    <img src="ic.png" alt="Logo" class="logo">
+
+<header>
+  <div style="display:flex; align-items:center; gap:10px;">
+    <img src="p1.png" alt="Logo" class="logo">
     <div class="title">Hostelio</div>
-    <div class="nav-links">
-      <a href="user_dashboard.html">Home</a>
-      <a href="index.html">Logout</a>
+  </div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="user_dashboard.html">Dashboard</a>
+    <a href="user_profile.html">Profile</a>
+    <a href="account_settings.html">Account Settings</a>
+    <a href="logout.html">Logout</a>
+  </div>
+</header>
+
+<main>
+  <h1>Available Hostels</h1>
+
+  <div class="hostel-grid">
+    <div class="hostel-card">
+      <img src="i3..jpg" alt="Hostel 1">
+      <div class="hostel-info">
+        <h2>Sunrise Hostel</h2>
+        <p>Located near the city center, affordable & comfy stay.</p>
+        <a href="#" class="book-btn">Book Now</a>
+      </div>
     </div>
-  </header>
 
-  <main>
-    <h1>Available Hostels</h1>
-    <div class="hostel-list" id="hostelList">
-      <p>Loading hostels...</p>
+    <div class="hostel-card">
+      <img src="i2.png" alt="Hostel 2">
+      <div class="hostel-info">
+        <h2>Green Valley Hostel</h2>
+        <p>Peaceful environment surrounded by greenery.</p>
+        <a href="#" class="book-btn">Book Now</a>
+      </div>
     </div>
-  </main>
 
-  <footer>&copy; 2025 Hostelio. All rights reserved.</footer>
+    <div class="hostel-card">
+      <img src="image2.jpg" alt="Hostel 3">
+      <div class="hostel-info">
+        <h2>Blue Sky Hostel</h2>
+        <p>Modern facilities with WiFi & 24/7 support.</p>
+        <a href="#" class="book-btn">Book Now</a>
+      </div>
+    </div>
+  </div>
+</main>
 
-  <script type="module">
-    import { db } from "./js/firebase.js";
-    import { collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+<footer>
+  &copy; 2025 Hostelio. All rights reserved.
+</footer>
 
-    const userEmail = localStorage.getItem("userEmail");
-    const hostelList = document.getElementById("hostelList");
+<script>
+  // ✅ Firebase Config
+  const firebaseConfig = {
+    apiKey: "AIzaSyCLn45hIR-S75BEPypx1BFgOV8vA5MaqU0",
+    authDomain: "hostelio-89130.firebaseapp.com",
+    projectId: "hostelio-89130",
+    storageBucket: "hostelio-89130.appspot.com",
+    messagingSenderId: "530522106867",
+    appId: "1:530522106867:web:227d355ea3fcc63317c086",
+    measurementId: "G-CYM1EHN5G5"
+  };
+  firebase.initializeApp(firebaseConfig);
 
-    async function loadHostels() {
-      const snap = await getDocs(collection(db, "hostels"));
-      hostelList.innerHTML = "";
-      snap.forEach((doc) => {
-        const h = doc.data();
-        hostelList.innerHTML += `
-          <div class="hostel-card">
-            <h3>${h.name}</h3>
-            <p><strong>Location:</strong> ${h.location}</p>
-            <p><strong>Price:</strong> ₹${h.price}</p>
-            <button onclick="bookHostel('${doc.id}','${h.name}','${h.price}')">Book Now</button>
-          </div>
-        `;
-      });
+  // ✅ Ensure only logged-in users can see this page
+  firebase.auth().onAuthStateChanged((user) => {
+    if (!user) {
+      window.location.href = "userlogin.html";
     }
+  });
+</script>
 
-    window.bookHostel = async (id,name,price) => {
-      if(!userEmail){ alert("Login required!"); return; }
-      await addDoc(collection(db,"bookings"), {
-        email:userEmail, hostelId:id, hostelName:name, roomType:"Standard", date:new Date().toISOString().split("T")[0]
-      });
-      alert("Booking confirmed for "+name);
-    };
-
-    loadHostels();
-  </script>
 </body>
 </html>

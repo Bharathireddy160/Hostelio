@@ -4,64 +4,153 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Payment History - Hostelio</title>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
   <style>
-    body { margin:0; font-family:Arial,sans-serif; background:url('bg.jpeg') no-repeat center/cover fixed; color:white; }
-    header, footer { background:rgba(0,0,0,0.8); padding:15px 30px; display:flex; justify-content:space-between; align-items:center; }
-    .logo { width:60px; height:60px; border-radius:50%; }
-    .title { font-size:24px; font-weight:bold; color:#ffd700; }
-    .nav-links a { color:white; margin-left:20px; text-decoration:none; }
-    .nav-links a:hover { color:#ffd700; }
-    main { padding:30px; background:rgba(0,0,0,0.6); min-height:80vh; }
-    h1 { text-align:center; color:#ffd700; margin-bottom:20px; }
-    .payment-list { max-width:600px; margin:0 auto; display:flex; flex-direction:column; gap:15px; }
-    .payment-card { background:rgba(0,0,0,0.75); padding:20px; border-radius:8px; }
-    .payment-card strong { color:#ffd700; }
+    body {
+      margin: 0; font-family: Arial, sans-serif;
+      background: url('bg.jpeg') no-repeat center center fixed;
+      background-size: cover; color: white;
+      display: flex; flex-direction: column; min-height: 100vh;
+    }
+
+    header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 15px 30px; background: rgba(0,0,0,0.8);
+    }
+
+    .logo { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+    .title { font-size: 24px; font-weight: bold; color: #ffd700; }
+
+    .nav-links a {
+      color: white; text-decoration: none; margin-left: 20px; font-weight: bold;
+    }
+    .nav-links a:hover { color: #ffd700; }
+
+    main {
+      flex: 1; max-width: 1000px; margin: 30px auto; padding: 20px;
+      background: rgba(0,0,0,0.6); border-radius: 10px;
+    }
+
+    h1 { text-align: center; color: #ffd700; margin-bottom: 30px; }
+
+    table {
+      width: 100%; border-collapse: collapse; background: rgba(255,255,255,0.1);
+      border-radius: 8px; overflow: hidden;
+    }
+    th, td {
+      padding: 12px 15px; text-align: left; font-size: 15px;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    th { background: rgba(0,0,0,0.7); color: #ffd700; }
+    tr:hover { background: rgba(255,255,255,0.1); }
+
+    .status-paid { color: lightgreen; font-weight: bold; }
+    .status-pending { color: orange; font-weight: bold; }
+    .status-failed { color: red; font-weight: bold; }
+
+    footer {
+      text-align: center; padding: 10px;
+      background: rgba(0,0,0,0.7); font-size: 14px;
+    }
   </style>
 </head>
 <body>
-  <header>
-    <img src="ic.png" alt="Logo" class="logo">
+
+<header>
+  <div style="display:flex; align-items:center; gap:10px;">
+    <img src="p1.png" alt="Logo" class="logo">
     <div class="title">Hostelio</div>
-    <div class="nav-links">
-      <a href="user_dashboard.html">Home</a>
-      <a href="index.html">Logout</a>
-    </div>
-  </header>
+  </div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="user_dashboard.html">Dashboard</a>
+    <a href="user_profile.html">Profile</a>
+    <a href="logout.html">Logout</a>
+  </div>
+</header>
 
-  <main>
-    <h1>Payment History</h1>
-    <div class="payment-list" id="paymentList">
-      <p>Loading payments...</p>
-    </div>
-  </main>
+<main>
+  <h1>Payment History</h1>
 
-  <footer>&copy; 2025 Hostelio. All rights reserved.</footer>
+  <table>
+    <thead>
+      <tr>
+        <th>Hostel Name</th>
+        <th>Date</th>
+        <th>Amount</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="paymentTable">
+      <tr>
+        <td>Sunrise Hostel</td>
+        <td>2025-08-01</td>
+        <td>₹ 5000</td>
+        <td class="status-paid">Paid</td>
+      </tr>
+      <tr>
+        <td>Green Valley Hostel</td>
+        <td>2025-07-15</td>
+        <td>₹ 4500</td>
+        <td class="status-pending">Pending</td>
+      </tr>
+      <tr>
+        <td>Blue Sky Hostel</td>
+        <td>2025-07-01</td>
+        <td>₹ 4800</td>
+        <td class="status-failed">Failed</td>
+      </tr>
+    </tbody>
+  </table>
+</main>
 
-  <script type="module">
-    import { db } from "./js/firebase.js";
-    import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+<footer>
+  &copy; 2025 Hostelio. All rights reserved.
+</footer>
 
-    const userEmail = localStorage.getItem("userEmail");
-    const paymentList = document.getElementById("paymentList");
+<script>
+  // ✅ Firebase Config
+  const firebaseConfig = {
+    apiKey: "AIzaSyCLn45hIR-S75BEPypx1BFgOV8vA5MaqU0",
+    authDomain: "hostelio-89130.firebaseapp.com",
+    projectId: "hostelio-89130",
+    storageBucket: "hostelio-89130.appspot.com",
+    messagingSenderId: "530522106867",
+    appId: "1:530522106867:web:227d355ea3fcc63317c086",
+    measurementId: "G-CYM1EHN5G5"
+  };
+  firebase.initializeApp(firebaseConfig);
 
-    async function loadPayments(){
-      if(!userEmail){ paymentList.innerHTML="<p>Login required.</p>"; return; }
-      const q = query(collection(db,"payments"), where("email","==",userEmail));
-      const snap = await getDocs(q);
-      paymentList.innerHTML="";
-      if(snap.empty){ paymentList.innerHTML="<p>No payments yet.</p>"; return; }
-      snap.forEach(doc=>{
-        const p=doc.data();
-        paymentList.innerHTML += `
-          <div class="payment-card">
-            <p><strong>Hostel:</strong> ${p.hostelName}</p>
-            <p><strong>Amount:</strong> ₹${p.amount}</p>
-            <p><strong>Date:</strong> ${p.date}</p>
-          </div>
-        `;
-      });
+  // ✅ Ensure only logged-in users can see this page
+  firebase.auth().onAuthStateChanged((user) => {
+    if (!user) {
+      window.location.href = "userlogin.html";
+    } else {
+      // Example: Load payment data from localStorage (or Firebase DB later)
+      const payments = JSON.parse(localStorage.getItem("paymentHistory")) || [];
+      const tableBody = document.getElementById("paymentTable");
+
+      if (payments.length > 0) {
+        tableBody.innerHTML = "";
+        payments.forEach(p => {
+          const row = `<tr>
+            <td>${p.hostel}</td>
+            <td>${p.date}</td>
+            <td>₹ ${p.amount}</td>
+            <td class="${p.status === 'Paid' ? 'status-paid' :
+p.status === 'Pending' ? 'status-pending' :
+'status-failed'}">${p.status}</td>
+          </tr>`;
+          tableBody.innerHTML += row;
+        });
+      }
     }
-    loadPayments();
-  </script>
+  });
+</script>
+
 </body>
 </html>

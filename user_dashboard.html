@@ -1,62 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>User Dashboard - Hostelio</title>
-<style>
-  body {
-    margin: 0; font-family: Arial, sans-serif;
-    background: url('bg.jpeg') no-repeat center center fixed;
-    background-size: cover; color: white; 
-    display: flex; flex-direction: column; min-height: 100vh;
-  }
-  header {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 15px 30px; background: rgba(0,0,0,0.8);
-  }
-  .logo {
-    width: 40px; height: 40px; border-radius: 50%; object-fit: cover;
-  }
-  .title { font-size: 24px; font-weight: bold; color: #ffd700; }
-  .nav-links a {
-    color: white; text-decoration: none; margin-left: 20px; font-weight: bold;
-  }
-  .nav-links a:hover { color: #ffd700; }
-  main {
-    flex: 1; max-width: 1000px; margin: 30px auto; padding: 20px;
-    background: rgba(0,0,0,0.6); border-radius: 10px;
-    display: flex; flex-direction: column; align-items: center;
-  }
-  h1 { color: #ffd700; text-align: center; margin-bottom: 30px; }
-  .cards {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px; width: 100%;
-  }
-  .card {
-    background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px;
-    text-align: center; transition: transform 0.2s;
-  }
-  .card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.15); }
-  .card h2 { font-size: 20px; color: #ffd700; margin-bottom: 10px; }
-  .card p { font-size: 16px; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>User Dashboard - Hostelio</title>
 
-  .explore-btn {
-    margin-top: 30px; text-decoration: none; color: white;
-    background: #ffd700; padding: 12px 24px; border-radius: 8px;
-    font-size: 17px; font-weight: bold; transition: background 0.3s, transform 0.2s;
-  }
-  .explore-btn:hover {
-    background: #e6c200; transform: scale(1.05);
-  }
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-  footer {
-    text-align: center; padding: 10px; background: rgba(0,0,0,0.7);
-    font-size: 14px;
-  }
-</style>
+  <style>
+    body {
+      margin: 0; font-family: Arial, sans-serif;
+      background: url('bg.jpeg') no-repeat center center fixed;
+      background-size: cover; color: white;
+      display: flex; flex-direction: column; min-height: 100vh;
+    }
+
+    header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 15px 30px; background: rgba(0,0,0,0.8);
+    }
+
+    .logo {
+      width: 40px; height: 40px; border-radius: 50%; object-fit: cover;
+    }
+
+    .title { font-size: 24px; font-weight: bold; color: #ffd700; }
+
+    .nav-links a {
+      color: white; text-decoration: none; margin-left: 20px; font-weight: bold;
+    }
+    .nav-links a:hover { color: #ffd700; }
+
+    main {
+      flex: 1; max-width: 1000px; margin: 30px auto; padding: 20px;
+      background: rgba(0,0,0,0.6); border-radius: 10px;
+      display: flex; flex-direction: column; align-items: center;
+    }
+
+    h1 { color: #ffd700; text-align: center; margin-bottom: 30px; }
+
+    .user-profile {
+      display: flex; align-items: center; gap: 20px;
+      background: rgba(255,255,255,0.1);
+      padding: 15px 25px; border-radius: 10px;
+      margin-bottom: 30px; width: 100%;
+      box-sizing: border-box;
+    }
+
+    .user-photo {
+      width: 100px; height: 100px; border-radius: 50%; object-fit: cover;
+      border: 3px solid #ffd700;
+    }
+
+    .user-info h2 {
+      margin: 0; font-size: 22px; color: #fff;
+    }
+
+    .verified-badge {
+      color: #00ff99; font-size: 18px; margin-left: 8px;
+    }
+
+    .user-info p { margin: 5px 0 0; font-size: 16px; color: #eee; }
+
+    .cards {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px; width: 100%;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px;
+      text-align: center; transition: transform 0.2s;
+    }
+    .card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.15); }
+    .card h2 { font-size: 20px; color: #ffd700; margin-bottom: 10px; }
+    .card p { font-size: 16px; }
+
+    .explore-btn {
+      margin-top: 30px; text-decoration: none; color: white;
+      background: #ffd700; padding: 12px 24px; border-radius: 8px;
+      font-size: 17px; font-weight: bold; transition: background 0.3s, transform 0.2s;
+    }
+    .explore-btn:hover { background: #e6c200; transform: scale(1.05); }
+
+    footer {
+      text-align: center; padding: 10px; background: rgba(0,0,0,0.7);
+      font-size: 14px;
+    }
+  </style>
 </head>
 <body>
+
 <header>
   <div style="display:flex; align-items:center; gap:10px;">
     <img src="p1.png" alt="Logo" class="logo">
@@ -65,44 +100,96 @@
   <div class="nav-links">
     <a href="index.html">Home</a>
     <a href="user_profile.html">My Profile</a>
+    <a href="account_settings.html">Account Settings</a>
     <a href="logout.html">Logout</a>
   </div>
 </header>
 
 <main>
   <h1>Welcome to Your Dashboard!</h1>
+
+  <!-- User Info -->
+  <div class="user-profile">
+    <img src="https://via.placeholder.com/100" alt="User Photo" class="user-photo" id="user-photo">
+    <div class="user-info">
+      <h2 id="user-name">User Name <span class="verified-badge" id="verified-badge">✔ Verified</span></h2>
+      <p id="user-email">Email: example@example.com</p>
+    </div>
+  </div>
+
+  <!-- Dashboard Cards -->
   <div class="cards">
     <div class="card">
-     <a href="my_bookings.html"> <h2>My Bookings</h2> </a>
+      <a href="my_bookings.html" style="text-decoration:none; color:white;">
+        <h2>My Bookings</h2>
+      </a>
       <p>View and manage your current hostel bookings.</p>
     </div>
     <div class="card">
-      <a href="available_hostels.html"> <h2>Available Hostels</h2> </a>
+      <a href="available_hostels.html" style="text-decoration:none; color:white;">
+        <h2>Available Hostels</h2>
+      </a>
       <p>Browse and book new hostels easily.</p>
     </div>
     <div class="card">
-      <a href="payment_history.html"> <h2>Payment History</h2> </a>
+      <a href="payment_history.html" style="text-decoration:none; color:white;">
+        <h2>Payment History</h2>
+      </a>
       <p>Check past transactions and receipts.</p>
     </div>
     <div class="card">
-      <a href="account_settings.html"> <h2>Account Settings</h2> </a>
+      <a href="account_settings.html" style="text-decoration:none; color:white;">
+        <h2>Account Settings</h2>
+      </a>
       <p>Update your profile, email, or password.</p>
     </div>
   </div>
-  
+
   <a href="explore_hostels.html" class="explore-btn">Explore</a>
 </main>
 
 <footer>
   &copy; 2025 Hostelio. All rights reserved.
 </footer>
-<script>
-  // Sample logic — assumes these were set on login
-  const userName = localStorage.getItem('userName') || 'User';
-  const userEmail = localStorage.getItem('userEmail') || 'example@example.com';
 
-  document.getElementById('userName').textContent = userName;
-  document.getElementById('userEmail').textContent = userEmail;
+<script>
+  // Firebase Config
+  const firebaseConfig = {
+    apiKey: "AIzaSyCLn45hIR-S75BEPypx1BFgOV8vA5MaqU0",
+    authDomain: "hostelio-89130.firebaseapp.com",
+    projectId: "hostelio-89130",
+    storageBucket: "hostelio-89130.appspot.com",
+    messagingSenderId: "530522106867",
+    appId: "1:530522106867:web:227d355ea3fcc63317c086",
+    measurementId: "G-CYM1EHN5G5"
+  };
+  firebase.initializeApp(firebaseConfig);
+
+  // Get user info from Firebase or fallback to localStorage
+  firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+      document.getElementById("user-name").textContent = user.displayName || "Hostelio User";
+      document.getElementById("user-email").textContent = "Email: " + user.email;
+      document.getElementById("user-photo").src = user.photoURL || "default.jpg";
+      document.getElementById("verified-badge").style.display = user.emailVerified ? "inline" : "none";
+
+      // Store in localStorage for backup
+      localStorage.setItem("userName", user.displayName || "Hostelio User");
+      localStorage.setItem("userEmail", user.email);
+    } else {
+      // Fallback to localStorage if still available
+      const name = localStorage.getItem("userName");
+      const email = localStorage.getItem("userEmail");
+      if (name && email) {
+        document.getElementById("user-name").textContent = name;
+        document.getElementById("user-email").textContent = "Email: " + email;
+      } else {
+        // Redirect if not logged in
+        window.location.href = "userlogin.html";
+      }
+    }
+  });
 </script>
+
 </body>
 </html>

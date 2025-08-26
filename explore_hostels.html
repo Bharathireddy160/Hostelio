@@ -16,115 +16,108 @@
       min-height: 100vh;
     }
     header {
-      background-color: rgba(44, 62, 80, 0.8);
+      background-color: rgba(44, 62, 80, 0.9);
       color: white;
       padding: 1rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
     }
-    .logo {
-      font-size: 24px;
-      font-weight: bold;
-      color: #ffd700;
-    }
-    nav a {
-      color: white;
-      margin-left: 20px;
-      text-decoration: none;
-    }
-    nav a:hover {
-      color: #ffd700;
-    }
-
+    .logo { font-size: 24px; font-weight: bold; color: #ffd700; }
+    nav a { color: white; margin-left: 20px; text-decoration: none; }
+    nav a:hover { color: #ffd700; }
     .search-bar {
-      padding: 20px;
+      padding: 15px;
       text-align: center;
       background-color: #ecf0f1;
+      color: black;
     }
     .search-bar input {
-      width: 80%;
+      width: 70%;
       max-width: 400px;
       padding: 10px;
       font-size: 16px;
       border: 1px solid #ccc;
       border-radius: 8px;
     }
-
+    .search-bar select, .search-bar button {
+      padding: 10px;
+      margin-left: 10px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+    }
+    .search-bar button {
+      background: #007bff;
+      color: white;
+    }
+    .search-bar button:hover {
+      background: #0056b3;
+    }
+    .content {
+      display: flex;
+      flex: 1;
+    }
     .hostel-grid {
+      width: 60%;
+      padding: 20px;
       display: flex;
       flex-wrap: wrap;
       gap: 20px;
-      padding: 30px;
-      justify-content: center;
+      overflow-y: auto;
+      background: rgba(255, 255, 255, 0.9);
+      color: black;
     }
     .hostel-card {
       background: white;
       border-radius: 10px;
       overflow: hidden;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      width: 300px;
+      width: 280px;
       transition: transform 0.3s;
       color: black;
     }
-    .hostel-card:hover {
-      transform: scale(1.02);
-    }
+    .hostel-card:hover { transform: scale(1.02); }
     .hostel-card img {
       width: 100%;
-      height: 180px;
+      height: 160px;
       object-fit: cover;
     }
-    .hostel-info {
-      padding: 15px;
-    }
-    .hostel-info h3 {
-      margin: 0 0 8px;
-    }
-    .hostel-info p {
-      margin: 5px 0;
-      color: #555;
-    }
-    .hostel-info .price {
-      font-weight: bold;
-      color: #28a745;
-    }
+    .hostel-info { padding: 12px; }
+    .hostel-info h3 { margin: 0 0 8px; }
+    .hostel-info p { margin: 5px 0; color: #555; }
+    .hostel-info .price { font-weight: bold; color: #28a745; }
     .explore-btn {
       display: inline-block;
-      margin-top: 10px;
-      padding: 10px 15px;
+      margin-top: 8px;
+      padding: 8px 12px;
       background-color: #007bff;
       color: white;
-      border: none;
       border-radius: 6px;
       text-decoration: none;
     }
-    .explore-btn:hover {
-      background-color: #0056b3;
+    .explore-btn:hover { background-color: #0056b3; }
+    #map {
+      width: 40%;
+      height: 100vh;
+      min-height: 500px;
     }
-
     footer {
       background-color: #2c3e50;
       color: white;
       text-align: center;
       padding: 10px 0;
       font-size: 14px;
-      margin-top: auto;
     }
-
     @media (max-width: 768px) {
-      .search-bar input {
-        width: 95%;
-      }
-      .hostel-grid {
-        padding: 15px;
-      }
+      .content { flex-direction: column; }
+      #map { width: 100%; height: 400px; }
+      .hostel-grid { width: 100%; }
     }
   </style>
 </head>
 <body>
-
   <header>
     <div class="logo">Hostelio</div>
     <nav>
@@ -135,52 +128,63 @@
 
   <div class="search-bar">
     <input type="text" id="searchInput" placeholder="Search by location or name..." />
+    <select id="radiusSelect">
+      <option value="5">5 km</option>
+      <option value="10" selected>10 km</option>
+      <option value="20">20 km</option>
+    </select>
+    <button id="myLocationBtn">📍 Show My Location</button>
   </div>
 
-  <div class="hostel-grid" id="hostelGrid">
-    <!-- Hostel cards will be loaded here -->
+  <div class="content">
+    <div class="hostel-grid" id="hostelGrid"></div>
+    <div id="map"></div>
   </div>
 
-  <footer>
-    &copy; 2025 Hostelio. All rights reserved.
-  </footer>
+  <footer>&copy; 2025 Hostelio. All rights reserved.</footer>
 
-  <!-- Firebase SDKs -->
+  <!-- Firebase SDK -->
   <script type="module">
     import { db } from './firebase.js';
     import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+    let map, markers = [], allHostels = [], userLocation = null;
+
     const hostelGrid = document.getElementById("hostelGrid");
     const searchInput = document.getElementById("searchInput");
+    const myLocationBtn = document.getElementById("myLocationBtn");
+    const radiusSelect = document.getElementById("radiusSelect");
 
+    // Initialize Map
+    function initMap() {
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: 20.5937, lng: 78.9629 }, // India center
+        zoom: 5
+      });
+      loadHostels();
+    }
+    window.initMap = initMap;
+
+    // Load hostels from Firestore
     async function loadHostels() {
-      const querySnapshot = await getDocs(collection(db, "hostels"));
-      const hostels = [];
-
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        hostels.push({ id: doc.id, ...data });
+      const snapshot = await getDocs(collection(db, "hostels"));
+      allHostels = [];
+      snapshot.forEach(doc => {
+        allHostels.push({ id: doc.id, ...doc.data() });
       });
-
-      displayHostels(hostels);
-
-      // 🔍 Search functionality
-      searchInput.addEventListener("input", () => {
-        const value = searchInput.value.toLowerCase();
-        const filtered = hostels.filter(h =>
-          h.name.toLowerCase().includes(value) ||
-          h.location.toLowerCase().includes(value)
-        );
-        displayHostels(filtered);
-      });
+      displayHostels(allHostels);
     }
 
+    // Display hostels (cards + markers)
     function displayHostels(hostels) {
-      hostelGrid.innerHTML = ""; // clear previous
+      hostelGrid.innerHTML = "";
+      clearMarkers();
+
       if (hostels.length === 0) {
         hostelGrid.innerHTML = "<p>No hostels found.</p>";
         return;
       }
+
       hostels.forEach(h => {
         const img = h.imageUrls?.[0] || 'images/default.jpg';
         hostelGrid.innerHTML += `
@@ -194,10 +198,90 @@
             </div>
           </div>
         `;
+
+        if (h.lat && h.lng) {
+          const marker = new google.maps.Marker({
+            position: { lat: h.lat, lng: h.lng },
+            map,
+            title: h.name
+          });
+          markers.push(marker);
+        }
       });
     }
 
-    loadHostels();
+    // Clear all map markers
+    function clearMarkers() {
+      markers.forEach(m => m.setMap(null));
+      markers = [];
+    }
+
+    // Filter hostels by search input
+    searchInput.addEventListener("input", () => {
+      const value = searchInput.value.toLowerCase();
+      const filtered = allHostels.filter(h =>
+        h.name.toLowerCase().includes(value) ||
+        h.location.toLowerCase().includes(value)
+      );
+      displayHostels(filtered);
+    });
+
+    // Show My Location + filter by radius
+    myLocationBtn.addEventListener("click", () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(pos => {
+          userLocation = {
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude
+          };
+
+          map.setCenter(userLocation);
+          map.setZoom(13);
+
+          new google.maps.Marker({
+            position: userLocation,
+            map,
+            title: "You are here",
+            icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+          });
+
+          filterByRadius();
+        }, () => alert("Location access denied."));
+      } else {
+        alert("Geolocation not supported.");
+      }
+    });
+
+    // Filter hostels by selected radius
+    radiusSelect.addEventListener("change", () => {
+      if (userLocation) filterByRadius();
+    });
+
+    function filterByRadius() {
+      const radiusKm = parseInt(radiusSelect.value);
+      const filtered = allHostels.filter(h => {
+        if (!h.lat || !h.lng) return false;
+        const d = getDistance(userLocation.lat, userLocation.lng, h.lat, h.lng);
+        return d <= radiusKm;
+      });
+      displayHostels(filtered);
+    }
+
+    // Haversine formula to calculate distance
+    function getDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371; // km
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) *
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+      return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
+    }
+  </script>
+
+  <!-- Google Maps API -->
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAW-u31I8Az3sqooBXeNNQFQSrjrmPr0IU&callback=initMap">
   </script>
 </body>
 </html>
