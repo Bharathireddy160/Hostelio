@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking Confirmation - Hostelio</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url('bg.jpeg') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0,0,0,0.8);
+      padding: 15px 30px;
+    }
+    .title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #ffd700;
+    }
+    .nav-links a {
+      color: white;
+      margin-left: 20px;
+      text-decoration: none;
+      font-size: 16px;
+    }
+    .nav-links a:hover {
+      color: #ffd700;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(0,0,0,0.6);
+    }
+    .card {
+      background: rgba(0,0,0,0.8);
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 500px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+    h1 {
+      color: #ffd700;
+      margin-bottom: 20px;
+    }
+    p {
+      margin: 8px 0;
+      font-size: 16px;
+    }
+    .btn {
+      display: inline-block;
+      background: #ffd700;
+      color: black;
+      padding: 10px 20px;
+      margin: 15px 5px 0;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+    .btn:hover {
+      background: #e6c200;
+    }
+    footer {
+      text-align: center;
+      padding: 10px;
+      background: rgba(0,0,0,0.8);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="title">Hostelio</div>
+  <div class="nav-links">
+    <a href="user_home.html">Home</a>
+    <a href="my_bookings.html">My Bookings</a>
+    <a href="index.html">Logout</a>
+  </div>
+</header>
+<main>
+  <div class="card">
+    <h1>🎉 Booking Confirmed!</h1>
+    <p><strong>Hostel:</strong> <span id="hostelName"></span></p>
+    <p><strong>Name:</strong> <span id="userName"></span></p>
+    <p><strong>Email:</strong> <span id="userEmail"></span></p>
+    <p><strong>Room Type:</strong> <span id="roomType"></span></p>
+    <p><strong>Date:</strong> <span id="date"></span></p>
+
+    <a href="my_bookings.html" class="btn">Go to My Bookings</a>
+    <button id="downloadBtn" class="btn">Download Receipt</button>
+  </div>
+</main>
+<footer>
+  &copy; 2025 Hostelio. All rights reserved.
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+  // Extract booking details from URL params
+  const params = new URLSearchParams(window.location.search);
+  document.getElementById("hostelName").textContent = params.get("hostelName");
+  document.getElementById("userName").textContent = params.get("name");
+  document.getElementById("userEmail").textContent = params.get("email");
+  document.getElementById("roomType").textContent = params.get("roomType");
+  document.getElementById("date").textContent = params.get("date");
+
+  // Download PDF Receipt
+  document.getElementById("downloadBtn").addEventListener("click", () => {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    doc.setFontSize(18);
+    doc.text("Hostelio Booking Receipt", 20, 20);
+
+    doc.setFontSize(12);
+    doc.text(`Hostel: ${params.get("hostelName")}`, 20, 40);
+    doc.text(`Name: ${params.get("name")}`, 20, 50);
+    doc.text(`Email: ${params.get("email")}`, 20, 60);
+    doc.text(`Room Type: ${params.get("roomType")}`, 20, 70);
+    doc.text(`Date: ${params.get("date")}`, 20, 80);
+
+    doc.save("Hostelio_Booking_Receipt.pdf");
+  });
+</script>
+</body>
+</html>

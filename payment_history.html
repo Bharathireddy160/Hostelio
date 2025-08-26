@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment History - Hostelio</title>
+  <style>
+    body { margin:0; font-family:Arial,sans-serif; background:url('bg.jpeg') no-repeat center/cover fixed; color:white; }
+    header, footer { background:rgba(0,0,0,0.8); padding:15px 30px; display:flex; justify-content:space-between; align-items:center; }
+    .logo { width:60px; height:60px; border-radius:50%; }
+    .title { font-size:24px; font-weight:bold; color:#ffd700; }
+    .nav-links a { color:white; margin-left:20px; text-decoration:none; }
+    .nav-links a:hover { color:#ffd700; }
+    main { padding:30px; background:rgba(0,0,0,0.6); min-height:80vh; }
+    h1 { text-align:center; color:#ffd700; margin-bottom:20px; }
+    .payment-list { max-width:600px; margin:0 auto; display:flex; flex-direction:column; gap:15px; }
+    .payment-card { background:rgba(0,0,0,0.75); padding:20px; border-radius:8px; }
+    .payment-card strong { color:#ffd700; }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="ic.png" alt="Logo" class="logo">
+    <div class="title">Hostelio</div>
+    <div class="nav-links">
+      <a href="user_dashboard.html">Home</a>
+      <a href="index.html">Logout</a>
+    </div>
+  </header>
+
+  <main>
+    <h1>Payment History</h1>
+    <div class="payment-list" id="paymentList">
+      <p>Loading payments...</p>
+    </div>
+  </main>
+
+  <footer>&copy; 2025 Hostelio. All rights reserved.</footer>
+
+  <script type="module">
+    import { db } from "./js/firebase.js";
+    import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+
+    const userEmail = localStorage.getItem("userEmail");
+    const paymentList = document.getElementById("paymentList");
+
+    async function loadPayments(){
+      if(!userEmail){ paymentList.innerHTML="<p>Login required.</p>"; return; }
+      const q = query(collection(db,"payments"), where("email","==",userEmail));
+      const snap = await getDocs(q);
+      paymentList.innerHTML="";
+      if(snap.empty){ paymentList.innerHTML="<p>No payments yet.</p>"; return; }
+      snap.forEach(doc=>{
+        const p=doc.data();
+        paymentList.innerHTML += `
+          <div class="payment-card">
+            <p><strong>Hostel:</strong> ${p.hostelName}</p>
+            <p><strong>Amount:</strong> ₹${p.amount}</p>
+            <p><strong>Date:</strong> ${p.date}</p>
+          </div>
+        `;
+      });
+    }
+    loadPayments();
+  </script>
+</body>
+</html>

@@ -1,106 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>My Bookings - Hostelio</title>
-<style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: url('bg.jpeg') no-repeat center center fixed;
-    background-size: cover;
-    color: white;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-  header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(0,0,0,0.8);
-    padding: 15px 30px;
-  }
-  .title {
-    font-size: 24px;
-    font-weight: bold;
-    color: #ffd700;
-  }
-  .nav-links a {
-    color: white;
-    margin-left: 20px;
-    text-decoration: none;
-    font-size: 16px;
-  }
-  .nav-links a:hover {
-    color: #ffd700;
-  }
-  main {
-    flex: 1;
-    padding: 30px;
-    background: rgba(0,0,0,0.6);
-  }
-  h1 {
-    text-align: center;
-    color: #ffd700;
-    margin-bottom: 20px;
-  }
-  .booking-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    max-width: 700px;
-    margin: 0 auto;
-  }
-  .booking-card {
-    background: rgba(0,0,0,0.7);
-    padding: 20px;
-    border-radius: 8px;
-    font-size: 16px;
-  }
-  footer {
-    text-align: center;
-    padding: 10px;
-    background: rgba(0,0,0,0.8);
-    font-size: 14px;
-  }
-
-  .logo {
-      width: 70px; height: 70px;
-      border-radius: 50%; object-fit: cover;}
-
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Bookings - Hostelio</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url('bg.jpeg') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0,0,0,0.85);
+      padding: 15px 30px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    }
+    .logo { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; }
+    .title { font-size: 26px; font-weight: bold; color: #ffd700; letter-spacing: 1px; }
+    .nav-links a { color: white; margin-left: 20px; text-decoration: none; font-size: 16px; }
+    .nav-links a:hover { color: #ffd700; }
+    main { flex: 1; padding: 40px 20px; background: rgba(0,0,0,0.6); }
+    h1 { text-align: center; color: #ffd700; margin-bottom: 25px; font-size: 30px; }
+    .list { display: flex; flex-direction: column; gap: 18px; max-width: 750px; margin: 0 auto; }
+    .card {
+      background: rgba(0,0,0,0.8);
+      padding: 20px 25px;
+      border-radius: 10px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.6);
+    }
+    .card strong { color: #ffd700; }
+    footer { text-align: center; padding: 12px; background: rgba(0,0,0,0.85); }
+  </style>
 </head>
 <body>
-<header>
-
-    <div class="left-section">
+  <header>
     <img src="ic.png" alt="Logo" class="logo">
-  </div>
-  <div class="title">Hostelio</div>
-  <div class="nav-links">
-    <a href="user_home.html">Home</a>
-    <a href="index.html">Logout</a>
-  </div>
-</header>
-<main>
-  <h1>My Bookings</h1>
-  <div class="booking-list">
-    <div class="booking-card">
-      <strong>Hostel:</strong> Sunrise Hostel, Mumbai<br>
-      <strong>Check-in:</strong> 2025-07-21<br>
-      <strong>Nights:</strong> 3
+    <div class="title">Hostelio</div>
+    <div class="nav-links">
+      <a href="available_hostels.html">Hostels</a>
+      <a href="payment_history.html">Payments</a>
+      <a href="account_settings.html">Account</a>
+      <a href="index.html">Logout</a>
     </div>
-    <div class="booking-card">
-      <strong>Hostel:</strong> City View Hostel, Delhi<br>
-      <strong>Check-in:</strong> 2025-08-10<br>
-      <strong>Nights:</strong> 2
+  </header>
+
+  <main>
+    <h1>My Bookings</h1>
+    <div class="list" id="bookingsList">
+      <p>Loading your bookings...</p>
     </div>
-  </div>
-</main>
-<footer>
-  &copy; 2025 Hostelio. All rights reserved.
-</footer>
+  </main>
+
+  <footer>&copy; 2025 Hostelio. All rights reserved.</footer>
+
+  <script type="module">
+    import { db } from "./js/firebase.js";
+    import { collection, query, where, getDocs } 
+      from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+
+    const userEmail = localStorage.getItem("userEmail");
+    const bookingsList = document.getElementById("bookingsList");
+
+    async function loadBookings() {
+      if (!userEmail) { bookingsList.innerHTML = "<p>Please log in.</p>"; return; }
+      const q = query(collection(db, "bookings"), where("email", "==", userEmail));
+      const snap = await getDocs(q);
+      bookingsList.innerHTML = snap.empty ? "<p>No bookings yet.</p>" : "";
+      snap.forEach(doc => {
+        const b = doc.data();
+        bookingsList.innerHTML += `
+          <div class="card">
+            <p><strong>Hostel:</strong> ${b.hostelName}</p>
+            <p><strong>Room:</strong> ${b.roomType}</p>
+            <p><strong>Date:</strong> ${b.date}</p>
+          </div>`;
+      });
+    }
+    loadBookings();
+  </script>
 </body>
 </html>

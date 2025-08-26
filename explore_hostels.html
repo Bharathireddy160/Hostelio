@@ -110,6 +110,7 @@
       text-align: center;
       padding: 10px 0;
       font-size: 14px;
+      margin-top: auto;
     }
 
     @media (max-width: 768px) {
@@ -128,8 +129,7 @@
     <div class="logo">Hostelio</div>
     <nav>
       <a href="index.html">Home</a>
-      <a href="explore.html">Explore</a>
-      <a href="dashboard.html">Dashboard</a>
+      <a href="user_dashboard.html">Dashboard</a>
     </nav>
   </header>
 
@@ -141,10 +141,14 @@
     <!-- Hostel cards will be loaded here -->
   </div>
 
+  <footer>
+    &copy; 2025 Hostelio. All rights reserved.
+  </footer>
+
   <!-- Firebase SDKs -->
   <script type="module">
-    import { db } from 'firebase.js';
-    import { collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+    import { db } from './firebase.js';
+    import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const hostelGrid = document.getElementById("hostelGrid");
     const searchInput = document.getElementById("searchInput");
@@ -160,7 +164,7 @@
 
       displayHostels(hostels);
 
-      // Search functionality
+      // 🔍 Search functionality
       searchInput.addEventListener("input", () => {
         const value = searchInput.value.toLowerCase();
         const filtered = hostels.filter(h =>
@@ -173,6 +177,10 @@
 
     function displayHostels(hostels) {
       hostelGrid.innerHTML = ""; // clear previous
+      if (hostels.length === 0) {
+        hostelGrid.innerHTML = "<p>No hostels found.</p>";
+        return;
+      }
       hostels.forEach(h => {
         const img = h.imageUrls?.[0] || 'images/default.jpg';
         hostelGrid.innerHTML += `
@@ -182,7 +190,7 @@
               <h3>${h.name}</h3>
               <p>${h.location}</p>
               <p class="price">₹${h.price}/month</p>
-              <a class="explore-btn" href="hostel-details.html?id=${h.id}">View Details</a>
+              <a class="explore-btn" href="hostel_details.html?id=${h.id}">View Details</a>
             </div>
           </div>
         `;
@@ -191,9 +199,5 @@
 
     loadHostels();
   </script>
-  <div><footer>
-    &copy; @2025 Hostelio. All rights reserved.
-  </footer></div>
-  
 </body>
 </html>
