@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Manage Hostels - Hostelio Admin</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: url('bg.jpeg') no-repeat center center fixed; background-size: cover; color: white; min-height: 100vh; display: flex; flex-direction: column;}
+    header { padding: 15px 30px; background: rgba(0,0,0,0.8); display: flex; justify-content: space-between; align-items: center;}
+    .title { font-size: 24px; font-weight: bold; color: #ffd700; }
+    nav a { color: white; text-decoration: none; margin-left: 20px; font-weight: bold;}
+    nav a:hover { color: #ffd700; }
+    main { flex: 1; max-width: 1000px; margin: 30px auto; padding: 20px; background: rgba(0,0,0,0.6); border-radius: 10px; box-sizing: border-box; }
+    h1 { color: #ffd700; margin-bottom: 20px; text-align: center; }
+    table { width: 100%; border-collapse: collapse; background: rgba(255, 255, 255, 0.1);}
+    th, td { padding: 12px; border-bottom: 1px solid #fff; text-align: left;}
+    th { background: rgba(255,255,255,0.2);}
+    button { background: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 14px;}
+    button:hover { background: #c82333; }
+    footer { text-align: center; padding: 10px; background: rgba(0,0,0,0.7); font-size: 14px;}
+  </style>
+</head>
+<body>
+<header>
+  <div class="title">Hostelio Admin - Manage Hostels</div>
+  <nav>
+    <a href="admin_dashboard.html">Dashboard</a>
+    <a href="add_hostel.html">Add Hostel</a>
+    <a href="manage_users.html">Manage Users</a>
+    <a href="logout.html">Logout</a>
+  </nav>
+</header>
+<main>
+  <h1>Hostel Listings</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Location</th>
+        <th>Rooms</th>
+        <th>Price (per month)</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="hostel-list"></tbody>
+  </table>
+</main>
+<footer>
+  &copy; 2025 Hostelio. All rights reserved.
+</footer>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+  import { getFirestore, collection, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCLn45hIR-S75BEPypx1BFgOV8vA5MaqU0",
+    authDomain: "hostelio-89130.firebaseapp.com",
+    projectId: "hostelio-89130",
+    storageBucket: "hostelio-89130.appspot.com",
+    messagingSenderId: "530522106867",
+    appId: "1:530522106867:web:227d355ea3fcc63317c086",
+    measurementId: "G-CYM1EHN5G5"
+  };
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const hostelList = document.getElementById('hostel-list');
+  
+  async function loadHostels(){
+    hostelList.innerHTML = '<tr><td colspan="5">Loading...</td></tr>';
+    const querySnapshot = await getDocs(collection(db, "hostels"));
+    if(querySnapshot.empty){
+      hostelList.innerHTML = '<tr><td colspan="5">No hostels found.</td></tr>';
+      return;
+    }
+    hostelList.innerHTML = '';
+    querySnapshot.forEach(docSnap => {
+      const data = docSnap.data();
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${data.name}</td>
+        <td>${data.location}</td>
+        <td>${data.rooms}</td>
+        <td>${data.price}</td>
+        <td><button data-id="${docSnap.id}">Delete</button></td>
+      `;
+      hostelList.appendChild(tr);
+    });
+    document.querySelectorAll('button[data-id]').forEach(button => {
+      button.onclick = async () => {
+        const confirmed = confirm("Are you sure you want to delete this hostel?");
+        if(!confirmed) return;
+        const id = button.getAttribute('data-id');
+        try {
+          await deleteDoc(doc(db, "hostels", id));
+          alert("Hostel deleted successfully.");
+          loadHostels();
+        } catch(error){
+          console.error("Failed to delete hostel:", error);
+          alert("Failed to delete hostel.");
+        }
+      }
+    });
+  }
+  loadHostels();
+</script>
+</body>
+</html>

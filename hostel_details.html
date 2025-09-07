@@ -6,197 +6,163 @@
   <title>Hostel Details | Hostelio</title>
   <style>
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
+      margin: 0; font-family: 'Segoe UI', sans-serif;
       background: url('bg.jpeg') no-repeat center center fixed;
       background-size: cover;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
+      color: #333;
     }
     header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 30px;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0,0,0,0.85); color: white;
+      padding: 15px 30px; display: flex; align-items: center; justify-content: space-between;
     }
-    .title {
-      font-size: 24px;
-      font-weight: bold;
-      color: #ffd700;
+    .logo { width: 50px; height: 50px; border-radius: 50%; }
+    .title { font-size: 22px; font-weight: bold; color: #ffd700; }
+    .nav a {
+      color: white; margin-left: 20px; text-decoration: none;
     }
-    .nav-links a {
-      color: white;
-      text-decoration: none;
-      margin-left: 20px;
+    .nav a:hover { color: #ffd700; }
+    main { 
+      max-width: 900px; margin: 30px auto; 
+      background: rgba(255,255,255,0.95); padding: 20px; 
+      border-radius: 10px; box-shadow: 0 0 12px rgba(0,0,0,0.4);
     }
-    main {
-      flex: 1;
-      background: rgba(0, 0, 0, 0.7);
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.6);
-    }
-    h1 {
-      text-align: center;
-      color: #ffd700;
-    }
-    .details img {
-      width: 100%;
-      max-height: 300px;
-      object-fit: cover;
-      border-radius: 10px;
-      margin-bottom: 20px;
-    }
-    .details p {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
+    h1 { color: #333; margin-bottom: 10px; }
+    .details p { margin: 8px 0; }
     form {
-      margin-top: 30px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+      background: #f9f9f9; padding: 20px; border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
     }
+    label { display: block; margin-top: 10px; }
     input, select {
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 6px;
-      border: none;
-      outline: none;
+      width: 100%; padding: 8px; margin-top: 5px;
+      border: 1px solid #ccc; border-radius: 5px;
     }
     button {
-      background-color: #28a745;
-      color: white;
-      padding: 12px;
-      font-size: 18px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
+      margin-top: 15px; padding: 10px 18px; background: #ffd700; border: none;
+      border-radius: 6px; cursor: pointer; font-weight: bold;
     }
-    button:hover {
-      background-color: #218838;
-    }
-    #successMessage {
-      color: lightgreen;
-      font-weight: bold;
-      text-align: center;
-    }
-    footer {
-      text-align: center;
-      padding: 10px;
-      background: rgba(0, 0, 0, 0.8);
-      font-size: 14px;
-    }
+    button:hover { background: #e6c200; }
   </style>
 </head>
 <body>
-  <header>
-    <div class="title">Hostelio</div>
-    <div class="nav-links">
-      <a href="explore_hostels.html">Back to Explore</a>
-      <a href="index.html">Logout</a>
-    </div>
-  </header>
 
-  <main>
-    <h1>Hostel Details</h1>
-    <div class="details" id="hostelDetails">
-      <!-- Hostel info will load here -->
-    </div>
+<header>
+  <img src="ic.png" alt="Logo" class="logo">
+  <div class="title">Hostelio</div>
+  <div class="nav">
+    <a href="index.html">Home</a>
+    <a href="admin_dashboard.html">Admin</a>
+    <a href="view_bookings.html">Bookings</a>
+  </div>
+</header>
 
-    <form id="bookingForm">
-      <h2>Book Now</h2>
-      <input type="text" id="name" placeholder="Your Name" required />
-      <input type="email" id="email" placeholder="Your Email" required />
-      <input type="date" id="bookingDate" required />
-      <select id="roomType" required>
-        <option value="">Select Room Type</option>
-        <option value="Single">Single</option>
-        <option value="Double">Double</option>
-        <option value="Dormitory">Dormitory</option>
-      </select>
-      <button type="submit">Confirm Booking</button>
-      <div id="successMessage"></div>
-    </form>
-  </main>
+<main>
+  <h1 id="hostelName">Loading...</h1>
+  <div class="details">
+    <p><strong>Location:</strong> <span id="hostelLocation">Loading...</span></p>
+    <p><strong>Description:</strong> <span id="hostelDescription">Loading...</span></p>
+    <p><strong>Price:</strong> ₹<span id="hostelPrice">Loading...</span> / month</p>
+    <p><strong>Facilities:</strong> <span id="hostelFacilities">Loading...</span></p>
+    <p><strong>Contact:</strong> <span id="hostelContact">Loading...</span></p>
+  </div>
 
-  <footer>
-    &copy; 2025 Hostelio. All rights reserved.
-  </footer>
+  <h2>Book Now</h2>
+  <form id="bookingForm">
+    <label for="name">Full Name</label>
+    <input type="text" id="name" required />
 
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { db } from 'firebase.js';
-    import {
-      doc, getDoc, collection, addDoc, serverTimestamp
-    } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+    <label for="email">Email</label>
+    <input type="email" id="email" required />
 
-    // Get hostel ID from URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const hostelId = urlParams.get('id');
+    <label for="roomType">Room Type</label>
+    <select id="roomType" required>
+      <option value="">-- Select Room --</option>
+      <option value="Single">Single</option>
+      <option value="Double">Double</option>
+      <option value="Shared">Shared</option>
+    </select>
 
-    const hostelDetails = document.getElementById('hostelDetails');
-    const successMessage = document.getElementById('successMessage');
+    <button type="submit">Book Now</button>
+  </form>
+</main>
 
-    async function loadHostel() {
-      if (!hostelId) {
-        hostelDetails.innerHTML = "<p>No hostel selected.</p>";
-        return;
-      }
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, doc, getDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-      const docRef = doc(db, "hostels", hostelId);
-      const docSnap = await getDoc(docRef);
+  const firebaseConfig = {
+    apiKey: "AIzaSyCLn45hIR-S75BEPypx1BFgOV8vA5MaqU0",
+    authDomain: "hostelio-89130.firebaseapp.com",
+    projectId: "hostelio-89130",
+    storageBucket: "hostelio-89130.firebasestorage.app",
+    messagingSenderId: "530522106867",
+    appId: "1:530522106867:web:227d355ea3fcc63317c086"
+  };
 
-      if (docSnap.exists()) {
-        const h = docSnap.data();
-        const img = h.imageUrls?.[0] || 'images/default.jpg';
-        hostelDetails.innerHTML = `
-          <img src="${img}" alt="${h.name}">
-          <p><strong>Name:</strong> ${h.name}</p>
-          <p><strong>Location:</strong> ${h.location}</p>
-          <p><strong>Price per Month:</strong> ₹${h.price}</p>
-          <p><strong>Description:</strong> ${h.description}</p>
-        `;
-      } else {
-        hostelDetails.innerHTML = "<p>Hostel not found.</p>";
-      }
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  let hostelName = "";
+
+  // Load hostel details from Firestore
+  async function loadHostelDetails() {
+    const params = new URLSearchParams(window.location.search);
+    const hostelId = params.get("id");
+
+    if (!hostelId) {
+      alert("No hostel selected!");
+      return;
     }
 
-    loadHostel();
+    const hostelRef = doc(db, "hostels", hostelId);
+    const hostelSnap = await getDoc(hostelRef);
 
-    // Handle Booking
-    document.getElementById("bookingForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
+    if (hostelSnap.exists()) {
+      const data = hostelSnap.data();
+      hostelName = data.name;
+      document.getElementById("hostelName").textContent = data.name;
+      document.getElementById("hostelLocation").textContent = data.location;
+      document.getElementById("hostelDescription").textContent = data.description;
+      document.getElementById("hostelPrice").textContent = data.price;
+      document.getElementById("hostelFacilities").textContent = data.facilities || "Not specified";
+      document.getElementById("hostelContact").textContent = data.contact || "Not available";
+    } else {
+      alert("Hostel not found!");
+    }
+  }
 
-      const name = document.getElementById("name").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const bookingDate = document.getElementById("bookingDate").value;
-      const roomType = document.getElementById("roomType").value;
+  loadHostelDetails();
 
-      if (!name || !email || !bookingDate || !roomType) return;
+  // Booking form submission
+  document.getElementById("bookingForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-      try {
-        await addDoc(collection(db, "bookings"), {
-          hostelId,
-          name,
-          email,
-          bookingDate,
-          roomType,
-          createdAt: serverTimestamp()
-        });
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const roomType = document.getElementById("roomType").value;
 
-        successMessage.textContent = "✅ Booking successful!";
-        document.getElementById("bookingForm").reset();
-      } catch (err) {
-        successMessage.textContent = "❌ Error booking hostel.";
-        console.error("Booking error:", err);
-      }
-    });
-  </script>
+    const params = new URLSearchParams(window.location.search);
+    const hostelId = params.get("id");
+
+    try {
+      await addDoc(collection(db, "pendingRegistrations"), {
+        name,
+        email,
+        roomType,
+        hostelId,
+        hostel: hostelName,
+        date: new Date().toISOString()
+      });
+
+      alert("✅ Booking request submitted! Please wait for admin approval.");
+      document.getElementById("bookingForm").reset();
+    } catch (err) {
+      console.error("Error saving booking:", err);
+      alert("❌ Failed to submit booking. Try again.");
+    }
+  });
+</script>
+
 </body>
 </html>

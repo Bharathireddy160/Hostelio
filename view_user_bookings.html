@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>User Bookings - Hostelio Admin</title>
+<style>
+  body {
+    margin: 0; font-family: Arial, sans-serif;
+    background: url('bg.jpeg') no-repeat center center fixed;
+    background-size: cover; color: white;
+    display: flex; flex-direction: column; min-height: 100vh;
+  }
+  header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 15px 30px; background: rgba(0,0,0,0.8);
+  }
+  .title { font-size: 24px; font-weight: bold; color: #ffd700; }
+  .nav-links a {
+    color: white; text-decoration: none; margin-left: 20px; font-size: 16px;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: #ffd700; }
+  main {
+    flex: 1; background: rgba(0,0,0,0.7); padding: 40px;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  h1 { margin-bottom: 20px; font-size: 32px; }
+  table {
+    width: 95%; max-width: 1000px; border-collapse: collapse; margin-top: 20px;
+    background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden;
+  }
+  th, td {
+    padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.2);
+  }
+  th { background-color: rgba(0,0,0,0.5); color: #ffd700; }
+  tr:hover { background-color: rgba(255,255,255,0.1); }
+  .download-btn {
+    background: #28a745; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer;
+    transition: 0.3s;
+  }
+  .download-btn:hover { background: #218838; }
+</style>
+</head>
+<body>
+
+<header>
+  <div><img src="logo.png" alt="Hostelio Logo" style="height:50px;"></div>
+  <div class="title">Hostelio Admin</div>
+  <div class="nav-links">
+    <a href="admin_home.html">Home</a>
+    <a href="view_users.html">View Users</a>
+    <a href="index.html" onclick="logout()">Logout</a>
+  </div>
+</header>
+
+<main>
+  <h1>User Bookings</h1>
+  <table id="bookingsTable">
+    <thead>
+      <tr>
+        <th>Hostel</th>
+        <th>Room Type</th>
+        <th>Booking Date</th>
+        <th>Requested On</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Bookings will load dynamically -->
+    </tbody>
+  </table>
+</main>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, collection, getDocs, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "YOUR_REAL_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const bookingsTable = document.querySelector("#bookingsTable tbody");
+  const params = new URLSearchParams(window.location.search);
+  const userId = params.get("userId");
+
+  async function loadBookings() {
+    if (!userId) return alert("No user selected!");
+
+    try {
+      const q = query(
+        collection(db, "pendingRegistrations"),
+        where("userId", "==", userId),
+        orderBy("date", "desc")
+      );
+      const snapshot = await getDocs(q);
+      bookingsTable.innerHTML = "";
+
+      snapshot.forEach(docSnap => {
+        const b = docSnap.data();
+        const bookingDate = new Date(b.bookingDate).toLocaleDateString();
+        const requestedOn = b.date ? new Date(b.date).toLocaleDateString() : "-";
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${b.hostel || "-"}</td>
+          <td>${b.roomType || "-"}</td>
+          <td>${bookingDate || "-"}</td>
+          <td>${requestedOn}</td>
+          <td><button class="download-btn">Download Receipt</button></td>
+        `;
+        bookingsTable.appendChild(row);
+
+        // Generate PDF on button click
+        row.querySelector(".download-btn").addEventListener("click", () => {
+          generateReceiptPDF(b);
+        });
+      });
+
+    } catch (err) {
+      console.error("Error loading bookings:", err);
+    }
+  }
+
+  function generateReceiptPDF(booking) {
+    const receipt = `
+      Hostelio Booking Receipt
+      -----------------------
+      Name: ${booking.name}
+      Email: ${booking.email}
+      Hostel: ${booking.hostel}
+      Room Type: ${booking.roomType}
+      Booking Date: ${booking.bookingDate}
+      Requested On: ${booking.date ? new Date(booking.date).toLocaleDateString() : "-"}
+    `;
+    const blob = new Blob([receipt], { type: "text/plain;charset=utf-8" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `${booking.name}_${booking.hostel}_Receipt.txt`;
+    link.click();
+  }
+
+  function logout() {
+    localStorage.removeItem("username");
+  }
+
+  loadBookings();
+</script>
+
+</body>
+</html>

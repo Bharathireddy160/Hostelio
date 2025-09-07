@@ -1,54 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Manage Hostels - Hostelio</title>
-<style>
-  body { margin:0; font-family:Arial,sans-serif; background:url('bg.jpeg') no-repeat center center fixed; background-size:cover; color:white; }
-  header { display:flex; justify-content:space-between; align-items:center; padding:15px 30px; background:rgba(0,0,0,0.8); }
-  .title { font-size:24px; font-weight:bold; color:#ffd700; }
-  .nav-links a { color:white; text-decoration:none; margin-left:20px; }
-  .nav-links a:hover { color:#ffd700; }
-  main { max-width:800px; margin:30px auto; background:rgba(0,0,0,0.6); padding:20px; border-radius:10px; }
-  h1 { text-align:center; color:#ffd700; margin-bottom:20px; }
-  table { width:100%; border-collapse:collapse; color:white; }
-  th,td { padding:10px; border:1px solid #ddd; text-align:center; }
-  button { background:#28a745; color:white; border:none; padding:6px 10px; border-radius:6px; cursor:pointer; font-size:14px; margin:0 2px; }
-  button.delete { background:#dc3545; }
-  button:hover { opacity:0.9; }
-  @media(max-width:600px){ .title{font-size:20px;} table,th,td{font-size:13px;} }
-  .logo {
-    width: 70px; height: 70px;
-    border-radius: 50%; object-fit: cover;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>View Hostels - Hostelio Admin</title>
+  <style>
+    body {
+      margin: 0; font-family: Arial, sans-serif;
+      background: url('bg.jpeg') no-repeat center center fixed;
+      background-size: cover; color: white;
+      display: flex; flex-direction: column; min-height: 100vh;
+    }
+    header {
+      background: rgba(0,0,0,0.8); padding: 15px 30px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .title { font-size: 24px; font-weight: bold; color: #ffd700; }
+    .nav-links a { color: white; margin-left: 20px; text-decoration: none; }
+    .nav-links a:hover { color: #ffd700; }
+    main {
+      flex: 1; background: rgba(0,0,0,0.6);
+      max-width: 1000px; margin: 30px auto; padding: 20px; border-radius: 10px;
+    }
+    h1 { text-align: center; color: #ffd700; margin-bottom: 20px; }
+    .grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: rgba(255,255,255,0.1);
+      padding: 15px; border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+    }
+    .card h2 { margin: 0 0 10px; color: #ffd700; }
+    .card p { margin: 5px 0; }
+    .images {
+      display: flex; gap: 5px; overflow-x: auto; margin-top: 10px;
+    }
+    .images img {
+      width: 80px; height: 80px; object-fit: cover; border-radius: 6px;
+    }
+    footer {
+      text-align: center; padding: 10px;
+      background: rgba(0,0,0,0.8); font-size: 14px;
+    }
+  </style>
 </head>
 <body>
-
 <header>
-  <div class="right-section">
-    <img src="ic.png" alt="Logo" class="logo">
-  </div>
   <div class="title">Hostelio - Admin</div>
   <div class="nav-links">
     <a href="admin_dashboard.html">Dashboard</a>
-    <a href="index.html">Logout</a>
+    <a href="add_hostel.html">Add Hostel</a>
+    <a href="logout.html">Logout</a>
   </div>
 </header>
 
 <main>
-  <h1>Manage Hostels</h1>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th><th>Location</th><th>Price</th><th>Image</th><th>Actions</th>
-      </tr>
-    </thead>
-    <tbody id="hostels-table"></tbody>
-  </table>
+  <h1>All Hostels</h1>
+  <div class="grid" id="hostelsGrid"></div>
+  <p id="statusMsg"></p>
 </main>
 
-<script type="module" src="view_hostels.js"></script>
+<footer>
+  &copy; 2025 Hostelio. All rights reserved.
+</footer>
+
+<!-- ✅ Firebase SDK v8 -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+<script>
+  // ✅ Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyCLn45hIR-S75BEPypx1BFgOV8vA5MaqU0",
+    authDomain: "hostelio-89130.firebaseapp.com",
+    projectId: "hostelio-89130",
+    storageBucket: "hostelio-89130.appspot.com",
+    messagingSenderId: "530522106867",
+    appId: "1:530522106867:web:227d355ea3fcc63317c086",
+    measurementId: "G-CYM1EHN5G5"
+  };
+  firebase.initializeApp(firebaseConfig);
+
+  const db = firebase.firestore();
+  const hostelsGrid = document.getElementById("hostelsGrid");
+  const statusMsg = document.getElementById("statusMsg");
+
+  async function loadHostels() {
+    statusMsg.innerText = "⏳ Loading hostels...";
+    try {
+      const snapshot = await db.collection("hostels").orderBy("createdAt", "desc").get();
+      if (snapshot.empty) {
+        statusMsg.innerText = "⚠️ No hostels found.";
+        return;
+      }
+      statusMsg.innerText = "";
+      snapshot.forEach(doc => {
+        const hostel = doc.data();
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <h2>${hostel.name}</h2>
+          <p><b>Location:</b> ${hostel.location}</p>
+          <p><b>Rooms:</b> ${hostel.rooms}</p>
+          <p><b>Price:</b> ₹${hostel.price}/month</p>
+          <p>${hostel.description}</p>
+          <div class="images">
+            ${(hostel.images || []).map(url => `<img src="${url}">`).join("")}
+          </div>
+        `;
+        hostelsGrid.appendChild(card);
+      });
+    } catch (err) {
+      console.error("❌ Error loading hostels:", err);
+      statusMsg.innerText = "❌ " + err.message;
+    }
+  }
+
+  loadHostels();
+</script>
 </body>
 </html>
+        

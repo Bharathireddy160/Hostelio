@@ -36,20 +36,19 @@
   th { background-color: rgba(0,0,0,0.5); color: #ffd700; }
   tr:hover { background-color: rgba(255,255,255,0.1); }
   .delete-btn {
-    background: #dc3545;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
+    background: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer;
     transition: 0.3s;
   }
-  .delete-btn:hover {
-    background: #c82333;
+  .delete-btn:hover { background: #c82333; }
+  .bookings-btn {
+    background: #28a745; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer;
+    transition: 0.3s;
   }
+  .bookings-btn:hover { background: #218838; }
 </style>
 </head>
 <body>
+
 <header>
   <div><img src="logo.png" alt="Hostelio Logo" style="height: 50px; width: auto;"></div>
   <div class="title">Hostelio</div>
@@ -70,7 +69,7 @@
         <th>Email</th>
         <th>Location</th>
         <th>Registration Date</th>
-        <th>Action</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -80,82 +79,79 @@
 </main>
 
 <script type="module">
-  // Firebase imports
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
-  import { getFirestore, collection, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  // Firebase configuration
   const firebaseConfig = {
-    apiKey: "AIzaSyCLn45hIR-S75BEPypx1BFgOV8vA5MaqU0",
-    authDomain: "hostelio-89130.firebaseapp.com",
-    databaseURL: "https://hostelio-89130-default-rtdb.firebaseio.com",
-    projectId: "hostelio-89130",
-    storageBucket: "hostelio-89130.firebasestorage.app",
-    messagingSenderId: "530522106867",
-    appId: "1:530522106867:web:227d355ea3fcc63317c086",
-    measurementId: "G-CYM1EHN5G5"
+    apiKey: "YOUR_REAL_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
   };
 
-  // Initialize Firebase
   const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
   const db = getFirestore(app);
 
   const usersTable = document.querySelector("#usersTable tbody");
 
   async function loadUsers() {
     try {
-      const querySnapshot = await getDocs(collection(db, "users"));
-      usersTable.innerHTML = ""; // clear table
+      const q = query(collection(db, "users"), orderBy("createdAt", "desc"));
+      const querySnapshot = await getDocs(q);
+      usersTable.innerHTML = "";
 
       querySnapshot.forEach((docSnap) => {
         const user = docSnap.data();
-        let createdDate = "N/A";
-        if (user.createdAt) {
-          const seconds = user.createdAt.seconds || user.createdAt._seconds;
-          createdDate = new Date(seconds * 1000).toLocaleDateString();
-        }
+        const date = user.createdAt ? new Date(user.createdAt.seconds * 1000).toLocaleDateString() : "N/A";
 
         const row = document.createElement("tr");
         row.innerHTML = `
           <td>${user.name || "N/A"}</td>
           <td>${user.email || "N/A"}</td>
           <td>${user.location || "Not Provided"}</td>
-          <td>${createdDate}</td>
-          <td><button class="delete-btn" data-id="${docSnap.id}">Delete</button></td>
+          <td>${date}</td>
+          <td>
+            <button class="bookings-btn" data-id="${docSnap.id}">View Bookings</button>
+            <button class="delete-btn" data-id="${docSnap.id}">Delete</button>
+          </td>
         `;
         usersTable.appendChild(row);
       });
 
-      // Attach delete button listeners dynamically
+      // Attach event listeners for delete buttons
       document.querySelectorAll(".delete-btn").forEach((btn) => {
         btn.addEventListener("click", async () => {
           const userId = btn.getAttribute("data-id");
           if (confirm("Are you sure you want to delete this user?")) {
-            try {
-              await deleteDoc(doc(db, "users", userId));
-              alert("User deleted successfully!");
-              loadUsers(); // refresh table
-            } catch (err) {
-              console.error("Error deleting user:", err);
-              alert("Failed to delete user.");
-            }
+            await deleteDoc(doc(db, "users", userId));
+            alert("User deleted successfully!");
+            loadUsers();
           }
         });
       });
+
+      // Attach event listeners for bookings buttons
+      document.querySelectorAll(".bookings-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const userId = btn.getAttribute("data-id");
+          // Redirect to a bookings page passing userId
+          window.location.href = `view_user_bookings.html?userId=${userId}`;
+        });
+      });
+
     } catch (err) {
       console.error("Error loading users:", err);
-      alert("Failed to load users.");
     }
   }
 
-  function logout() {
-    localStorage.removeItem("username");
-  }
-
-  // Load users on page load
   loadUsers();
+
+  function logout() {
+    localStorage.removeItem('username');
+  }
 </script>
+
 </body>
 </html>

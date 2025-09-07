@@ -2,108 +2,98 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>View Bookings - Hostelio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>View Bookings - Hostelio Admin</title>
   <style>
-    body {
-      margin: 0; font-family: Arial, sans-serif;
-      background: url('bg.jpeg') no-repeat center center fixed;
-      background-size: cover; color: white;
-      display: flex; flex-direction: column; min-height: 100vh;
-    }
-    header {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 15px 30px; background: rgba(0,0,0,0.8);
-    }
-    .title { font-size: 24px; font-weight: bold; color: #ffd700; }
-    .nav-links a {
-      color: white; text-decoration: none; margin-left: 20px; font-size: 16px;
-      transition: color 0.3s;
-    }
-    .nav-links a:hover { color: #ffd700; }
-    main {
-      flex: 1; background: rgba(0,0,0,0.7); padding: 40px;
-      display: flex; flex-direction: column; align-items: center;
-    }
-    h1 { margin-bottom: 20px; font-size: 36px; }
-    table {
-      width: 90%; max-width: 900px; border-collapse: collapse; margin-top: 20px;
-      background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden;
-    }
-    th, td {
-      padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.2);
-    }
-    th {
-      background-color: rgba(0,0,0,0.5); color: #ffd700;
-    }
-    tr:hover { background-color: rgba(255,255,255,0.1); }
-
-     .logo {
-      width: 70px; height: 70px;
-      border-radius: 50%; object-fit: cover;}
-       @media(max-width:600px){ .title{font-size:20px;} table,th,td{font-size:14px;} }
-
-
+    body { margin:0; font-family:Arial,sans-serif; background:url('bg.jpeg') no-repeat center center fixed; background-size:cover; color:white; }
+    header { background:rgba(0,0,0,0.8); padding:15px 30px; display:flex; justify-content:space-between; align-items:center; }
+    .logo { width:60px; height:60px; border-radius:50%; object-fit:cover; }
+    .title { font-size:24px; font-weight:bold; color:#ffd700; }
+    .nav-links a { color:white; margin-left:20px; text-decoration:none; }
+    .nav-links a:hover { color:#ffd700; }
+    main { padding:30px; background:rgba(0,0,0,0.6); }
+    h1 { text-align:center; color:#ffd700; }
+    table { width:100%; border-collapse:collapse; margin-top:20px; background:white; color:black; border-radius:10px; overflow:hidden; }
+    th, td { padding:12px 15px; text-align:left; }
+    th { background:#343a40; color:white; }
+    tr:nth-child(even) { background:#f2f2f2; }
+    footer { text-align:center; background:rgba(0,0,0,0.8); padding:10px; color:white; }
   </style>
 </head>
 <body>
-<header>
- <div class ="left-section">
-    <img src="ic.png" alt="Logo" class="logo">
-  </div>
-<div class="title">Hostelio </div>
-  <div class="nav-links">
-    <a href="admin_home.html">Home</a>
-    <a href="add_hostels.html">Add Hostel</a>
-    <a href="view_users.html">View Users</a>
-    <a href="view_bookings.html">View Bookings</a>
-    <a href="index.html" onclick="logout()">Logout</a>
-  </div>
-</header>
-<main>
-  <h1>User Bookings</h1>
-  <table>
-    <thead>
-      <tr>
-        <th>User Name</th>
-        <th>Hostel</th>
-        <th>Check-in Date</th>
-        <th>Nights</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Amit Kumar</td>
-        <td>Sunrise Hostel</td>
-        <td>2025-07-25</td>
-        <td>3</td>
-        <td>Confirmed</td>
-      </tr>
-      <tr>
-        <td>Priya Sharma</td>
-        <td>Beach View Hostel</td>
-        <td>2025-07-28</td>
-        <td>2</td>
-        <td>Pending</td>
-      </tr>
-      <tr>
-        <td>Rahul Singh</td>
-        <td>City Center Hostel</td>
-        <td>2025-08-01</td>
-        <td>5</td>
-        <td>Confirmed</td>
-      </tr>
-      <!-- Add more bookings as needed -->
+  <header>
+    <img src="ic.png" alt="Logo" class="logo" />
+    <div class="title">Hostelio Admin</div>
+    <div class="nav-links">
+      <a href="admin_dashboard.html">Dashboard</a>
+      <a href="admin_upload_hostel.html">Add Hostel</a>
+      <a href="index.html">Logout</a>
+    </div>
+  </header>
 
-    </tbody>
-  </table>
-</main>
-<script type="module" src="view_bookings.js"></script>
-<script>
-  function logout() {
-    localStorage.removeItem('username');
-  }
-</script>
+  <main>
+    <h1>All Bookings</h1>
+    <table id="bookingsTable">
+      <thead>
+        <tr>
+          <th>Hostel</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Room Type</th>
+          <th>Booking Date</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </main>
+
+  
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCLn45hIR-S75BEPypx1BFgOV8vA5MaqU0",
+      authDomain: "hostelio-89130.firebaseapp.com",
+      projectId: "hostelio-89130",
+      storageBucket: "hostelio-89130.appspot.com",
+      messagingSenderId: "530522106867",
+      appId: "1:530522106867:web:227d355ea3fcc63317c086"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function getHostelName(hostelId) {
+      if (!hostelId) return "N/A";
+      try {
+        const docSnap = await getDoc(doc(db, "hostels", hostelId));
+        return docSnap.exists() ? docSnap.data().name : "Unknown Hostel";
+      } catch {
+        return "Unknown Hostel";
+      }
+    }
+
+    async function loadBookings() {
+      const tbody = document.querySelector("#bookingsTable tbody");
+      tbody.innerHTML = "";
+      const snapshot = await getDocs(collection(db, "bookings"));
+      for (const docSnap of snapshot.docs) {
+        const b = docSnap.data();
+        const hostelName = await getHostelName(b.hostelId);
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${hostelName}</td>
+          <td>${b.name}</td>
+          <td>${b.email}</td>
+          <td>${b.roomType}</td>
+          <td>${b.bookingDate}</td>`;
+        tbody.appendChild(row);
+      }
+    }
+    document.addEventListener("DOMContentLoaded", loadBookings);
+  </script>
+  <footer>&copy; 2025 Hostelio. All rights reserved.</footer>
+
 </body>
 </html>

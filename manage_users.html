@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Manage Users - Hostelio Admin</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: url('bg.jpeg') no-repeat center center fixed; background-size: cover; color: white; min-height: 100vh; display: flex; flex-direction: column;}
+    header { padding: 15px 30px; background: rgba(0,0,0,0.8); display: flex; justify-content: space-between; align-items: center;}
+    .title { font-size: 24px; font-weight: bold; color: #ffd700; }
+    nav a { color: white; text-decoration: none; margin-left: 20px; font-weight: bold;}
+    nav a:hover { color: #ffd700; }
+    main { flex: 1; max-width: 1000px; margin: 30px auto; padding: 20px; background: rgba(0,0,0,0.6); border-radius: 10px; box-sizing: border-box; }
+    h1 { color: #ffd700; margin-bottom: 20px; text-align: center; }
+    table { width: 100%; border-collapse: collapse; background: rgba(255, 255, 255, 0.1);}
+    th, td { padding: 12px; border-bottom: 1px solid #fff; text-align: left;}
+    th { background: rgba(255,255,255,0.2);}
+    footer { text-align: center; padding: 10px; background: rgba(0,0,0,0.7); font-size: 14px;}
+  </style>
+</head>
+<body>
+<header>
+  <div class="title">Hostelio Admin - Manage Users</div>
+  <nav>
+    <a href="admin_dashboard.html">Dashboard</a>
+    <a href="add_hostel.html">Add Hostel</a>
+    <a href="manage_hostels.html">Manage Hostels</a>
+    <a href="logout.html">Logout</a>
+  </nav>
+</header>
+
+<main>
+  <h1>User Accounts</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>User ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Email Verified</th>
+      </tr>
+    </thead>
+    <tbody id="user-list"></tbody>
+  </table>
+</main>
+
+<footer>
+  &copy; 2025 Hostelio. All rights reserved.
+</footer>
+
+<script type="module">
+  // User management requires Firebase Admin SDK with server-side integration.
+  // Client SDK cannot list or delete arbitrary users.
+  document.getElementById('user-list').innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px;">User management requires server-side admin SDK integration to list and manage users securely.</td></tr>`;
+</script>
+</body>
+</html>

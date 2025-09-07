@@ -15,17 +15,28 @@
     padding: 15px 30px; background: rgba(0,0,0,0.8);
   }
   .left-section { display: flex; align-items: center; }
-.title { font-size: 24px; font-weight: bold; color: #ffd700; }
+  .title { font-size: 24px; font-weight: bold; color: #ffd700; }
   .nav-links a {
     color: white; text-decoration: none; margin-left: 20px; font-size: 16px; transition: color 0.3s;
   }
   .nav-links a:hover { color: #ffd700; }
   main {
     flex: 1; background: rgba(0,0,0,0.6); padding: 30px;
-    max-width: 900px; margin: 40px auto; border-radius: 10px;
+    max-width: 1000px; margin: 40px auto; border-radius: 10px;
     animation: fadeIn 1s ease;
   }
   h1 { text-align: center; color: #ffd700; margin-bottom: 20px; }
+  .filter-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
+  }
+  select, input {
+    padding: 8px 12px; border-radius: 6px; border: none;
+    font-size: 14px; cursor: pointer;
+  }
+  input {
+    flex: 1; min-width: 200px;
+  }
   table {
     width: 100%; border-collapse: collapse;
   }
@@ -33,10 +44,7 @@
     border: 1px solid #555; padding: 10px; text-align: center;
   }
   th { background: rgba(255,215,0,0.2); }
-  .logo {
-      width: 70px; height: 70px;
-      border-radius: 50%; object-fit: cover;
-    }
+  .logo { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; }
   .action-btn {
     background-color: #28a745; color: white;
     border: none; padding: 6px 12px; border-radius: 6px;
@@ -44,6 +52,24 @@
   }
   .action-btn:hover { background-color: #218838; }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  /* Modal styles */
+  .modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7); justify-content: center; align-items: center;
+  }
+  .modal-content {
+    background: #222; padding: 20px; border-radius: 10px;
+    width: 400px; max-width: 90%; text-align: left;
+    color: white; box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  }
+  .modal-content h2 { margin-top: 0; color: #ffd700; }
+  .close-btn {
+    background: #dc3545; color: white; border: none;
+    padding: 6px 12px; border-radius: 6px; cursor: pointer;
+    float: right;
+  }
+  .close-btn:hover { background: #c82333; }
 </style>
 </head>
 <body>
@@ -61,35 +87,137 @@
 
 <main>
   <h1>All Booking History</h1>
-  <table>
-    <tr>
-      <th>User Name</th>
-      <th>Hostel Name</th>
-      <th>Location</th>
-      <th>Check-in Date</th>
-      <th>Nights</th>
-      <th>Status</th>
-      <th>Action</th>
-    </tr>
-    <tr>
-      <td>John Doe</td>
-      <td>Sunrise Hostel</td>
-      <td>Mumbai</td>
-      <td>2025-07-10</td>
-      <td>3</td>
-      <td>Confirmed</td>
-      <td><button class="action-btn">View</button></td>
-    </tr>
-    <tr>
-      <td>Jane Smith</td>
-      <td>City Center Hostel</td>
-      <td>Delhi</td>
-      <td>2025-06-15</td>
-      <td>2</td>
-      <td>Completed</td>
-      <td><button class="action-btn">View</button></td>
-    </tr>
+
+  <!-- Filter + Search Bar -->
+  <div class="filter-bar">
+    <div>
+      <label for="statusFilter"><strong>Status: </strong></label>
+      <select id="statusFilter">
+        <option value="all">All</option>
+        <option value="pending">Pending</option>
+        <option value="confirmed">Confirmed</option>
+        <option value="completed">Completed</option>
+      </select>
+    </div>
+    <input type="text" id="searchBox" placeholder="Search by User or Hostel...">
+  </div>
+
+  <table id="bookingTable">
+    <thead>
+      <tr>
+        <th>User Name</th>
+        <th>Hostel Name</th>
+        <th>Location</th>
+        <th>Check-in Date</th>
+        <th>Nights</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="bookingBody">
+      <!-- Dynamic rows from Firestore -->
+    </tbody>
   </table>
 </main>
+
+<!-- Booking Details Modal -->
+<div class="modal" id="bookingModal">
+  <div class="modal-content">
+    <button class="close-btn" onclick="closeModal()">Close</button>
+    <h2>Booking Details</h2>
+    <div id="modalDetails"></div>
+  </div>
+</div>
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCLn45hIR-S75BEPypx1BFgOV8vA5MaqU0",
+    authDomain: "hostelio-89130.firebaseapp.com",
+    databaseURL: "https://hostelio-89130-default-rtdb.firebaseio.com",
+    projectId: "hostelio-89130",
+    storageBucket: "hostelio-89130.firebasestorage.app",
+    messagingSenderId: "530522106867",
+    appId: "1:530522106867:web:227d355ea3fcc63317c086",
+    measurementId: "G-CYM1EHN5G5"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  let bookingsData = [];
+
+  async function loadBookings() {
+    const snapshot = await getDocs(collection(db, "bookings"));
+    bookingsData = [];
+    snapshot.forEach((docSnap) => bookingsData.push(docSnap.data()));
+    renderBookings("all", "");
+  }
+
+  function renderBookings(statusFilter, searchQuery) {
+    const bookingBody = document.getElementById("bookingBody");
+    bookingBody.innerHTML = "";
+
+    bookingsData
+      .filter(b => {
+        const statusMatch = statusFilter === "all" || (b.status || "pending").toLowerCase() === statusFilter;
+        const searchMatch =
+          !searchQuery ||
+          (b.userName || "").toLowerCase().includes(searchQuery) ||
+          (b.hostelName || "").toLowerCase().includes(searchQuery);
+        return statusMatch && searchMatch;
+      })
+      .forEach((data) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${data.userName || "N/A"}</td>
+          <td>${data.hostelName || "N/A"}</td>
+          <td>${data.location || "N/A"}</td>
+          <td>${data.checkInDate || "N/A"}</td>
+          <td>${data.nights || "-"}</td>
+          <td>${data.status || "Pending"}</td>
+          <td><button class="action-btn">View</button></td>
+        `;
+        tr.querySelector(".action-btn").addEventListener("click", () => {
+          openModal(data);
+        });
+        bookingBody.appendChild(tr);
+      });
+  }
+
+  function openModal(data) {
+    const modal = document.getElementById("bookingModal");
+    const details = document.getElementById("modalDetails");
+    details.innerHTML = `
+      <p><strong>User Name:</strong> ${data.userName}</p>
+      <p><strong>Email:</strong> ${data.email || "N/A"}</p>
+      <p><strong>Hostel Name:</strong> ${data.hostelName}</p>
+      <p><strong>Location:</strong> ${data.location}</p>
+      <p><strong>Check-in Date:</strong> ${data.checkInDate}</p>
+      <p><strong>Nights:</strong> ${data.nights}</p>
+      <p><strong>Status:</strong> ${data.status}</p>
+    `;
+    modal.style.display = "flex";
+  }
+
+  window.closeModal = function () {
+    document.getElementById("bookingModal").style.display = "none";
+  };
+
+  document.getElementById("statusFilter").addEventListener("change", (e) => {
+    const searchQuery = document.getElementById("searchBox").value.toLowerCase();
+    renderBookings(e.target.value, searchQuery);
+  });
+
+  document.getElementById("searchBox").addEventListener("input", (e) => {
+    const statusFilter = document.getElementById("statusFilter").value;
+    renderBookings(statusFilter, e.target.value.toLowerCase());
+  });
+
+  loadBookings();
+</script>
 </body>
 </html>

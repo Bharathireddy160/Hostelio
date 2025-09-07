@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Profile - Hostelio</title>
+  <style>
+    body {
+      margin: 0; font-family: Arial, sans-serif;
+      background: url('bg.jpeg') no-repeat center center fixed;
+      background-size: cover; color: white; min-height: 100vh;
+      display: flex; flex-direction: column;
+    }
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 15px 30px; background: rgba(0,0,0,0.8);
+    }
+    .left-section { display: flex; align-items: center; }
+    .logo { height: 40px; margin-right: 10px; border-radius: 50%; }
+    .title { font-size: 24px; font-weight: bold; color: #ffd700; }
+    .nav-links a {
+      color: white; text-decoration: none; margin-left: 20px; font-size: 16px;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover { color: #ffd700; }
+    main {
+      flex: 1; display: flex; justify-content: center; align-items: center; padding: 40px;
+    }
+    .profile-card {
+      background: rgba(0,0,0,0.7); padding: 30px; border-radius: 10px;
+      text-align: center; max-width: 500px; width: 100%;
+      box-shadow: 0 0 15px rgba(0,0,0,0.6);
+      animation: fadeIn 1s ease;
+    }
+    .profile-img {
+      width: 120px; height: 120px; border-radius: 50%;
+      border: 3px solid #ffd700; margin-bottom: 10px; object-fit: cover;
+    }
+    h1 {
+      margin-bottom: 10px; color: #ffd700;
+      display: flex; justify-content: center; align-items: center; gap: 8px;
+    }
+    .verified-badge {
+      background: #28a745; color: white; font-size: 12px;
+      padding: 2px 6px; border-radius: 6px; display: none;
+    }
+    .info { text-align: left; margin-top: 20px; }
+    .info p { margin: 8px 0; font-size: 16px; }
+    .action-buttons {
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: 15px; margin-top: 20px;
+    }
+    .btn {
+      background-color: #007bff; color: white;
+      border: none; padding: 10px 16px; border-radius: 6px;
+      cursor: pointer; font-size: 14px; transition: background-color 0.3s;
+      text-decoration: none; display: inline-block;
+    }
+    .btn:hover { background-color: #0069d9; }
+    .back-btn {
+      margin-top: 15px; background-color: #ffd700; color: black;
+      font-weight: bold;
+    }
+    .back-btn:hover { background-color: #e6c200; }
+    footer {
+      text-align: center; padding: 10px; background: rgba(0,0,0,0.7);
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  </style>
+</head>
+<body>
+<header>
+  <div class="left-section">
+    <img src="ic.png" alt="Logo" class="logo">
+    <div class="title">Hostelio - Admin</div>
+  </div>
+  <div class="nav-links">
+    <a href="admin_dashboard.html">Dashboard</a>
+    <a href="manage_hostels.html">Manage Hostels</a>
+    <a href="view_bookings.html">Bookings</a>
+    <a href="admin_login.html">Logout</a>
+  </div>
+</header>
+
+<main>
+  <div class="profile-card">
+    <img id="profilePic" src="https://www.gravatar.com/avatar?d=mp" alt="Admin Photo" class="profile-img">
+    <h1 id="adminName">Loading... <span class="verified-badge" id="verifiedBadge">✔ Verified</span></h1>
+    <div class="info">
+      <p><strong>Email:</strong> <span id="adminEmail">Loading...</span></p>
+      <p><strong>Phone:</strong> <span id="adminPhone">+91-Not set</span></p>
+      <p><strong>Role:</strong> <span id="adminRole">Administrator</span></p>
+      <p><strong>Location:</strong> <span id="adminLocation">Unknown</span></p>
+      <p><strong>Joined:</strong> <span id="adminJoined">2025</span></p>
+    </div>
+    <div class="action-buttons">
+      <a class="btn" href="edit_admin_profile.html">Edit Profile</a>
+      <a class="btn" href="change_admin_password.html">Change Password</a>
+      <a class="btn back-btn" href="admin_dashboard.html">⬅ Back to Dashboard</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  &copy; 2025 Hostelio. All rights reserved.
+</footer>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCLn45hIR-S75BEPypx1BFgOV8vA5MaqU0",
+    authDomain: "hostelio-89130.firebaseapp.com",
+    projectId: "hostelio-89130",
+    storageBucket: "hostelio-89130.appspot.com",
+    messagingSenderId: "530522106867",
+    appId: "1:530522106867:web:227d355ea3fcc63317c086"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const adminName = document.getElementById("adminName");
+  const adminEmail = document.getElementById("adminEmail");
+  const adminPic = document.getElementById("profilePic");
+  const verifiedBadge = document.getElementById("verifiedBadge");
+
+  async function loadAdminProfile(user) {
+    let name = user?.displayName || "Admin User";
+    let email = user?.email || "admin@hostelio.com";
+    let photo = user?.photoURL || "https://www.gravatar.com/avatar?d=mp";
+    let verified = user?.emailVerified;
+
+    adminName.innerHTML = `${name} <span class="verified-badge" id="verifiedBadge">✔ Verified</span>`;
+    adminEmail.textContent = email;
+    adminPic.src = photo;
+    document.getElementById("verifiedBadge").style.display = verified ? "inline-block" : "none";
+
+    // Fetch additional admin data from Firestore
+    try {
+      const docRef = doc(db, "admins", user.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        document.getElementById("adminPhone").textContent = data.phone || "+91-Not set";
+        document.getElementById("adminLocation").textContent = data.location || "Unknown";
+        document.getElementById("adminRole").textContent = data.role || "Administrator";
+        document.getElementById("adminJoined").textContent = data.joined || "2025";
+      }
+    } catch (err) {
+      console.error("Error fetching admin profile:", err);
+    }
+  }
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      loadAdminProfile(user);
+    } else {
+      window.location.href = "admin_login.html";
+    }
+  });
+</script>
+</body>
+</html>

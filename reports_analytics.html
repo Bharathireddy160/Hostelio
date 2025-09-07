@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reports & Analytics - Hostelio Admin</title>
+<style>
+  body {
+    margin: 0; font-family: Arial, sans-serif;
+    background: url('bg.jpeg') no-repeat center center fixed;
+    background-size: cover; color: white;
+    display: flex; flex-direction: column; min-height: 100vh;
+  }
+  header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 15px 30px; background: rgba(0,0,0,0.8);
+  }
+  .title { font-size: 24px; font-weight: bold; color: #ffd700; }
+  .nav-links a {
+    color: white; text-decoration: none; margin-left: 20px; font-size: 16px;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: #ffd700; }
+  main {
+    flex: 1; padding: 40px; display: flex; flex-direction: column; align-items: center;
+  }
+  h1 { margin-bottom: 20px; font-size: 36px; color: #ffd700; text-align: center; }
+  .charts { display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; margin-top: 20px; }
+  .chart-container { background: rgba(0,0,0,0.7); padding: 20px; border-radius: 12px; width: 400px; }
+  canvas { background: white; border-radius: 8px; }
+</style>
+</head>
+<body>
+<header>
+  <div><img src="logo.png" alt="Hostelio Logo" style="height:50px;width:auto;"></div>
+  <div class="title">Hostelio Admin</div>
+  <div class="nav-links">
+    <a href="admin_home.html">Home</a>
+    <a href="manage_registrations.html">Registrations</a>
+    <a href="reports_analytics.html">Reports & Analytics</a>
+    <a href="index.html" onclick="logout()">Logout</a>
+  </div>
+</header>
+
+<main>
+  <h1>Reports & Analytics</h1>
+  <div class="charts">
+    <div class="chart-container">
+      <h3>Pending vs Accepted vs Rejected</h3>
+      <canvas id="registrationStatusChart"></canvas>
+    </div>
+    <div class="chart-container">
+      <h3>Top Hostels by Bookings</h3>
+      <canvas id="topHostelsChart"></canvas>
+    </div>
+  </div>
+</main>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyCLn45hIR-S75BEPypx1BFgOV8vA5MaqU0",
+    authDomain: "hostelio-89130.firebaseapp.com",
+    databaseURL: "https://hostelio-89130-default-rtdb.firebaseio.com",
+    projectId: "hostelio-89130",
+    storageBucket: "hostelio-89130.firebasestorage.app",
+    messagingSenderId: "530522106867",
+    appId: "1:530522106867:web:227d355ea3fcc63317c086",
+    measurementId: "G-CYM1EHN5G5"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const db = getFirestore(app);
+
+  async function loadAnalytics() {
+    // Load counts
+    const pendingSnap = await getDocs(collection(db, "pendingRegistrations"));
+    const acceptedSnap = await getDocs(collection(db, "acceptedRegistrations"));
+    const rejectedSnap = await getDocs(collection(db, "rejectedRegistrations"));
+
+    const statusData = [pendingSnap.size, acceptedSnap.size, rejectedSnap.size];
+
+    new Chart(document.getElementById("registrationStatusChart"), {
+      type: 'pie',
+      data: {
+        labels: ['Pending', 'Accepted', 'Rejected'],
+        datasets: [{
+          label: 'Registrations',
+          data: statusData,
+          backgroundColor: ['#ffc107', '#28a745', '#dc3545']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'bottom' } }
+      }
+    });
+
+    // Top Hostels
+    const acceptedDocs = acceptedSnap.docs.map(doc => doc.data());
+    const hostelCounts = {};
+    acceptedDocs.forEach(b => {
+      if (hostelCounts[b.hostel]) hostelCounts[b.hostel]++;
+      else hostelCounts[b.hostel] = 1;
+    });
+
+    const topHostelsLabels = Object.keys(hostelCounts);
+    const topHostelsData = Object.values(hostelCounts);
+
+    new Chart(document.getElementById("topHostelsChart"), {
+      type: 'bar',
+      data: {
+        labels: topHostelsLabels,
+        datasets: [{
+          label: 'Accepted Bookings',
+          data: topHostelsData,
+          backgroundColor: '#ffd700'
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+  }
+
+  loadAnalytics();
+
+  function logout() {
+    localStorage.removeItem("username");
+  }
+</script>
+</body>
+</html>

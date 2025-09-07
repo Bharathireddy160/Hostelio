@@ -1,90 +1,208 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Bookings - Hostelio</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: url('bg.jpeg') no-repeat center center fixed;
-      background-size: cover;
-      color: white;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(0,0,0,0.85);
-      padding: 15px 30px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-    }
-    .logo { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; }
-    .title { font-size: 26px; font-weight: bold; color: #ffd700; letter-spacing: 1px; }
-    .nav-links a { color: white; margin-left: 20px; text-decoration: none; font-size: 16px; }
-    .nav-links a:hover { color: #ffd700; }
-    main { flex: 1; padding: 40px 20px; background: rgba(0,0,0,0.6); }
-    h1 { text-align: center; color: #ffd700; margin-bottom: 25px; font-size: 30px; }
-    .list { display: flex; flex-direction: column; gap: 18px; max-width: 750px; margin: 0 auto; }
-    .card {
-      background: rgba(0,0,0,0.8);
-      padding: 20px 25px;
-      border-radius: 10px;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.6);
-    }
-    .card strong { color: #ffd700; }
-    footer { text-align: center; padding: 12px; background: rgba(0,0,0,0.85); }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>My Bookings | Hostelio</title>
+<style>
+  body {
+    margin: 0; font-family: 'Segoe UI', sans-serif;
+    background: url('bg.jpeg') no-repeat center center fixed;
+    background-size: cover; color: #333;
+  }
+  header {
+    background: rgba(0,0,0,0.85); color: white;
+    padding: 15px 30px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo { width: 50px; height: 50px; border-radius: 50%; }
+  .title { font-size: 22px; font-weight: bold; color: #ffd700; }
+  .nav a { color: white; margin-left: 20px; text-decoration: none; }
+  .nav a:hover { color: #ffd700; }
+
+  main {
+    max-width: 900px; margin: 30px auto; 
+    background: rgba(255,255,255,0.95); padding: 20px; 
+    border-radius: 10px; box-shadow: 0 0 12px rgba(0,0,0,0.4);
+  }
+  h1 { text-align: center; margin-bottom: 20px; }
+  table {
+    width: 100%; border-collapse: collapse; background: white;
+    border-radius: 8px; overflow: hidden;
+  }
+  th, td {
+    border: 1px solid #ccc; padding: 10px; text-align: left;
+  }
+  th { background: #ffd700; color: black; }
+  tr:nth-child(even) { background-color: #f9f9f9; }
+  button.cancel, button.receipt {
+    padding: 5px 10px; border: none; color: white; border-radius: 4px; cursor: pointer; transition: background 0.3s;
+  }
+  button.cancel { background: #dc3545; }
+  button.cancel:hover { background: #b02a37; }
+  button.receipt { background: #28a745; }
+  button.receipt:hover { background: #218838; }
+</style>
 </head>
 <body>
-  <header>
-    <img src="ic.png" alt="Logo" class="logo">
-    <div class="title">Hostelio</div>
-    <div class="nav-links">
-      <a href="available_hostels.html">Hostels</a>
-      <a href="payment_history.html">Payments</a>
-      <a href="account_settings.html">Account</a>
-      <a href="index.html">Logout</a>
-    </div>
-  </header>
 
-  <main>
-    <h1>My Bookings</h1>
-    <div class="list" id="bookingsList">
-      <p>Loading your bookings...</p>
-    </div>
-  </main>
+<header>
+  <img src="ic.png" alt="Logo" class="logo">
+  <div class="title">Hostelio</div>
+  <div class="nav">
+    <a href="index.html">Home</a>
+    <a href="admin_dashboard.html">Admin</a>
+    <a href="view_bookings.html">Bookings</a>
+    <a href="my_bookings.html">My Bookings</a>
+  </div>
+</header>
 
-  <footer>&copy; 2025 Hostelio. All rights reserved.</footer>
+<main>
+  <h1>My Bookings</h1>
+  <p>Enter your email to check booking status:</p>
+  <input type="email" id="userEmail" placeholder="Enter your email" style="padding:8px; width:70%">
+  <button id="checkBtn" style="padding:8px 15px; background:#ffd700; border:none; border-radius:6px; cursor:pointer;">Check</button>
 
-  <script type="module">
-    import { db } from "./js/firebase.js";
-    import { collection, query, where, getDocs } 
-      from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+  <div id="results" style="margin-top:20px; display:none;">
+    <h2>Your Booking Records</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Hostel</th>
+          <th>Room Type</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="bookingTable"></tbody>
+    </table>
+  </div>
+</main>
 
-    const userEmail = localStorage.getItem("userEmail");
-    const bookingsList = document.getElementById("bookingsList");
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-    async function loadBookings() {
-      if (!userEmail) { bookingsList.innerHTML = "<p>Please log in.</p>"; return; }
-      const q = query(collection(db, "bookings"), where("email", "==", userEmail));
-      const snap = await getDocs(q);
-      bookingsList.innerHTML = snap.empty ? "<p>No bookings yet.</p>" : "";
-      snap.forEach(doc => {
-        const b = doc.data();
-        bookingsList.innerHTML += `
-          <div class="card">
-            <p><strong>Hostel:</strong> ${b.hostelName}</p>
-            <p><strong>Room:</strong> ${b.roomType}</p>
-            <p><strong>Date:</strong> ${b.date}</p>
-          </div>`;
-      });
-    }
-    loadBookings();
-  </script>
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs, query, where, deleteDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCLn45hIR-S75BEPypx1BFgOV8vA5MaqU0",
+  authDomain: "hostelio-89130.firebaseapp.com",
+  projectId: "hostelio-89130",
+  storageBucket: "hostelio-89130.firebasestorage.app",
+  messagingSenderId: "530522106867",
+  appId: "1:530522106867:web:227d355ea3fcc63317c086"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const { jsPDF } = window.jspdf;
+
+document.getElementById("checkBtn").addEventListener("click", async () => {
+  const email = document.getElementById("userEmail").value.trim();
+  if (!email) { alert("Please enter your email."); return; }
+
+  const collections = [
+    { name: "pendingRegistrations", status: "Pending", allowCancel: true },
+    { name: "acceptedRegistrations", status: "Accepted", allowCancel: false },
+    { name: "rejectedRegistrations", status: "Rejected", allowCancel: false }
+  ];
+
+  const tbody = document.getElementById("bookingTable");
+  tbody.innerHTML = "";
+  let found = false;
+
+  for (const col of collections) {
+    const q = query(collection(db, col.name), where("email", "==", email));
+    const snapshot = await getDocs(q);
+
+    snapshot.forEach(async docSnap => {
+      const data = docSnap.data();
+      const tr = document.createElement("tr");
+      let actions = "-";
+
+      if (col.allowCancel) {
+        actions = `<button class="cancel">Cancel</button>`;
+      } else if (col.status === "Accepted") {
+        actions = `<button class="receipt">Download Receipt</button>`;
+      }
+
+      tr.innerHTML = `
+        <td>${data.hostel}</td>
+        <td>${data.roomType}</td>
+        <td>${col.status}</td>
+        <td>${data.date || "-"}</td>
+        <td>${actions}</td>
+      `;
+
+      // Cancel pending
+      if (col.allowCancel) {
+        tr.querySelector(".cancel").addEventListener("click", async () => {
+          if (confirm("Are you sure you want to cancel this booking?")) {
+            await deleteDoc(doc(db, col.name, docSnap.id));
+            tr.remove();
+            alert("❌ Your pending booking has been cancelled.");
+          }
+        });
+      }
+
+      // Download receipt with logo & hostel image
+      if (col.status === "Accepted") {
+        tr.querySelector(".receipt").addEventListener("click", async () => {
+          const pdf = new jsPDF();
+          pdf.setFontSize(22);
+          pdf.setTextColor(255, 215, 0);
+          pdf.text("Hostelio Booking Receipt", 105, 20, { align: "center" });
+
+          // Logo
+          const logoImg = new Image();
+          logoImg.src = "ic.png"; // Hostelio logo
+          logoImg.onload = () => {
+            pdf.addImage(logoImg, 'PNG', 80, 25, 50, 25);
+
+            // Optional hostel image if exists
+            getDoc(doc(db, "hostels", data.hostelId)).then(hostelSnap => {
+              if (hostelSnap.exists()) {
+                const hostelData = hostelSnap.data();
+                if (hostelData.imageUrls && hostelData.imageUrls[0]) {
+                  const hostelImg = new Image();
+                  hostelImg.crossOrigin = "anonymous";
+                  hostelImg.src = hostelData.imageUrls[0];
+                  hostelImg.onload = () => {
+                    pdf.addImage(hostelImg, 'JPEG', 20, 60, 170, 60);
+                    drawDetails();
+                  };
+                  hostelImg.onerror = drawDetails;
+                } else drawDetails();
+              } else drawDetails();
+            });
+
+            function drawDetails() {
+              pdf.setFontSize(12);
+              pdf.setTextColor(0,0,0);
+              let y = 130;
+              pdf.text(`Hostel: ${data.hostel}`, 20, y); y+=10;
+              pdf.text(`Name: ${data.name}`, 20, y); y+=10;
+              pdf.text(`Email: ${data.email}`, 20, y); y+=10;
+              pdf.text(`Room Type: ${data.roomType}`, 20, y); y+=10;
+              pdf.text(`Booking Date: ${data.date || "-"}`, 20, y); y+=10;
+              pdf.text(`Status: Accepted ✅`, 20, y);
+              pdf.save(`Hostelio_Booking_${data.name}.pdf`);
+            }
+          };
+        });
+      }
+
+      tbody.appendChild(tr);
+      found = true;
+    });
+  }
+
+  document.getElementById("results").style.display = found ? "block" : "none";
+  if (!found) alert("No bookings found for this email.");
+});
+</script>
 </body>
 </html>
