@@ -32,12 +32,19 @@
       background-color: #007bff; color: white; padding: 14px;
       font-size: 18px; border: none; border-radius: 8px; cursor: pointer;
     }
+     .logo {
+      width: 70px; height: 70px;
+      border-radius: 50%; object-fit: cover;
+    }
     button:hover { background-color: #0056b3; }
     #statusMsg { text-align: center; margin-top: 15px; font-weight: bold; }
   </style>
 </head>
 <body>
 <header>
+  <div class="left-section">
+    <img src="ic.png" alt="Logo" class="logo">
+  </div>
   <div class="title">Hostelio - Admin</div>
   <div class="nav-links">
     <a href="admin_dashboard.html">Dashboard</a>

@@ -28,16 +28,21 @@
   .charts { display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; margin-top: 20px; }
   .chart-container { background: rgba(0,0,0,0.7); padding: 20px; border-radius: 12px; width: 400px; }
   canvas { background: white; border-radius: 8px; }
+  .logo {
+      width: 70px; height: 70px;
+      border-radius: 50%; object-fit: cover;
+    }
 </style>
 </head>
 <body>
 <header>
-  <div><img src="logo.png" alt="Hostelio Logo" style="height:50px;width:auto;"></div>
+  <div class="left-section">
+    <img src="ic.png" alt="Logo" class="logo">
+  </div>
   <div class="title">Hostelio Admin</div>
   <div class="nav-links">
     <a href="admin_home.html">Home</a>
-    <a href="manage_registrations.html">Registrations</a>
-    <a href="reports_analytics.html">Reports & Analytics</a>
+    <a href="admin_dashboard.html">Admin Dashboard</a>
     <a href="index.html" onclick="logout()">Logout</a>
   </div>
 </header>

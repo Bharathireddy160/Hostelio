@@ -16,9 +16,6 @@
       display: flex; justify-content: space-between; align-items: center;
       padding: 15px 30px; background: rgba(0,0,0,0.8);
     }
-    .logo {
-      width: 40px; height: 40px; border-radius: 50%; object-fit: cover;
-    }
     .title { font-size: 24px; font-weight: bold; color: #ffd700; }
     .nav-links a {
       color: white; text-decoration: none; margin-left: 20px; font-weight: bold;
@@ -28,6 +25,10 @@
       flex: 1; max-width: 1000px; margin: 30px auto; padding: 20px;
       background: rgba(0,0,0,0.6); border-radius: 10px;
       display: flex; flex-direction: column; align-items: center;
+    }
+    .logo {
+      width: 70px; height: 70px;
+      border-radius: 50%; object-fit: cover;
     }
     h1 { color: #ffd700; text-align: center; margin-bottom: 30px; }
     .admin-profile {
@@ -68,15 +69,14 @@
 <body>
 <header>
   <div style="display:flex; align-items:center; gap:10px;">
-    <img src="admin_icon.png" alt="Admin Logo" class="logo" />
-    <div class="title">Hostelio Admin</div>
+    <img src="icon.png" alt="Admin Logo" class="logo" />
   </div>
+  <div class="title">Hostelio Admin</div>
   <div class="nav-links">
-    <a href="admin_dashboard.html">Dashboard</a>
-    <a href="add_hostel.html">Add Hostel</a>
-    <a href="admin_profile.html">My Profile</a>
-    <a href="logout.html">Logout</a>
-
+     <a href="admin_profile .html">My Profile</a>
+    <a href="view_bookings.html">Bookings</a>
+     <a href="index.html">Logout</a>
+     <a href="admin_history.html">History</a>
   </div>
 </header>
 <main>
@@ -104,6 +104,14 @@
     <div class="card" onclick="window.location.href='reports_analytics.html'">
       <h2>Reports & Analytics</h2>
       <p>View dashboard analytics and reports.</p>
+    </div>
+     <div class="card" onclick="window.location.href='admin_accept_registrations.html'">
+      <h2>Accept Registrations</h2>
+      <p>View Accept Registrations.</p>
+    </div>
+     <div class="card" onclick="window.location.href='admin_view_bookings.html'">
+      <h2>My Bookings</h2>
+      <p>View  Bookings .</p>
     </div>
   </div>
 </main>
