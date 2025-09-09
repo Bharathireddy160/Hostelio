@@ -14,7 +14,10 @@
     background: rgba(0,0,0,0.85); color: white;
     padding: 15px 30px; display: flex; align-items: center; justify-content: space-between;
   }
-  .logo { width: 50px; height: 50px; border-radius: 50%; }
+ .logo {
+      width: 70px; height: 70px;
+      border-radius: 50%; object-fit: cover;
+    }
   .title { font-size: 22px; font-weight: bold; color: #ffd700; }
   .nav a { color: white; margin-left: 20px; text-decoration: none; }
   .nav a:hover { color: #ffd700; }
@@ -46,13 +49,13 @@
 <body>
 
 <header>
-  <img src="ic.png" alt="Logo" class="logo">
+   <div class="left-section">
+    <img src="ic.png" alt="Logo" class="logo">
+  </div>
   <div class="title">Hostelio</div>
   <div class="nav">
     <a href="index.html">Home</a>
-    <a href="admin_dashboard.html">Admin</a>
-    <a href="view_bookings.html">Bookings</a>
-    <a href="my_bookings.html">My Bookings</a>
+    <a href="user_dashboard.html">Dashboard</a>
   </div>
 </header>
 
