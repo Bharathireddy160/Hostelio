@@ -8,7 +8,7 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: url('bg.jpeg') no-repeat center center fixed;
+      background: url('images/bg.jpeg') no-repeat center center fixed;
       background-size: cover;
       color: white;
       display: flex;
@@ -100,7 +100,7 @@
   <header>
 
     <div class="left-section">
-    <img src="ic.png" alt="Logo" class="logo">
+    <img src="images/ic.png" alt="Logo" class="logo">
   </div>
 
     <div class="title">Hostelio</div>
@@ -114,7 +114,7 @@
   <div class="container">
     <div class="content">
       <h1>Create User Account</h1>
-      <form action="success.html" method="get">
+      <form action="user/success.html" method="get">
         <input type="text" name="fullname" placeholder="Full Name" required />
         <input type="email" name="email" placeholder="Email Address" required />
         <input type="tel" name="phone" placeholder="Phone Number" pattern="[0-9]{10}" title="Enter 10 digit phone number" required />
@@ -127,12 +127,12 @@
    </div>
 
 
-  <script type="module" src="create_user.js"></script>
+  <script type="module" src="js/create_user.js"></script>
 <script>
 document.getElementById('userRegisterForm').addEventListener('submit', function(e) {
   e.preventDefault();
   // You can add validation or send data to server here
-  window.location.href = 'success.html';
+  window.location.href = 'user/success.html';
 });
 </script>
   <footer>
