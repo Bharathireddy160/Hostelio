@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Edit About Us - Hostelio</title>
+  <style>
+    body {
+      margin: 0; font-family: Arial, sans-serif;
+      background: url('images/bg.jpeg') no-repeat center center fixed;
+      background-size: cover; color: white;
+      display: flex; flex-direction: column; min-height: 100vh;
+    }
+    header {
+      background: rgba(0,0,0,0.8); padding: 15px 30px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .title { font-size: 24px; font-weight: bold; color: #ffd700; }
+    .nav-links a { color: white; text-decoration: none; margin-left: 20px; }
+    .nav-links a:hover { color: #ffd700; }
+    main {
+      flex: 1; background: rgba(0,0,0,0.7);
+      max-width: 700px; margin: 40px auto; padding: 30px; border-radius: 10px;
+    }
+    h1 { text-align: center; color: #ffd700; margin-bottom: 20px; }
+    form { display: flex; flex-direction: column; gap: 15px; }
+    label { font-weight: bold; }
+    textarea, input {
+      padding: 10px; border-radius: 6px; border: none; font-size: 16px;
+    }
+    button {
+      background-color: #28a745; color: white; padding: 14px;
+      font-size: 18px; border: none; border-radius: 8px; cursor: pointer;
+    }
+    button:hover { background-color: #218838; }
+    #statusMsg { text-align: center; margin-top: 15px; font-weight: bold; }
+    .logo { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="left-section">
+    <img src="images/ic.png" alt="Logo" class="logo">
+  </div>
+  <div class="title">Hostelio</div>
+  <div class="nav-links">
+    <a href="about.html">Back to About</a>
+  </div>
+</header>
+
+<main>
+  <h1>Edit About Us</h1>
+  <form id="aboutForm">
+    <label>Description</label>
+    <textarea id="description" rows="3" required></textarea>
+
+    <label>Mission</label>
+    <textarea id="mission" rows="3" required></textarea>
+
+    <label>Team Members (comma separated, e.g. Name:Role)</label>
+    <textarea id="team" rows="4" required></textarea>
+
+    <button type="submit">Save Changes</button>
+  </form>
+  <p id="statusMsg"></p>
+</main>
+
+<!-- ✅ Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCLn45hIR-S75BEPypx1BFgOV8vA5MaqU0",
+    authDomain: "hostelio-89130.firebaseapp.com",
+    projectId: "hostelio-89130",
+    storageBucket: "hostelio-89130.appspot.com",
+    messagingSenderId: "530522106867",
+    appId: "1:530522106867:web:227d355ea3fcc63317c086",
+    measurementId: "G-CYM1EHN5G5"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const aboutRef = doc(db, "pages", "about");
+  const form = document.getElementById("aboutForm");
+  const statusMsg = document.getElementById("statusMsg");
+
+  // ✅ Load existing content
+  async function loadAbout() {
+    try {
+      const snap = await getDoc(aboutRef);
+      if (snap.exists()) {
+        const data = snap.data();
+        document.getElementById("description").value = data.description || "";
+        document.getElementById("mission").value = data.mission || "";
+        if (data.team) {
+          document.getElementById("team").value = data.team.map(m => `${m.name}:${m.role}`).join(", ");
+        }
+      }
+    } catch (err) {
+      console.error("Error loading content:", err);
+      statusMsg.innerText = "❌ Failed to load content.";
+      statusMsg.style.color = "red";
+    }
+  }
+  loadAbout();
+
+  // ✅ Save updates
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    statusMsg.innerText = "⏳ Saving..."; 
+    statusMsg.style.color = "yellow";
+
+    const teamRaw = document.getElementById("team").value.split(",");
+    const teamArr = teamRaw.map(t => {
+      const [name, role] = t.split(":");
+      return { name: name?.trim(), role: role?.trim() };
+    });
+
+    try {
+      await setDoc(aboutRef, {
+        description: document.getElementById("description").value,
+        mission: document.getElementById("mission").value,
+        team: teamArr
+      });
+
+      statusMsg.innerText = "✅ Saved successfully!";
+      statusMsg.style.color = "lightgreen";
+    } catch (error) {
+      console.error("Error saving:", error);
+      statusMsg.innerText = "❌ Error: " + error.message;
+      statusMsg.style.color = "red";
+    }
+  });
+</script>
+</body>
+</html>

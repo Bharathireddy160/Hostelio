@@ -1,130 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Add Hostel - Hostelio Admin</title>
-<link rel="stylesheet" href="css/styles.css" />
-<style>
- body {
-      margin: 0;
-      font-family: Arial, sans-serif;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Add Hostel - Hostelio Admin</title>
+  <style>
+    body {
+      margin: 0; font-family: Arial, sans-serif;
       background: url('images/bg.jpeg') no-repeat center center fixed;
-      background-size: cover;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
+      background-size: cover; color: white;
+      display: flex; flex-direction: column; min-height: 100vh;
     }
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 30px;
-  background: rgba(0,0,0,0.8);
-}
-
-.logo {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.title {
-  font-size: 24px;
-  font-weight: bold;
-  color: #ffd700;
-}
-
-.nav-links a {
-  color: white;
-  margin-left: 20px;
-  text-decoration: none;
-}
-
-.nav-links a:hover {
-  color: #ffd700;
-}
-
-main {
-  flex: 1;
-  background: rgba(0,0,0,0.6);
-  max-width: 600px;
-  margin: 40px auto;
-  padding: 30px;
-  border-radius: 10px;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-input, textarea {
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 6px;
-  border: none;
-  outline: none;
-}
-
-button {
-  background-color: #28a745;
-  color: white;
-  padding: 14px;
-  font-size: 18px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #218838;
-}
-
-footer {
-  text-align: center;
-  padding: 10px;
-  background: rgba(0,0,0,0.8);
-  font-size: 14px;
-}
-
-@media(max-width: 600px) {
-  .title { font-size: 20px; }
-}
-</style>
+    header {
+      background: rgba(0,0,0,0.8); padding: 15px 30px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .title { font-size: 24px; font-weight: bold; color: #ffd700; }
+    .nav-links a { color: white; margin-left: 20px; text-decoration: none; }
+    .nav-links a:hover { color: #ffd700; }
+    main {
+      flex: 1; background: rgba(0, 0, 0, 0.6);
+      max-width: 600px; margin: 30px auto; padding: 20px; border-radius: 10px;
+    }
+    h1 { text-align: center; color: #ffd700; margin-bottom: 20px; }
+    form { display: flex; flex-direction: column; gap: 12px; }
+    label { font-weight: bold; }
+    input, textarea {
+      padding: 10px; border-radius: 6px; border: none; font-size: 16px;
+    }
+    button {
+      background-color: #007bff; color: white; padding: 14px;
+      font-size: 18px; border: none; border-radius: 8px; cursor: pointer;
+    }
+     .logo {
+      width: 70px; height: 70px;
+      border-radius: 50%; object-fit: cover;
+    }
+    button:hover { background-color: #0056b3; }
+    #statusMsg { text-align: center; margin-top: 15px; font-weight: bold; }
+  </style>
 </head>
 <body>
 <header>
-  <div class="right-section">
+  <div class="left-section">
     <img src="images/ic.png" alt="Logo" class="logo">
   </div>
-  <div class="title">Hostelio</div>
+  <div class="title">Hostelio - Admin</div>
   <div class="nav-links">
-    <a href="admin_dashboard.html">Dashboard</a>
-    <a href="index.html">Logout</a>
+    <a href="html/admin/admin_dashboard.html">Dashboard</a>
+    <a href="view_hostels.html">View Hostels</a>
   </div>
 </header>
+
 <main>
-  <h1>Add New Hostel</h1>
-  <form id="addHostelForm">
-    <input type="text" id="hostelName" placeholder="Hostel Name" required>
-    <input type="text" id="location" placeholder="Location" required>
-    <textarea id="description" placeholder="Description" rows="4" required></textarea>
-    <input type="number" id="rooms" placeholder="Available Rooms" min="1" required>
-    <input type="number" id="price" placeholder="Price per month" min="1" required>
-    <label style="font-weight:bold; font-size:16px;">Upload Hostel Images</label>
-    <input type="file" id="hostelImages" multiple accept="image/*">
+  <h1>Add Hostel</h1>
+  <form id="hostelForm">
+    <label>Hostel Name</label>
+    <input type="text" id="name" required>
+
+    <label>Location</label>
+    <input type="text" id="location" required>
+
+    <label>Description</label>
+    <textarea id="description" rows="3" required></textarea>
+
+    <label>No. of Rooms</label>
+    <input type="number" id="rooms" required>
+
+    <label>Price (per month)</label>
+    <input type="number" id="price" required>
+
+    <label>Upload Hostel Images</label>
+    <input type="file" id="images" multiple accept="image/*">
+
     <button type="submit">Add Hostel</button>
   </form>
+  <p id="statusMsg"></p>
 </main>
-<footer>
-  &copy; 2025 Hostelio. All rights reserved.
-</footer>
 
-<!-- Script -->
-<script type="module" src="uploadHostel.js"></script>
+<!-- ✅ Firebase SDK v8 -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+<script>
+  // ✅ Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyCLn45hIR-S75BEPypx1BFgOV8vA5MaqU0",
+    authDomain: "hostelio-89130.firebaseapp.com",
+    projectId: "hostelio-89130",
+    storageBucket: "hostelio-89130.appspot.com",
+    messagingSenderId: "530522106867",
+    appId: "1:530522106867:web:227d355ea3fcc63317c086",
+    measurementId: "G-CYM1EHN5G5"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const storage = firebase.storage();
+
+  // ✅ Handle form submit
+  document.getElementById("hostelForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const statusMsg = document.getElementById("statusMsg");
+    statusMsg.innerText = "Uploading... please wait ⏳";
+
+    const name = document.getElementById("name").value.trim();
+    const location = document.getElementById("location").value.trim();
+    const description = document.getElementById("description").value.trim();
+    const rooms = parseInt(document.getElementById("rooms").value);
+    const price = parseFloat(document.getElementById("price").value);
+    const files = document.getElementById("images").files;
+
+    let imageUrls = [];
+
+    try {
+      // ✅ Upload each image
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const storageRef = storage.ref().child("hostels/" + Date.now() + "_" + file.name);
+        await storageRef.put(file);
+        const url = await storageRef.getDownloadURL();
+        imageUrls.push(url);
+      }
+
+      // ✅ Save to Firestore
+      await db.collection("hostels").add({
+        name,
+        location,
+        description,
+        rooms,
+        price,
+        images: imageUrls,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      statusMsg.innerText = "✅ Hostel added successfully!";
+      document.getElementById("hostelForm").reset();
+    } catch (error) {
+      console.error("❌ Error adding hostel:", error);
+      statusMsg.innerText = "❌ " + error.message;
+    }
+  });
+</script>
 </body>
 </html>

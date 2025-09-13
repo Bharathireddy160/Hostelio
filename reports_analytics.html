@@ -67,7 +67,6 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
 
   // Firebase config
   const firebaseConfig = {
@@ -83,60 +82,53 @@
 
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
   const db = getFirestore(app);
 
   async function loadAnalytics() {
-    // Load counts
-    const pendingSnap = await getDocs(collection(db, "pendingRegistrations"));
-    const acceptedSnap = await getDocs(collection(db, "acceptedRegistrations"));
-    const rejectedSnap = await getDocs(collection(db, "rejectedRegistrations"));
+    const snapshot = await getDocs(collection(db, "bookings"));
 
-    const statusData = [pendingSnap.size, acceptedSnap.size, rejectedSnap.size];
+    let pending = 0, accepted = 0, rejected = 0;
+    const hostelCounts = {};
 
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const status = data.status || "pending"; // default
+      const hostel = data.hostelName || data.hostelId || "Unknown Hostel";
+
+      // Status count
+      if (status === "pending") pending++;
+      else if (status === "accepted") accepted++;
+      else if (status === "rejected") rejected++;
+
+      // Hostel count
+      hostelCounts[hostel] = (hostelCounts[hostel] || 0) + 1;
+    });
+
+    // Pie Chart for Status
     new Chart(document.getElementById("registrationStatusChart"), {
       type: 'pie',
       data: {
         labels: ['Pending', 'Accepted', 'Rejected'],
         datasets: [{
-          label: 'Registrations',
-          data: statusData,
+          data: [pending, accepted, rejected],
           backgroundColor: ['#ffc107', '#28a745', '#dc3545']
         }]
       },
-      options: {
-        responsive: true,
-        plugins: { legend: { position: 'bottom' } }
-      }
+      options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
     });
 
-    // Top Hostels
-    const acceptedDocs = acceptedSnap.docs.map(doc => doc.data());
-    const hostelCounts = {};
-    acceptedDocs.forEach(b => {
-      if (hostelCounts[b.hostel]) hostelCounts[b.hostel]++;
-      else hostelCounts[b.hostel] = 1;
-    });
-
-    const topHostelsLabels = Object.keys(hostelCounts);
-    const topHostelsData = Object.values(hostelCounts);
-
+    // Bar Chart for Hostels
     new Chart(document.getElementById("topHostelsChart"), {
       type: 'bar',
       data: {
-        labels: topHostelsLabels,
+        labels: Object.keys(hostelCounts),
         datasets: [{
-          label: 'Accepted Bookings',
-          data: topHostelsData,
+          label: 'Total Bookings',
+          data: Object.values(hostelCounts),
           backgroundColor: '#ffd700'
         }]
       },
-      options: {
-        responsive: true,
-        scales: {
-          y: { beginAtZero: true }
-        }
-      }
+      options: { responsive: true, scales: { y: { beginAtZero: true } } }
     });
   }
 

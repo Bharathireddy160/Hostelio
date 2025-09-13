@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - All Bookings | Hostelio</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url('images/bg.jpeg') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      background: rgba(0,0,0,0.85);
+    }
+    .logo {
+      width: 60px; height: 60px; border-radius: 50%; object-fit: cover;
+    }
+    .title {
+      font-size: 24px; font-weight: bold; color: #ffd700;
+    }
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-size: 16px;
+    }
+    .nav-links a:hover { color: #ffd700; }
+    main {
+      flex: 1;
+      padding: 20px;
+      background: rgba(0,0,0,0.7);
+      border-radius: 10px;
+      margin: 20px;
+      overflow-x: auto;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #ffd700;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: rgba(0,0,0,0.6);
+    }
+    th, td {
+      border: 1px solid #555;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background: rgba(255,215,0,0.2);
+    }
+    .status-select {
+      padding: 5px;
+      border-radius: 4px;
+    }
+    .btn {
+      margin: 10px 0;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .export-btn {
+      background-color: #28a745;
+      color: white;
+    }
+    .export-btn:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="left">
+    <img src="images/ic.png" alt="Logo" class="logo">
+  </div>
+  <div class="title">Hostelio - Admin</div>
+  <div class="nav-links">
+    <a href="admin_dashboard.html">Dashboard</a>
+    <a href="admin_bookings.html">Bookings</a>
+    <a href="reports.html">Reports</a>
+    <a href="index.html">Logout</a>
+  </div>
+</header>
+
+<main>
+  <h1>All User Bookings</h1>
+  <button class="btn export-btn" onclick="exportCSV()">Export as CSV</button>
+  <table id="bookingsTable">
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Email</th>
+        <th>Hostel</th>
+        <th>Location</th>
+        <th>Check-in</th>
+        <th>Months</th>
+        <th>Status</th>
+        <th>Update</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</main>
+
+<!-- Firebase Scripts -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, collection, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCLn45hIR-S75BEPypx1BFgOV8vA5MaqU0",
+    authDomain: "hostelio-89130.firebaseapp.com",
+    databaseURL: "https://hostelio-89130-default-rtdb.firebaseio.com",
+    projectId: "hostelio-89130",
+    storageBucket: "hostelio-89130.firebasestorage.app",
+    messagingSenderId: "530522106867",
+    appId: "1:530522106867:web:227d355ea3fcc63317c086",
+    measurementId: "G-CYM1EHN5G5"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const bookingsTable = document.querySelector("#bookingsTable tbody");
+
+  async function loadBookings() {
+    bookingsTable.innerHTML = "";
+    const querySnapshot = await getDocs(collection(db, "bookings"));
+    querySnapshot.forEach((docSnap) => {
+      const data = docSnap.data();
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${data.userName || "-"}</td>
+        <td>${data.userEmail || "-"}</td>
+        <td>${data.hostelName}</td>
+        <td>${data.location}</td>
+        <td>${data.checkIn}</td>
+        <td>${data.months}</td>
+        <td>
+          <select class="status-select" data-id="${docSnap.id}">
+            <option value="Pending" ${data.status==="Pending"?"selected":""}>Pending</option>
+            <option value="Confirmed" ${data.status==="Confirmed"?"selected":""}>Confirmed</option>
+            <option value="Completed" ${data.status==="Completed"?"selected":""}>Completed</option>
+            <option value="Cancelled" ${data.status==="Cancelled"?"selected":""}>Cancelled</option>
+          </select>
+        </td>
+        <td><button onclick="updateStatus('${docSnap.id}')">Save</button></td>
+      `;
+      bookingsTable.appendChild(row);
+    });
+  }
+
+  window.updateStatus = async function(id) {
+    const select = document.querySelector(`.status-select[data-id='${id}']`);
+    const newStatus = select.value;
+    await updateDoc(doc(db, "bookings", id), { status: newStatus });
+    alert("Booking status updated!");
+    loadBookings();
+  };
+
+  window.exportCSV = function() {
+    const rows = document.querySelectorAll("#bookingsTable tr");
+    let csv = [];
+    rows.forEach(row => {
+      const cols = row.querySelectorAll("th, td");
+      let rowData = [];
+      cols.forEach(col => rowData.push(col.innerText));
+      csv.push(rowData.join(","));
+    });
+    const csvString = csv.join("\n");
+    const blob = new Blob([csvString], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.setAttribute("href", url);
+    a.setAttribute("download", "bookings.csv");
+    a.click();
+  };
+
+  loadBookings();
+</script>
+</body>
+</html>

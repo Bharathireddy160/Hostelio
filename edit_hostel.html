@@ -1,160 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Edit Hostel - Hostelio</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: url('images/bg.jpeg') no-repeat center center fixed;
-      background-size: cover;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 30px;
-      background: rgba(0, 0, 0, 0.8);
-    }
-    .title {
-      font-size: 24px;
-      font-weight: bold;
-      color: #ffd700;
-    }
-    .nav-links a {
-      color: white;
-      text-decoration: none;
-      margin-left: 20px;
-      font-size: 16px;
-      transition: color 0.3s;
-    }
-    .nav-links a:hover {
-      color: #ffd700;
-    }
-    main {
-      flex: 1;
-      max-width: 600px;
-      margin: 40px auto;
-      background: rgba(0, 0, 0, 0.7);
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.6);
-    }
-    h1 {
-      text-align: center;
-      color: #ffd700;
-      margin-bottom: 20px;
-    }
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-    label {
-      font-weight: bold;
-      font-size: 16px;
-    }
-    input[type="text"],
-    input[type="number"],
-    textarea {
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 6px;
-      border: none;
-      outline: none;
-    }
-    button {
-      background-color: #007bff;
-      color: white;
-      padding: 14px;
-      font-size: 18px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    button:hover {
-      background-color: #0069d9;
-    }
-    .message {
-      margin-top: 15px;
-      text-align: center;
-      color: #28a745;
-      font-weight: bold;
-      display: none;
-    }
-    footer {
-      text-align: center;
-      padding: 10px 0;
-      background: rgba(0, 0, 0, 0.8);
-      font-size: 14px;
-    }
-
-    .logo {
-      width: 70px; height: 70px;
-      border-radius: 50%; object-fit: cover;
-    }
-
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Edit Hostel - Hostelio</title>
+<style>
+  body {
+    margin: 0; font-family: Arial, sans-serif;
+    background: url('images/bg.jpeg') no-repeat center center fixed;
+    background-size: cover; color: white; display: flex; flex-direction: column; min-height: 100vh;
+  }
+  header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 15px 30px; background: rgba(0, 0, 0, 0.8);
+  }
+  .title { font-size: 24px; font-weight: bold; color: #ffd700; }
+  .nav-links a { color: white; text-decoration: none; margin-left: 20px; font-size: 16px; }
+  .nav-links a:hover { color: #ffd700; }
+  main {
+    flex: 1; max-width: 600px; margin: 40px auto; background: rgba(0, 0, 0, 0.7);
+    padding: 30px; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.6);
+  }
+  h1 { text-align: center; color: #ffd700; margin-bottom: 20px; }
+  form { display: flex; flex-direction: column; gap: 15px; }
+  label { font-weight: bold; font-size: 16px; }
+  select, input[type="text"], input[type="number"], textarea {
+    padding: 10px; font-size: 16px; border-radius: 6px; border: none; outline: none;
+  }
+  button {
+    background-color: #007bff; color: white; padding: 14px; font-size: 18px;
+    border: none; border-radius: 10px; cursor: pointer; transition: background-color 0.3s;
+  }
+  button:hover { background-color: #0069d9; }
+  .message { margin-top: 15px; text-align: center; font-weight: bold; display: none; }
+  .logo { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; }
+</style>
 </head>
 <body>
-  <header>
-
-    <div class="left-section">
+<header>
+  <div class="left-section">
     <img src="images/ic.png" alt="Logo" class="logo">
-  </div>
-
     <div class="title">Hostelio</div>
-    <div class="nav-links">
-      <a href="admin_home.html">Home</a>
-      <a href="add_hostel.html">Add Hostel</a>
-      <a href="edit_hostel.html">Edit Hostel</a>
-      <a href="show_history.html">Show History</a>
-      <a href="index.html">Logout</a>
-    </div>
-  </header>
+  </div>
+  <div class="nav-links">
+    <a href="admin_home.html">Home</a>
+    <a href="add_hostel.html">Add Hostel</a>
+    <a href="edit_hostel.html">Edit Hostel</a>
+    <a href="show_history.html">Show History</a>
+    <a href="index.html">Logout</a>
+  </div>
+</header>
 
-  <main>
-    <h1>Edit Hostel</h1>
-    <form id="editHostelForm">
-      <label for="hostelName">Hostel Name</label>
-      <input type="text" id="hostelName" name="hostelName" value="Sunrise Hostel" required />
+<main>
+  <h1>Edit Hostel</h1>
 
-      <label for="location">Location</label>
-      <input type="text" id="location" name="location" value="Mumbai" required />
+  <label for="hostelSelect">Select Hostel</label>
+  <select id="hostelSelect">
+    <option value="">-- Select a hostel --</option>
+  </select>
 
-      <label for="description">Description</label>
-      <textarea id="description" name="description" rows="3" required>Cozy hostel near the beach with comfortable rooms and friendly staff.</textarea>
+  <form id="editHostelForm" style="display:none;">
+    <label for="hostelName">Hostel Name</label>
+    <input type="text" id="hostelName" name="hostelName" required />
 
-      <label for="rooms">Number of Rooms</label>
-      <input type="number" id="rooms" name="rooms" value="10" required />
+    <label for="location">Location</label>
+    <input type="text" id="location" name="location" required />
 
-      <label for="price">Price per Night (₹)</label>
-      <input type="number" id="price" name="price" value="500" required />
+    <label for="description">Description</label>
+    <textarea id="description" name="description" rows="3" required></textarea>
 
-      <button type="submit">Update Hostel</button>
-    </form>
-    <p class="message" id="successMessage">Hostel details updated successfully!</p>
-  </main>
+    <label for="rooms">Number of Rooms</label>
+    <input type="number" id="rooms" name="rooms" required />
 
-  <footer>
-    &copy; 2025 Hostelio. All rights reserved.
-  </footer>
+    <label for="price">Price per Night (₹)</label>
+    <input type="number" id="price" name="price" required />
 
-  <script>
-    const form = document.getElementById('editHostelForm');
-    const message = document.getElementById('successMessage');
+    <button type="submit">Update Hostel</button>
+  </form>
 
-    form.addEventListener('submit', function(e) {
-      e.preventDefault();
-      message.style.display = 'block';
-    });
-  </script>
+  <p class="message" id="successMessage">Hostel details updated successfully!</p>
+</main>
+
+<footer>&copy; 2025 Hostelio. All rights reserved.</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCLn45hIR-S75BEPypx1BFgOV8vA5MaqU0",
+  authDomain: "hostelio-89130.firebaseapp.com",
+  projectId: "hostelio-89130",
+  storageBucket: "hostelio-89130.firebasestorage.app",
+  messagingSenderId: "530522106867",
+  appId: "1:530522106867:web:227d355ea3fcc63317c086",
+  measurementId: "G-CYM1EHN5G5"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const hostelSelect = document.getElementById('hostelSelect');
+const form = document.getElementById('editHostelForm');
+const successMessage = document.getElementById('successMessage');
+
+let selectedHostelId = null;
+
+// Load all hostels into the dropdown
+async function loadHostels() {
+  const snapshot = await getDocs(collection(db, "hostels"));
+  snapshot.forEach(docSnap => {
+    const option = document.createElement('option');
+    option.value = docSnap.id;
+    option.textContent = docSnap.data().hostelName || 'Unnamed Hostel';
+    hostelSelect.appendChild(option);
+  });
+}
+
+hostelSelect.addEventListener('change', async () => {
+  selectedHostelId = hostelSelect.value;
+  if (!selectedHostelId) {
+    form.style.display = 'none';
+    return;
+  }
+
+  const hostelRef = doc(db, "hostels", selectedHostelId);
+  const hostelSnap = await getDoc(hostelRef);
+  if (hostelSnap.exists()) {
+    const data = hostelSnap.data();
+    document.getElementById('hostelName').value = data.hostelName || '';
+    document.getElementById('location').value = data.location || '';
+    document.getElementById('description').value = data.description || '';
+    document.getElementById('rooms').value = data.rooms || '';
+    document.getElementById('price').value = data.price || '';
+    form.style.display = 'flex';
+  }
+});
+
+// Update hostel
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!selectedHostelId) return;
+
+  const hostelRef = doc(db, "hostels", selectedHostelId);
+  await updateDoc(hostelRef, {
+    hostelName: document.getElementById('hostelName').value,
+    location: document.getElementById('location').value,
+    description: document.getElementById('description').value,
+    rooms: parseInt(document.getElementById('rooms').value),
+    price: parseInt(document.getElementById('price').value)
+  });
+
+  successMessage.style.display = 'block';
+});
+
+loadHostels();
+</script>
 </body>
 </html>

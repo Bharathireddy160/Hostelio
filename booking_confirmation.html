@@ -1,139 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Booking Confirmation - Hostelio</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: url('images/bg.jpeg') no-repeat center center fixed;
-      background-size: cover;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(0,0,0,0.8);
-      padding: 15px 30px;
-    }
-    .title {
-      font-size: 24px;
-      font-weight: bold;
-      color: #ffd700;
-    }
-    .nav-links a {
-      color: white;
-      margin-left: 20px;
-      text-decoration: none;
-      font-size: 16px;
-    }
-    .nav-links a:hover {
-      color: #ffd700;
-    }
-    main {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      background: rgba(0,0,0,0.6);
-    }
-    .card {
-      background: rgba(0,0,0,0.8);
-      padding: 30px;
-      border-radius: 12px;
-      max-width: 500px;
-      text-align: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-    }
-    h1 {
-      color: #ffd700;
-      margin-bottom: 20px;
-    }
-    p {
-      margin: 8px 0;
-      font-size: 16px;
-    }
-    .btn {
-      display: inline-block;
-      background: #ffd700;
-      color: black;
-      padding: 10px 20px;
-      margin: 15px 5px 0;
-      text-decoration: none;
-      border-radius: 6px;
-      font-weight: bold;
-    }
-    .btn:hover {
-      background: #e6c200;
-    }
-    footer {
-      text-align: center;
-      padding: 10px;
-      background: rgba(0,0,0,0.8);
-      font-size: 14px;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Booking Confirmation - Hostelio</title>
+<style>
+  body {
+    margin: 0; font-family: Arial, sans-serif;
+    background: url('images/bg.jpeg') no-repeat center center fixed;
+    background-size: cover; color: white;
+    min-height: 100vh; display: flex; flex-direction: column;
+  }
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 15px 30px; background: rgba(0,0,0,0.8);
+  }
+  .left-section { display: flex; align-items: center; }
+  .logo { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; }
+  .title { font-size: 24px; font-weight: bold; color: #ffd700; margin-left: 15px; }
+  .nav-links a {
+    color: white; text-decoration: none; margin-left: 20px; font-size: 16px;
+  }
+  .nav-links a:hover { color: #ffd700; }
+  main {
+    flex: 1; background: rgba(0,0,0,0.7);
+    padding: 30px; max-width: 600px;
+    margin: 50px auto; border-radius: 10px; text-align: center;
+    animation: fadeIn 1s ease;
+  }
+  h1 { color: #ffd700; margin-bottom: 20px; }
+  .details {
+    text-align: left; background: rgba(255,255,255,0.1);
+    padding: 20px; border-radius: 8px;
+  }
+  .details p { margin: 10px 0; font-size: 16px; }
+  .btn {
+    display: inline-block; margin-top: 20px;
+    background: #28a745; color: white; padding: 10px 20px;
+    text-decoration: none; border-radius: 6px; transition: 0.3s;
+    cursor: pointer;
+  }
+  .btn:hover { background: #218838; }
+  .btn-print { background: #007bff; }
+  .btn-print:hover { background: #0056b3; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+</style>
 </head>
 <body>
 <header>
-  <div class="title">Hostelio</div>
+  <div class="left-section">
+    <img src="images/ic.png" alt="Logo" class="logo">
+    <div class="title">Hostelio</div>
+  </div>
   <div class="nav-links">
     <a href="user_home.html">Home</a>
-    <a href="my_bookings.html">My Bookings</a>
+    <a href="explore_hostels.html">Explore</a>
+    <a href="booking_history.html">My Bookings</a>
     <a href="index.html">Logout</a>
   </div>
 </header>
+
 <main>
-  <div class="card">
-    <h1>🎉 Booking Confirmed!</h1>
-    <p><strong>Hostel:</strong> <span id="hostelName"></span></p>
-    <p><strong>Name:</strong> <span id="userName"></span></p>
-    <p><strong>Email:</strong> <span id="userEmail"></span></p>
-    <p><strong>Room Type:</strong> <span id="roomType"></span></p>
-    <p><strong>Date:</strong> <span id="date"></span></p>
-
-    <a href="my_bookings.html" class="btn">Go to My Bookings</a>
-    <button id="downloadBtn" class="btn">Download Receipt</button>
+  <h1>Booking Confirmation</h1>
+  <div id="confirmation" class="details">
+    <p>Loading booking details...</p>
   </div>
+  <button id="downloadBtn" class="btn">Download PDF Receipt</button>
+  <button id="printBtn" class="btn btn-print">Print Receipt</button>
+  <br><br>
+  <a href="my_bookings.html" class="btn">View All Bookings</a>
 </main>
-<footer>
-  &copy; 2025 Hostelio. All rights reserved.
-</footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script>
-  // Extract booking details from URL params
-  const params = new URLSearchParams(window.location.search);
-  document.getElementById("hostelName").textContent = params.get("hostelName");
-  document.getElementById("userName").textContent = params.get("name");
-  document.getElementById("userEmail").textContent = params.get("email");
-  document.getElementById("roomType").textContent = params.get("roomType");
-  document.getElementById("date").textContent = params.get("date");
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, query, where, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  // Download PDF Receipt
-  document.getElementById("downloadBtn").addEventListener("click", () => {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
+// jsPDF CDN
+import jsPDF from "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
 
-    doc.setFontSize(18);
-    doc.text("Hostelio Booking Receipt", 20, 20);
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyCLn45hIR-S75BEPypx1BFgOV8vA5MaqU0",
+  authDomain: "hostelio-89130.firebaseapp.com",
+  databaseURL: "https://hostelio-89130-default-rtdb.firebaseio.com",
+  projectId: "hostelio-89130",
+  storageBucket: "hostelio-89130.firebasestorage.app",
+  messagingSenderId: "530522106867",
+  appId: "1:530522106867:web:227d355ea3fcc63317c086",
+  measurementId: "G-CYM1EHN5G5"
+};
 
-    doc.setFontSize(12);
-    doc.text(`Hostel: ${params.get("hostelName")}`, 20, 40);
-    doc.text(`Name: ${params.get("name")}`, 20, 50);
-    doc.text(`Email: ${params.get("email")}`, 20, 60);
-    doc.text(`Room Type: ${params.get("roomType")}`, 20, 70);
-    doc.text(`Date: ${params.get("date")}`, 20, 80);
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const confirmationDiv = document.getElementById("confirmation");
+let currentBooking = null;
 
-    doc.save("Hostelio_Booking_Receipt.pdf");
-  });
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    try {
+      const q = query(
+        collection(db, "bookings"),
+        where("userId", "==", user.uid),
+        orderBy("createdAt", "desc"),
+        limit(1)
+      );
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        const booking = querySnapshot.docs[0].data();
+        currentBooking = booking;
+        confirmationDiv.innerHTML = `
+          <p><strong>Hostel:</strong> ${booking.hostelName}</p>
+          <p><strong>Location:</strong> ${booking.location}</p>
+          <p><strong>Check-in Date:</strong> ${booking.checkInDate}</p>
+          <p><strong>Months:</strong> ${booking.months}</p>
+          <p><strong>Total Amount:</strong> ₹${booking.totalAmount}</p>
+          <p><strong>Status:</strong> ${booking.status}</p>
+        `;
+      } else {
+        confirmationDiv.innerHTML = "<p>No booking found.</p>";
+      }
+    } catch (err) {
+      console.error(err);
+      confirmationDiv.innerHTML = "<p>Error loading booking details.</p>";
+    }
+  } else {
+    confirmationDiv.innerHTML = "<p>Please log in to see booking confirmation.</p>";
+  }
+});
+
+// Download PDF
+document.getElementById("downloadBtn").addEventListener("click", () => {
+  if (!currentBooking) return alert("No booking to download.");
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.setFontSize(18);
+  doc.text("Hostelio Booking Confirmation", 20, 20);
+  doc.setFontSize(14);
+  doc.text(`Hostel: ${currentBooking.hostelName}`, 20, 40);
+  doc.text(`Location: ${currentBooking.location}`, 20, 50);
+  doc.text(`Check-in Date: ${currentBooking.checkInDate}`, 20, 60);
+  doc.text(`Months: ${currentBooking.months}`, 20, 70);
+  doc.text(`Total Amount: ₹${currentBooking.totalAmount}`, 20, 80);
+  doc.text(`Status: ${currentBooking.status}`, 20, 90);
+  doc.save("Booking_Confirmation.pdf");
+});
+
+// Print Receipt
+document.getElementById("printBtn").addEventListener("click", () => {
+  if (!currentBooking) return alert("No booking to print.");
+  const printContent = confirmationDiv.innerHTML;
+  const newWin = window.open("", "", "width=600,height=600");
+  newWin.document.write(`<html><head><title>Print Booking</title></head><body style="font-family: Arial, sans-serif; padding: 20px;">`);
+  newWin.document.write("<h2>Hostelio Booking Confirmation</h2>");
+  newWin.document.write(printContent);
+  newWin.document.write("</body></html>");
+  newWin.document.close();
+  newWin.print();
+});
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </body>
 </html>

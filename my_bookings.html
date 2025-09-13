@@ -55,6 +55,7 @@
   <div class="title">Hostelio</div>
   <div class="nav">
     <a href="index.html">Home</a>
+    <a href="booking_confirmation.html">Booking Confirmation</a>
     <a href="user_dashboard.html">Dashboard</a>
   </div>
 </header>
@@ -161,7 +162,7 @@ document.getElementById("checkBtn").addEventListener("click", async () => {
 
           // Logo
           const logoImg = new Image();
-          logoImg.src = "ic.png"; // Hostelio logo
+          logoImg.src = "images/ic.png"; // Hostelio logo
           logoImg.onload = () => {
             pdf.addImage(logoImg, 'PNG', 80, 25, 50, 25);
 
