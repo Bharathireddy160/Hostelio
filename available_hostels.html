@@ -8,14 +8,63 @@
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      padding: 20px;
+      padding: 0;
       background: url('images/bg.jpeg') no-repeat center center fixed;
       background-size: cover;
       color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
 
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      background: rgba(0,0,0,0.8);
+    }
+
+    .left-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #ffd700;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #ffd700;
+    }
+
+    /* Search */
     #searchContainer {
-      margin-bottom: 20px;
+      margin: 20px auto;
       text-align: center;
     }
 
@@ -36,11 +85,14 @@
       margin-left: 5px;
     }
 
+    /* Hostel cards */
     #hostelResults {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 20px;
+      padding: 20px;
+      flex: 1;
     }
 
     .hostel-card {
@@ -75,7 +127,7 @@
     }
 
     .rating {
-      color: #FFD700; /* gold stars */
+      color: #FFD700;
       margin-bottom: 10px;
     }
 
@@ -88,88 +140,108 @@
       cursor: pointer;
       text-decoration: none;
     }
+
+    footer {
+      text-align: center;
+      padding: 10px 0;
+      background: rgba(0,0,0,0.8);
+      font-size: 14px;
+      color: white;
+    }
   </style>
 </head>
 <body>
 
-  <div id="searchContainer">
-    <input type="text" id="searchInput" placeholder="Search hostels by name...">
-    <button id="searchBtn">Search</button>
+<header>
+  <div class="left-section">
+    <img src="images/ic.png" alt="Logo" class="logo">
+    <div class="title">Hostelio</div>
   </div>
+  <div class="nav-links">
+    <a href="user_home.html">Home</a>
+    <a href="user_dashboard.html">Dashboard</a>
+    <a href="my_history.html">History</a>
+    <a href="index.html">Logout</a>
+  </div>
+</header>
 
-  <div id="hostelResults"></div>
+<div id="searchContainer">
+  <input type="text" id="searchInput" placeholder="Search hostels by name...">
+  <button id="searchBtn">Search</button>
+</div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-analytics.js";
-    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-firestore.js";
+<div id="hostelResults"></div>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCLn45hIR-S75BEPypx1BFgOV8vA5MaqU0",
-      authDomain: "hostelio-89130.firebaseapp.com",
-      databaseURL: "https://hostelio-89130-default-rtdb.firebaseio.com",
-      projectId: "hostelio-89130",
-      storageBucket: "hostelio-89130.firebasestorage.app",
-      messagingSenderId: "530522106867",
-      appId: "1:530522106867:web:227d355ea3fcc63317c086",
-      measurementId: "G-CYM1EHN5G5"
-    };
+<footer>
+  &copy; 2025 Hostelio. All rights reserved.
+</footer>
 
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-    const db = getFirestore(app);
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-analytics.js";
+  import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-firestore.js";
 
-    const searchInput = document.getElementById('searchInput');
-    const searchBtn = document.getElementById('searchBtn');
-    const hostelResults = document.getElementById('hostelResults');
+  const firebaseConfig = {
+    apiKey: "AIzaSyCLn45hIR-S75BEPypx1BFgOV8vA5MaqU0",
+    authDomain: "hostelio-89130.firebaseapp.com",
+    databaseURL: "https://hostelio-89130-default-rtdb.firebaseio.com",
+    projectId: "hostelio-89130",
+    storageBucket: "hostelio-89130.firebasestorage.app",
+    messagingSenderId: "530522106867",
+    appId: "1:530522106867:web:227d355ea3fcc63317c086",
+    measurementId: "G-CYM1EHN5G5"
+  };
 
-    function displayResults(hostels) {
-      hostelResults.innerHTML = '';
-      if (hostels.length === 0) {
-        hostelResults.innerHTML = '<p>No hostels found.</p>';
-        return;
-      }
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const db = getFirestore(app);
 
-      hostels.forEach(hostel => {
-        const div = document.createElement('div');
-        div.className = 'hostel-card';
-        div.innerHTML = `
-          <img src="${hostel.image || 'images/default_hostel.jpg'}" alt="${hostel.name}">
-          <div class="hostel-name">${hostel.name}</div>
-          <div class="hostel-info">Location: ${hostel.location}</div>
-          <div class="hostel-info">Price per night: ₹${hostel.price}</div>
-          <div class="rating">${'★'.repeat(Math.round(hostel.rating || 0))}${'☆'.repeat(5 - Math.round(hostel.rating || 0))}</div>
-          <a href="hostel_details.html?id=${hostel.id}" class="book-btn">Book Now</a>
-        `;
-        hostelResults.appendChild(div);
-      });
+  const searchInput = document.getElementById('searchInput');
+  const searchBtn = document.getElementById('searchBtn');
+  const hostelResults = document.getElementById('hostelResults');
+
+  function displayResults(hostels) {
+    hostelResults.innerHTML = '';
+    if (hostels.length === 0) {
+      hostelResults.innerHTML = '<p>No hostels found.</p>';
+      return;
     }
 
-    async function searchHostels(searchText) {
-      const hostelsRef = collection(db, 'hostels');
-      let q;
+    hostels.forEach(hostel => {
+      const div = document.createElement('div');
+      div.className = 'hostel-card';
+      div.innerHTML = `
+        <img src="${hostel.image || 'images/default_hostel.jpg'}" alt="${hostel.name}">
+        <div class="hostel-name">${hostel.name}</div>
+        <div class="hostel-info">Location: ${hostel.location}</div>
+        <div class="hostel-info">Price per night: ₹${hostel.price}</div>
+        <div class="rating">${'★'.repeat(Math.round(hostel.rating || 0))}${'☆'.repeat(5 - Math.round(hostel.rating || 0))}</div>
+        <a href="hostel_details.html?id=${hostel.id}" class="book-btn">Book Now</a>
+      `;
+      hostelResults.appendChild(div);
+    });
+  }
 
-      if (searchText.trim() === '') {
-        q = hostelsRef; // show all hostels if empty
-      } else {
-        q = query(hostelsRef, where('searchKeywords', 'array-contains', searchText.toLowerCase()));
-      }
-
-      const snapshot = await getDocs(q);
-      const results = [];
-      snapshot.forEach(doc => results.push({ id: doc.id, ...doc.data() }));
-      displayResults(results);
+  async function searchHostels(searchText) {
+    const hostelsRef = collection(db, 'hostels');
+    let q;
+    if (searchText.trim() === '') {
+      q = hostelsRef;
+    } else {
+      q = query(hostelsRef, where('searchKeywords', 'array-contains', searchText.toLowerCase()));
     }
+    const snapshot = await getDocs(q);
+    const results = [];
+    snapshot.forEach(doc => results.push({ id: doc.id, ...doc.data() }));
+    displayResults(results);
+  }
 
-    // Initial load
-    searchHostels('');
+  // Initial load
+  searchHostels('');
 
-    // Search button click
-    searchBtn.addEventListener('click', () => searchHostels(searchInput.value));
+  searchBtn.addEventListener('click', () => searchHostels(searchInput.value));
+  searchInput.addEventListener('input', () => searchHostels(searchInput.value));
 
-    // Real-time search as user types
-    searchInput.addEventListener('input', () => searchHostels(searchInput.value));
-
-  </script>
+</script>
 </body>
 </html>
