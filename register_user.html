@@ -90,6 +90,12 @@
       <option>Triple Sharing</option>
     </select>
 
+    <label>Check-in Date</label>
+    <input type="date" id="checkin" required>
+
+    <label>Months of Stay</label>
+    <input type="number" id="months" min="1" max="24" required>
+
     <label>Upload ID Proof</label>
     <input type="file" id="idproof" required>
 
@@ -116,12 +122,12 @@
   const db = firebase.firestore();
 
   // ✅ Handle form submit
-  document.getElementById("studentForm").addEventListener("submit",
-async (e) => {
+  document.getElementById("studentForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
     try {
-      await db.collection("students").add({
+      // Save student info
+      const studentRef = await db.collection("students").add({
         fullname: document.getElementById("fullname").value,
         email: document.getElementById("email").value,
         phone: document.getElementById("phone").value,
@@ -133,12 +139,24 @@ async (e) => {
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
       });
 
-      document.getElementById("statusMsg").innerText = "✅ Registration successful!";
+      // Save booking info (linked to student)
+      await db.collection("bookings").add({
+        studentId: studentRef.id,
+        userName: document.getElementById("fullname").value,
+        userEmail: document.getElementById("email").value,
+        hostelName: document.getElementById("hostel").value,
+        location: "Hyderabad", // ✅ static or dynamic if hostels have addresses
+        checkIn: document.getElementById("checkin").value,
+        months: document.getElementById("months").value,
+        status: "Pending",
+        bookingDate: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      document.getElementById("statusMsg").innerText = "✅ Registration & Booking successful!";
       document.getElementById("studentForm").reset();
     } catch (error) {
-      console.error("Error adding document: ", error);
-      document.getElementById("statusMsg").innerText = "❌ Error: " +
-error.message; 
+      console.error("Error: ", error);
+      document.getElementById("statusMsg").innerText = "❌ Error: " + error.message; 
     }
   });
 </script>

@@ -1,189 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hostelio - Find Your Hostel</title>
+  <title>Hostelio - Explore Hostels</title>
   <style>
-    /* Reset */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: "Segoe UI", Arial, sans-serif;
-      background: url('images/bg.jpeg') no-repeat center center fixed;
-      background-size: cover;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      animation: fadeIn 1.2s ease-in;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    header {
-      background: rgba(0, 0, 0, 0.75);
-      padding: 15px 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 1.8rem;
-      color: #ffd700;
-      letter-spacing: 1px;
-    }
-
-    nav a {
-      margin: 0 12px;
-      color: #fff;
-      text-decoration: none;
-      font-weight: 600;
-      transition: color 0.3s, transform 0.2s;
-    }
-
-    nav a:hover {
-      color: #ffd700;
-      transform: scale(1.1);
-    }
-
-    .hero {
-      text-align: center;
-      padding: 120px 20px 60px;
-      background: rgba(0, 0, 0, 0.55);
-      flex: 1;
-    }
-
-    .hero h2 {
-      font-size: 2.8rem;
-      margin-bottom: 15px;
-      animation: slideInDown 1.5s ease;
-    }
-
-    .hero p {
-      font-size: 1.2rem;
-      margin-bottom: 35px;
-      animation: fadeIn 2s ease;
-    }
-
-    @keyframes slideInDown {
-      from { transform: translateY(-40px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
+    body { margin:0; font-family: Arial, sans-serif; }
+    #map { height: 80vh; width: 100%; }
     .search-box {
       background: #fff;
-      padding: 25px;
-      border-radius: 12px;
-      display: inline-block;
-      color: #333;
-      box-shadow: 0px 4px 15px rgba(0,0,0,0.3);
-      animation: fadeIn 2s ease-in;
+      padding: 10px;
+      position: absolute;
+      top: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 5;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
     }
-
-    .search-box input,
-    .search-box select,
-    .search-box button {
-      padding: 12px;
-      margin: 6px;
-      border-radius: 6px;
+    .search-box input, .search-box button {
+      padding: 8px;
+      margin: 4px;
+      border-radius: 4px;
       border: 1px solid #ccc;
-      font-size: 15px;
     }
-
-    .search-box input:focus,
-    .search-box select:focus {
-      outline: none;
-      border-color: #ffd700;
-    }
-
     .search-box button {
       background: #ffd700;
-      color: #000;
-      font-weight: bold;
       border: none;
+      font-weight: bold;
       cursor: pointer;
-      transition: background 0.3s, transform 0.2s;
     }
-
-    .search-box button:hover {
-      background: #e6c200;
-      transform: scale(1.05);
-    }
-
-    footer {
-      text-align: center;
-      padding: 15px;
-      background: rgba(0, 0, 0, 0.85);
-      font-size: 14px;
-      margin-top: auto;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      header {
-        flex-direction: column;
-      }
-
-      .hero h2 {
-        font-size: 2rem;
-      }
-
-      .search-box {
-        width: 100%;
-        max-width: 400px;
-      }
-    }
+    .search-box button:hover { background: #e6c200; }
   </style>
 </head>
 <body>
-  <!-- Header -->
-  <header>
-    <h1>Hostelio</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="explore_hostels.html">Explore</a>
-     
-    </nav>
-  </header>
+  <div class="search-box">
+    <input type="text" id="searchLocation" placeholder="Enter city">
+    <button onclick="searchCity()">Search</button>
+  </div>
+  <div id="map"></div>
 
-  <!-- Hero Section -->
-  <section class="hero">
-    <h2>Find the Best Hostels Near You</h2>
-    <p>Book affordable and comfortable hostels with just a click.</p>
-    
-    <!-- Search Box -->
-    <div class="search-box">
-      <form action="explore_hostels.html" method="GET">
-        <input type="text" name="location" placeholder="Enter city" required>
-        <input type="date" name="checkin" required>
-        <input type="date" name="checkout" required>
-        <select name="guests">
-          <option value="1">1 Guest</option>
-          <option value="2">2 Guests</option>
-          <option value="3">3 Guests</option>
-          <option value="4+">4+ Guests</option>
-        </select>
-        <button type="submit">Search</button>
-      </form>
-    </div>
-  </section>
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  <!-- Footer -->
-  <footer>
-    <p>&copy; 2025 Hostelio. All Rights Reserved.</p>
-  </footer>
+    // 🔥 Firebase Config (replace with yours)
+    const firebaseConfig = {
+      apiKey: "YOUR_FIREBASE_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let map, geocoder;
+
+    // 🗺️ Initialize Google Map
+    window.initMap = async function() {
+      geocoder = new google.maps.Geocoder();
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: 17.385044, lng: 78.486671 }, // Default Hyderabad
+        zoom: 6
+      });
+
+      // Fetch hostels from Firestore
+      const querySnapshot = await getDocs(collection(db, "hostels"));
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.lat && data.lng) {
+          new google.maps.Marker({
+            position: { lat: data.lat, lng: data.lng },
+            map,
+            title: data.name || "Hostel"
+          });
+        }
+      });
+    };
+
+    // 🔍 Search city and move map
+    window.searchCity = function() {
+      const city = document.getElementById("searchLocation").value;
+      if (!city) return;
+      geocoder.geocode({ address: city }, (results, status) => {
+        if (status === "OK") {
+          map.setCenter(results[0].geometry.location);
+          map.setZoom(12);
+        } else {
+          alert("City not found: " + status);
+        }
+      });
+    };
+  </script>
+
+  <!-- Google Maps API -->
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap">
+  </script>
 </body>
 </html>

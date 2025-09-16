@@ -72,11 +72,9 @@
     <div class="title">Hostelio</div>
   </div>
   <div class="nav-links">
-    <a href="index.html">Home</a>
+    <a href="user_home.html">Home</a>
     <a href="user_dashboard.html">Dashboard</a>
     <a href="user_profile.html">Profile</a>
-    <a href="logout.html">Logout</a>
-    <a href="account_settings.html">Logout</a>
   </div>
 </header>
 
@@ -106,6 +104,7 @@
   &copy; 2025 Hostelio. All rights reserved.
 </footer>
 
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script>
   // ✅ Firebase config
   const firebaseConfig = {
@@ -120,21 +119,32 @@
   firebase.initializeApp(firebaseConfig);
 
   const auth = firebase.auth();
+  const db = firebase.firestore();
 
-  // ✅ Pre-fill form with existing user data
-  window.onload = function() {
-    let name = localStorage.getItem("userName") || "";
-    let email = localStorage.getItem("userEmail") || "";
-    let photo = localStorage.getItem("userPhoto") || "";
-
-    document.getElementById("name").value = name;
-    document.getElementById("email").value = email;
-    document.getElementById("photo").value = photo;
-  };
+  // ✅ Pre-fill form with Firestore user data
+  auth.onAuthStateChanged(async (user) => {
+    if (user) {
+      try {
+        const doc = await db.collection("users").doc(user.uid).get();
+        if (doc.exists) {
+          const data = doc.data();
+          document.getElementById("name").value = data.name || "";
+          document.getElementById("email").value = data.email || user.email;
+          document.getElementById("photo").value = data.photo || "";
+        } else {
+          console.log("⚠️ No Firestore user data, using Auth only.");
+          document.getElementById("name").value = user.displayName || "";
+          document.getElementById("email").value = user.email || "";
+          document.getElementById("photo").value = user.photoURL || "";
+        }
+      } catch (err) {
+        console.error("Error loading user data:", err);
+      }
+    }
+  });
 
   // ✅ Handle Save Changes
-  document.getElementById("settings-form").addEventListener("submit",
-function(e) {
+  document.getElementById("settings-form").addEventListener("submit", async function(e) {
     e.preventDefault();
 
     let name = document.getElementById("name").value;
@@ -145,37 +155,30 @@ function(e) {
     const user = auth.currentUser;
 
     if (user) {
-      // Update Firebase profile
-      user.updateProfile({
-        displayName: name,
-        photoURL: photo
-      }).then(() => {
-        console.log("Profile updated!");
-      });
+      try {
+        // Update Firebase Auth profile
+        await user.updateProfile({ displayName: name, photoURL: photo });
 
-      // Update email
-      if (email && email !== user.email) {
-        user.updateEmail(email).catch(err => alert("Email updatefailed: " + err.message));
+        if (email && email !== user.email) {
+          await user.updateEmail(email);
+        }
+
+        if (password) {
+          await user.updatePassword(password);
+        }
+
+        // ✅ Update Firestore
+        await db.collection("users").doc(user.uid).set({
+          name: name,
+          email: email,
+          photo: photo,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+
+        alert("✅ Account settings updated successfully!");
+      } catch (err) {
+        alert("⚠️ Error: " + err.message);
       }
-
-      // Update password if entered
-      if (password) {
-        user.updatePassword(password).catch(err => alert("Passwordupdate failed: " + err.message));
-      }
-
-      // ✅ Save to localStorage
-      localStorage.setItem("userName", name);
-      localStorage.setItem("userEmail", email);
-      localStorage.setItem("userPhoto", photo);
-      localStorage.setItem("userVerified", user.emailVerified);
-
-      alert("✅ Account settings updated!");
-
-      // ✅ Notify other tabs/pages
-      window.dispatchEvent(new Event("storage"));
     }
   });
 </script>
-
-</body>
-</html>
