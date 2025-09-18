@@ -1,93 +1,33 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Create Admin Account - Hostelio</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: url('images/bg.jpeg') no-repeat center center fixed;
-      background-size: cover;
-      color: #333;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Admin Account - Hostelio</title>
+<style>
+  body { margin:0; font-family:Arial,sans-serif; background:url('images/bg.jpeg') no-repeat center center fixed; background-size:cover; color:white; display:flex; flex-direction:column; min-height:100vh; }
+  .container { flex:1; display:flex; justify-content:center; align-items:center; }
+  .content { width:100%; max-width:450px; background:rgba(0,0,0,0.7); padding:30px; border-radius:10px; text-align:center; }
+  input { width:90%; padding:12px; margin:10px 0; border:none; border-radius:6px; font-size:16px; }
+  button { width:95%; padding:14px; margin-top:15px; font-size:18px; color:white; background:#28a745; border:none; border-radius:8px; cursor:pointer; }
+  button:hover { background:#218838; }
+  h1 { color:#ffd700; margin-bottom:20px; }
+   .logo {
+      width: 70px; height: 70px;
+      border-radius: 50%; object-fit: cover;
     }
     header {
-      background: #333;
-      color: white;
-      padding: 15px 30px;
       display: flex;
+      justify-content: space-between;
       align-items: center;
-    }
-    .logo {
-      width: 50px; 
-      height: 50px;
-      border-radius: 50%; 
-      object-fit: cover;
-      margin-right: 15px;
+      padding: 15px 30px;
+      background: rgba(0, 0, 0, 0.8);
     }
     .title {
-      font-size: 20px;
+      font-size: 24px;
       font-weight: bold;
       color: #ffd700;
-    }
-    .container {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-    .form-box {
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      width: 100%;
-      max-width: 400px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.2);
-    }
-    .form-box h2 {
-      margin-bottom: 20px;
-      text-align: center;
-      color: #333;
-    }
-    input[type="text"], input[type="password"], input[type="email"] {
-      width: 100%;
-      padding: 12px;
-      margin: 8px 0;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 16px;
-    }
-    .button {
-      width: 100%;
-      padding: 12px;
-      font-size: 17px;
-      color: white;
-      background-color: #28a745;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 10px;
-      text-align: center;
-    }
-    .button:hover {
-      background-color: #218838;
-    }
- .content {
-      width: 100%;
-      max-width: 450px;
-      background: rgba(0, 0, 0, 0.7);
-      padding: 30px;
-      border-radius: 10px;
-      text-align: center;
-    }
-     h1 {
-      color: #ffd700;
-      margin-bottom: 20px;
     }
     .nav-links a {
       color: white;
@@ -99,48 +39,67 @@
     .nav-links a:hover {
       color: #ffd700;
     }
-  </style>
+</style>
 </head>
 <body>
   <header>
     <div class="left-section">
-      <img src="images/ic.png" alt="Logo" class="logo">
-    </div>
-    <div class="title">Hostelio</div>
-    <div class="nav-links">
+    <img src="images/icon.png" alt="Logo" class="logo">
+  </div>
+   <div class="title"><h2>Hostelio</h2></div>
+      <div class="nav-links">
       <a href="index.html">Home</a>
       <a href="about.html">About Us</a>
       <a href="contact.html">Contact Us</a>
     </div>
   </header>
-
-  <div class="container">
-    <div class="content">
-      <h1>Create Admin Account</h1>
-      <form id="adminRegisterForm">
-        <input type="text" id="adminUsername" placeholder="Admin Username" required>
-        <input type="email" id="adminEmail" placeholder="Email" required>
-        <input type="password" id="adminPassword" placeholder="Password" required>
-        <input type="password" id="adminConfirmPassword" placeholder="Confirm Password" required>
-        <button type="submit" class="button">Create Account</button>
-      </form>
-  /
-    </div>
+<div class="container">
+  <div class="content">
+    <h1>Create Admin Account</h1>
+    <form id="adminRegisterForm">
+      <input type="text" id="adminUsername" placeholder="Admin Username" required>
+      <input type="email" id="adminEmail" placeholder="Email" required>
+      <input type="password" id="adminPassword" placeholder="Password" required>
+      <input type="password" id="adminConfirmPassword" placeholder="Confirm Password" required>
+      <button type="submit">Create Account</button>
+    </form>
+  </div>
 </div>
 
-  <script>
-    document.getElementById('adminRegisterForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      // Simple password match validation
-      const password = document.getElementById('adminPassword').value;
-      const confirm = document.getElementById('adminConfirmPassword').value;
-      if(password !== confirm){
-        alert('Passwords do not match!');
-        return;
-      }
-      // Go to success page
-      window.location.href = 'admin_success.html';
-    });
-  </script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyCLn45hIR-S75BEPypx1BFgOV8vA5MaqU0",
+  authDomain: "hostelio-89130.firebaseapp.com",
+  projectId: "hostelio-89130",
+  storageBucket: "hostelio-89130.appspot.com",
+  messagingSenderId: "530522106867",
+  appId: "1:530522106867:web:227d355ea3fcc63317c086",
+  measurementId: "G-CYM1EHN5G5"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+document.getElementById('adminRegisterForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const username = document.getElementById('adminUsername').value;
+  const email = document.getElementById('adminEmail').value;
+  const password = document.getElementById('adminPassword').value;
+  const confirm = document.getElementById('adminConfirmPassword').value;
+
+  if(password !== confirm){ alert('Passwords do not match!'); return; }
+
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    await updateProfile(userCredential.user, { displayName: username });
+    alert('Admin Account Created Successfully!');
+    window.location.href = 'admin_login.html';
+  } catch(error) {
+    alert(error.message);
+  }
+});
+</script>
 </body>
 </html>

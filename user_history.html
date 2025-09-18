@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Booking History - Hostelio</title>
+  <style>
+    body {
+      margin: 0; font-family: Arial, sans-serif;
+      background: url('images/bg.jpeg') no-repeat center center fixed;
+      background-size: cover; color: white;
+      display: flex; flex-direction: column; min-height: 100vh;
+    }
+    header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 15px 30px; background: rgba(0,0,0,0.8);
+    }
+    .title { font-size: 24px; font-weight: bold; color: #ffd700; }
+    .nav-links a {
+      color: white; text-decoration: none; margin-left: 20px;
+    }
+    .nav-links a:hover { color: #ffd700; }
+    main {
+      flex: 1; max-width: 900px; margin: 20px auto;
+      background: rgba(0,0,0,0.6); padding: 20px;
+      border-radius: 10px;
+    }
+    h1 { text-align: center; color: #ffd700; margin-bottom: 20px; }
+    .booking-card {
+      background: rgba(255,255,255,0.1);
+      padding: 15px; margin: 10px 0; border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    }
+    .booking-card h2 { color: #ffd700; margin: 0 0 10px; }
+    .booking-card p { margin: 5px 0; }
+    .booking-card button {
+      margin-top: 10px; padding: 8px 14px;
+      border: none; border-radius: 6px;
+      background-color: #28a745; color: white;
+      cursor: pointer; font-size: 14px;
+    }
+    .booking-card button:hover { background-color: #218838; }
+    #sign-out {
+      display: block; margin: 20px auto;
+      background-color: #dc3545; color: white;
+      padding: 10px 20px; border: none; border-radius: 8px;
+      cursor: pointer; font-size: 16px;
+    }
+    #sign-out:hover { background-color: #c82333; }
+    .logo { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="left-section">
+    <img src="images/ic.png" alt="Hostelio Logo" class="logo">
+  </div>
+  <div class="title">Hostelio</div>
+  <div class="nav-links">
+    <a href="user_home.html">Home</a>
+  </div>
+</header>
+
+<main>
+  <h1>Your Booking History</h1>
+  <div id="bookings"><p>Loading your bookings...</p></div>
+  <button id="sign-out">Sign Out</button>
+</main>
+
+<!-- jsPDF for receipts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- Firebase SDKs -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+  import { getFirestore, collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+  // ✅ Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyCLn45hIR-S75BEPypx1BFgOV8vA5MaqU0",
+    authDomain: "hostelio-89130.firebaseapp.com",
+    projectId: "hostelio-89130",
+    storageBucket: "hostelio-89130.appspot.com",
+    messagingSenderId: "530522106867",
+    appId: "1:530522106867:web:227d355ea3fcc63317c086",
+    measurementId: "G-CYM1EHN5G5"
+  };
+
+  // Init Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  let currentUser = null;
+
+  // Real-time booking loader
+  function loadBookings(user) {
+    const bookingsRef = collection(db, "bookings");
+    const q = query(bookingsRef, where("userEmail", "==", user.email));
+
+    onSnapshot(q, (snapshot) => {
+      const bookingsDiv = document.getElementById("bookings");
+      bookingsDiv.innerHTML = "";
+
+      if (snapshot.empty) {
+        bookingsDiv.innerHTML = "<p>No bookings found.</p>";
+        return;
+      }
+
+      snapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+
+        const card = document.createElement("div");
+        card.classList.add("booking-card");
+        card.innerHTML = `
+          <h2>${data.hostelName}</h2>
+          <p><strong>Check-in:</strong> ${data.checkIn}</p>
+          <p><strong>Check-out:</strong> ${data.checkOut}</p>
+          <p><strong>Guests:</strong> ${data.guests}</p>
+          <p><strong>Status:</strong> ${data.status}</p>
+          <button onclick='downloadReceipt(${JSON.stringify(data)})'>Download Receipt</button>
+        `;
+        bookingsDiv.appendChild(card);
+      });
+    });
+  }
+
+  // ✅ PDF Receipt generator with logo
+  async function downloadReceipt(data) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Load Hostelio logo
+    const logoUrl = "images/ic.png";
+    const logo = await fetch(logoUrl).then(res => res.blob()).then(blob => {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.readAsDataURL(blob);
+      });
+    });
+
+    // Add logo
+    doc.addImage(logo, "PNG", 160, 10, 40, 40);
+
+    // Title
+    doc.setFontSize(18);
+    doc.text("Hostelio Booking Receipt", 20, 30);
+
+    // User info
+    doc.setFontSize(12);
+    doc.text(`Name: ${currentUser?.displayName || "N/A"}`, 20, 50);
+    doc.text(`Email: ${currentUser?.email || "N/A"}`, 20, 60);
+
+    // Booking info
+    doc.text(`Hostel: ${data.hostelName}`, 20, 80);
+    doc.text(`Check-in: ${data.checkIn}`, 20, 90);
+    doc.text(`Check-out: ${data.checkOut}`, 20, 100);
+    doc.text(`Guests: ${data.guests}`, 20, 110);
+    doc.text(`Status: ${data.status}`, 20, 120);
+
+    // Footer
+    doc.text("Thank you for booking with Hostelio!", 20, 140);
+
+    doc.save(`Booking_Receipt_${data.hostelName}.pdf`);
+  }
+
+  // Expose downloadReceipt globally
+  window.downloadReceipt = downloadReceipt;
+
+  // Auth state listener
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      currentUser = user;
+      loadBookings(user);
+    } else {
+      window.location.href = "user_login.html";
+    }
+  });
+
+  // Sign out
+  document.getElementById("sign-out").addEventListener("click", () => {
+    signOut(auth).then(() => {
+      window.location.href = "user_login.html";
+    });
+  });
+</script>
+</body>
+</html>

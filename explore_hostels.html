@@ -1,105 +1,308 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hostelio - Explore Hostels</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Explore Hostels - Hostelio</title>
   <style>
-    body { margin:0; font-family: Arial, sans-serif; }
-    #map { height: 80vh; width: 100%; }
-    .search-box {
-      background: #fff;
-      padding: 10px;
-      position: absolute;
-      top: 15px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 5;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url('images/bg.jpeg') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
-    .search-box input, .search-box button {
-      padding: 8px;
-      margin: 4px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: -1;
     }
-    .search-box button {
-      background: #ffd700;
-      border: none;
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: white;
+    }
+    .title {
+      font-size: 24px;
       font-weight: bold;
+    }
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-size: 16px;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover {
+      color: #ffd700;
+    }
+    main {
+      flex: 1;
+      background: rgba(0, 0, 0, 0.6);
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(8px);
+    }
+    h1 {
+      font-size: 36px;
+      margin-bottom: 20px;
+      color: #ffd700;
+      text-align: center;
+    }
+    form {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+      gap: 10px;
+    }
+    input[type="text"] {
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      width: 300px;
+    }
+    button {
+      padding: 14px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background-color: #28a745;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      color: white;
+    }
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #ccc;
+      text-align: left;
+    }
+    th {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    tr:hover {
+      background-color: rgba(255, 255, 255, 0.1);
       cursor: pointer;
     }
-    .search-box button:hover { background: #e6c200; }
+    #recentLocations, #foundHostelsList {
+      margin-top: 30px;
+    }
+    .found-hostel-item {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    .found-hostel-item strong {
+      color: #ffd700;
+    }
+    .found-hostel-item span {
+      display: block;
+      font-size: 14px;
+      color: #ddd;
+    }
+    #recentLocations h3 {
+      color: white;
+    }
+    #recentLocations a {
+      color: white;
+      font-weight: normal;
+      text-decoration: none;
+    }
+    #recentLocations a:hover {
+      color: #ffd700;
+      text-decoration: underline;
+    }
+    #hostelModal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.85);
+      padding: 30px;
+      border-radius: 12px;
+      display: none;
+      z-index: 999;
+      color: #fff;
+      max-width: 400px;
+    }
+    #hostelModal h2 {
+      margin-top: 0;
+      color: #ffd700;
+    }
+    #closeModal {
+      margin-top: 15px;
+      padding: 8px 16px;
+      background: #dc3545;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .logo {
+      width: 70px; height: 70px;
+      border-radius: 50%; object-fit: cover;
+    }
   </style>
 </head>
 <body>
-  <div class="search-box">
-    <input type="text" id="searchLocation" placeholder="Enter city">
-    <button onclick="searchCity()">Search</button>
+  
+  <header>
+  
+    <div class="left-section">
+    <img src="images/icon.png" alt="Logo" class="logo">
   </div>
-  <div id="map"></div>
+    <div class="title">Hostelio</div>
+    <div class="nav-links">
+      <a href="user_home.html">Home</a>
+      <a href="user_profile.html">Profile</a>
+      <a href="index.html">Logout</a>
+    </div>
+  </header>
 
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  <main>
+    <h1>Explore Hostels</h1>
+    <form id="searchForm">
+      <input type="text" id="locationInput" placeholder="Enter location (e.g., Mumbai)" />
+      <button type="submit">Search</button>
+    </form>
+    <div id="recentLocations"></div>
+    <table id="resultsTable" style="display:none;">
+      <thead>
+        <tr>
+          <th>Hostel Name</th>
+          <th>Location</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div id="foundHostelsList"></div>
+  </main>
 
-    // 🔥 Firebase Config (replace with yours)
-    const firebaseConfig = {
-      apiKey: "YOUR_FIREBASE_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
+  <div id="hostelModal">
+    <h2 id="modalName"></h2>
+    <p id="modalLocation"></p>
+    <p id="modalDescription"></p>
+    <p id="modalRating"></p>
+    <p id="modalPrice"></p>
+    <button id="closeModal">Close</button>
+  </div>
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+  <script>
+    const hostels = [
+      { name: 'Sunrise Hostel', location: 'Mumbai', description: 'Cozy hostel near the beach.', rating: 4.5, price: '$20' },
+      { name: 'Green Garden Hostel', location: 'Delhi', description: 'Peaceful hostel with garden views.', rating: 4.4, price: '$18' },
+      { name: 'City Lights Hostel', location: 'Bangalore', description: 'Modern hostel in city center.', rating: 4.7, price: '$25' },
+      { name: 'Hilltop Hostel', location: 'Shimla', description: 'Beautiful hilltop stay with mountain views.', rating: 4.8, price: '$28' },
+      { name: 'Beach Breeze Hostel', location: 'Chennai', description: 'Next to Marina Beach.', rating: 4.4, price: '$20' },
+      { name: 'Pearl Residency', location: 'Hyderabad', description: 'In heart of the city.', rating: 4.5, price: '$24' },
+      { name: 'Pink House Hostel', location: 'Jaipur', description: 'Close to the Pink City market.', rating: 4.3, price: '$22' },
+      { name: 'Lakeside Hostel', location: 'Gudlavalleru', description: 'Scenic hostel with lakeside view.', rating: 4.5, price: '$18' },
+      { name: 'Campus Stay', location: 'Gudlavalleru', description: 'Popular among students.', rating: 4.6, price: '$16' },
+      { name: 'River View Hostel', location: 'Eluru', description: 'Relaxing stay near riverbanks.', rating: 4.3, price: '$19' },
+      { name: 'Sri Krishna Hostel', location: 'Machilipatnam', description: 'Affordable and central.', rating: 4.2, price: '$17' },
+      { name: 'Gateway Hostel', location: 'Vijayawada', description: 'Convenient spot near transit.', rating: 4.4, price: '$21' },
+      { name: 'Golden Palm Hostel', location: 'Vijayawada', description: 'Clean and quiet.', rating: 4.5, price: '$22' },
+      { name: 'Surya Residency', location: 'Kakinada', description: 'Budget-friendly and secure.', rating: 4.1, price: '$18' }
+    ];
 
-    let map, geocoder;
+    const form = document.getElementById('searchForm');
+    const resultsTable = document.getElementById('resultsTable');
+    const tbody = resultsTable.querySelector('tbody');
+    const recentLocationsDiv = document.getElementById('recentLocations');
+    const foundHostelsList = document.getElementById('foundHostelsList');
+    const hostelModal = document.getElementById('hostelModal');
+    const closeModal = document.getElementById('closeModal');
 
-    // 🗺️ Initialize Google Map
-    window.initMap = async function() {
-      geocoder = new google.maps.Geocoder();
-      map = new google.maps.Map(document.getElementById("map"), {
-        center: { lat: 17.385044, lng: 78.486671 }, // Default Hyderabad
-        zoom: 6
+    let recentLocations = [];
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const location = document.getElementById('locationInput').value.trim();
+      if (!location) {
+        alert('Please enter a location to search.');
+        resultsTable.style.display = 'none';
+        return;
+      }
+
+      const encodedLocation = encodeURIComponent(location);
+      const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedLocation}`;
+      window.open(mapsUrl, '_blank');
+
+      if (!recentLocations.includes(location)) {
+        recentLocations.unshift(location);
+        if (recentLocations.length > 5) recentLocations.pop();
+        renderRecentLocations();
+      }
+
+      const filtered = hostels.filter(h => h.location.toLowerCase().includes(location.toLowerCase()));
+      tbody.innerHTML = '';
+      foundHostelsList.innerHTML = '';
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">No hostels found for "${location}"</td></tr>`;
+      } else {
+        filtered.forEach(h => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${h.name}</td><td>${h.location}</td><td>${h.description}</td>`;
+          tr.addEventListener('click', () => openModal(h));
+          tbody.appendChild(tr);
+
+          const foundDiv = document.createElement('div');
+          foundDiv.className = 'found-hostel-item';
+          foundDiv.innerHTML = `<strong>${h.name}</strong> (${h.location}): ${h.description}<span>⭐ ${h.rating} | ${h.price}</span>`;
+          foundDiv.addEventListener('click', () => openModal(h));
+          foundHostelsList.appendChild(foundDiv);
+        });
+      }
+
+      resultsTable.style.display = 'table';
+    });
+
+    function renderRecentLocations() {
+      recentLocationsDiv.innerHTML = '<h3>Recently Visited</h3>';
+      recentLocations.forEach(loc => {
+        const p = document.createElement('p');
+        p.innerHTML = `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc)}" target="_blank">${loc}</a>`;
+        recentLocationsDiv.appendChild(p);
       });
+    }
 
-      // Fetch hostels from Firestore
-      const querySnapshot = await getDocs(collection(db, "hostels"));
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        if (data.lat && data.lng) {
-          new google.maps.Marker({
-            position: { lat: data.lat, lng: data.lng },
-            map,
-            title: data.name || "Hostel"
-          });
-        }
-      });
-    };
+    function openModal(hostel) {
+      document.getElementById('modalName').innerText = hostel.name;
+      document.getElementById('modalLocation').innerText = `Location: ${hostel.location}`;
+      document.getElementById('modalDescription').innerText = hostel.description;
+      document.getElementById('modalRating').innerText = `Rating: ${hostel.rating}`;
+      document.getElementById('modalPrice').innerText = `Price: ${hostel.price}`;
+      hostelModal.style.display = 'block';
+    }
 
-    // 🔍 Search city and move map
-    window.searchCity = function() {
-      const city = document.getElementById("searchLocation").value;
-      if (!city) return;
-      geocoder.geocode({ address: city }, (results, status) => {
-        if (status === "OK") {
-          map.setCenter(results[0].geometry.location);
-          map.setZoom(12);
-        } else {
-          alert("City not found: " + status);
-        }
-      });
-    };
-  </script>
-
-  <!-- Google Maps API -->
-  <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap">
+    closeModal.addEventListener('click', () => {
+      hostelModal.style.display = 'none';
+    });
   </script>
 </body>
-</html>
