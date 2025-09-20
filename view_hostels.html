@@ -1,69 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>View Hostels - Hostelio Admin</title>
+  <title>View Hostels - Hostelio</title>
   <style>
     body {
-      margin: 0; font-family: Arial, sans-serif;
+      margin: 0;
+      font-family: Arial, sans-serif;
       background: url('images/bg.jpeg') no-repeat center center fixed;
-      background-size: cover; color: white;
-      display: flex; flex-direction: column; min-height: 100vh;
+      background-size: cover;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
     header {
-      background: rgba(0,0,0,0.8); padding: 15px 30px;
-      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(0,0,0,0.8);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     .title { font-size: 24px; font-weight: bold; color: #ffd700; }
     .nav-links a { color: white; margin-left: 20px; text-decoration: none; }
     .nav-links a:hover { color: #ffd700; }
-    main { flex: 1; padding: 20px; background: rgba(0,0,0,0.7); }
+    main { flex: 1; padding: 20px; }
     h1 { text-align: center; color: #ffd700; margin-bottom: 20px; }
     .hostel-list {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 20px;
     }
-    .logo {
-      width: 70px; height: 70px;
-      border-radius: 50%; object-fit: cover;
-    }
-    .card {
-      background: rgba(255,255,255,0.1);
-      padding: 15px;
+    .hostel-card {
+      background: rgba(0,0,0,0.6);
       border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+      transition: transform 0.2s;
     }
-    .card h2 { color: #ffd700; margin-bottom: 10px; }
-    .card img {
-      width: 100%; max-height: 180px; object-fit: cover;
-      border-radius: 8px; margin-bottom: 10px;
+    .hostel-card:hover { transform: scale(1.03); }
+    .hostel-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      background: #333;
     }
-    .card p { margin: 5px 0; }
-    .actions {
-      display: flex; gap: 10px; margin-top: 10px;
-    }
-    .btn {
-      flex: 1;
-      padding: 10px;
-      border: none; border-radius: 6px;
-      font-size: 14px; cursor: pointer;
-    }
-    .edit-btn { background: #28a745; color: white; }
-    .edit-btn:hover { background: #218838; }
-    .delete-btn { background: #dc3545; color: white; }
-    .delete-btn:hover { background: #c82333; }
-    footer {
-      background: rgba(0,0,0,0.8);
-      text-align: center; padding: 10px; font-size: 14px;
-    }
+    .hostel-info { padding: 15px; }
+    .hostel-info h2 { margin: 0 0 10px; color: #ffd700; font-size: 20px; }
+    .hostel-info p { margin: 5px 0; }
+    .price { font-weight: bold; color: #00ff99; }
   </style>
 </head>
 <body>
 <header>
-   <div class="left-section">
-    <img src="images/ic.png" alt="Logo" class="logo">
-  </div>
   <div class="title">Hostelio - Admin</div>
   <div class="nav-links">
     <a href="admin_dashboard.html">Dashboard</a>
@@ -72,17 +62,14 @@
 </header>
 
 <main>
-  <h1>All Hostels</h1>
-  <div class="hostel-list" id="hostelList"></div>
+  <h1>View Hostels</h1>
+  <div class="hostel-list" id="hostelList">Loading...</div>
 </main>
-
-<footer>
-  &copy; 2025 Hostelio. All rights reserved.
-</footer>
 
 <!-- ✅ Firebase SDK v8 -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
 <script>
   // ✅ Firebase config
   const firebaseConfig = {
@@ -99,9 +86,7 @@
 
   const hostelList = document.getElementById("hostelList");
 
-  // ✅ Fetch hostels
   async function loadHostels() {
-    hostelList.innerHTML = "<p>Loading hostels... ⏳</p>";
     try {
       const snapshot = await db.collection("hostels").orderBy("createdAt", "desc").get();
       if (snapshot.empty) {
@@ -112,80 +97,37 @@
       hostelList.innerHTML = "";
       snapshot.forEach(doc => {
         const hostel = doc.data();
-        const card = document.createElement("div");
-        card.className = "card";
+        console.log("🔥 Hostel data:", hostel);
 
-        card.innerHTML = `
-          <h2>${hostel.name}</h2>
-          ${hostel.images && hostel.images.length > 0 
-            ? `<img src="${hostel.images[0]}" alt="${hostel.name}">` 
-            : `<img src="images/no-image.png" alt="No image">`}
-          <p><b>Location:</b> ${hostel.location}</p>
-          <p><b>Rooms:</b> ${hostel.rooms}</p>
-          <p><b>Price:</b> ₹${hostel.price} / month</p>
-          <p>${hostel.description}</p>
-          <div class="actions">
-            <button class="btn edit-btn" onclick="editHostel('${doc.id}', '${hostel.name}', '${hostel.location}', '${hostel.description}', ${hostel.rooms}, ${hostel.price})">Edit</button>
-            <button class="btn delete-btn" onclick="deleteHostel('${doc.id}')">Delete</button>
+        // ✅ Ensure images array exists
+        let imageUrl = "images/default_hostel.jpg";
+        if (Array.isArray(hostel.images) && hostel.images.length > 0) {
+          imageUrl = hostel.images[0]; // Use first uploaded image
+        }
+
+        console.log("🖼 Image used:", imageUrl);
+
+        const card = `
+          <div class="hostel-card">
+            <img src="${imageUrl}" alt="${hostel.name}"
+                 onerror="this.src='images/default_hostel.jpg'">
+            <div class="hostel-info">
+              <h2>${hostel.name}</h2>
+              <p><strong>Location:</strong> ${hostel.location}</p>
+              <p>${hostel.description}</p>
+              <p class="price">₹${hostel.price} / month</p>
+              <p><strong>Rooms:</strong> ${hostel.rooms}</p>
+            </div>
           </div>
         `;
-
-        hostelList.appendChild(card);
+        hostelList.innerHTML += card;
       });
-    } catch (error) {
-      console.error("❌ Error loading hostels:", error);
+    } catch (err) {
+      console.error("❌ Error loading hostels:", err);
       hostelList.innerHTML = "<p>❌ Failed to load hostels.</p>";
     }
   }
 
-  // ✅ Delete hostel
-  async function deleteHostel(id) {
-    if (!confirm("Are you sure you want to delete this hostel?")) return;
-    try {
-      await db.collection("hostels").doc(id).delete();
-      alert("✅ Hostel deleted successfully!");
-      loadHostels();
-    } catch (error) {
-      console.error("❌ Error deleting hostel:", error);
-      alert("❌ Failed to delete hostel.");
-    }
-  }
-
-  // ✅ Edit hostel (basic prompt-based)
-  async function editHostel(id, name, location, description, rooms, price) {
-    const newName = prompt("Edit Hostel Name:", name);
-    if (!newName) return;
-
-    const newLocation = prompt("Edit Location:", location);
-    if (!newLocation) return;
-
-    const newDescription = prompt("Edit Description:", description);
-    if (!newDescription) return;
-
-    const newRooms = prompt("Edit Rooms:", rooms);
-    if (!newRooms) return;
-
-    const newPrice = prompt("Edit Price:", price);
-    if (!newPrice) return;
-
-    try {
-      await db.collection("hostels").doc(id).update({
-        name: newName,
-        location: newLocation,
-        description: newDescription,
-        rooms: parseInt(newRooms),
-        price: parseFloat(newPrice),
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      alert("✅ Hostel updated successfully!");
-      loadHostels();
-    } catch (error) {
-      console.error("❌ Error updating hostel:", error);
-      alert("❌ Failed to update hostel.");
-    }
-  }
-
-  // Load hostels when page loads
   loadHostels();
 </script>
 </body>

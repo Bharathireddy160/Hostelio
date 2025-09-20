@@ -1,247 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Explore Hostels - Hostelio</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
+      margin: 0; font-family: Arial, sans-serif;
       background: url('images/bg.jpeg') no-repeat center center fixed;
-      background-size: cover;
-      color: #333;
-      display: flex;
-      flex-direction: column;
+      background-size: cover; color: white;
       min-height: 100vh;
+      display: flex; flex-direction: column;
     }
-
-    /* Header */
     header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 30px;
-      background: rgba(0,0,0,0.8);
+      background: rgba(0,0,0,0.8); padding: 15px 30px;
+      display: flex; justify-content: space-between; align-items: center;
     }
-
-    .left-section {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    .title { font-size: 24px; font-weight: bold; color: #ffd700; }
+    .nav-links a { color: white; margin-left: 20px; text-decoration: none; }
+    .nav-links a:hover { color: #ffd700; }
+    main { flex: 1; padding: 20px; }
+    h1 { text-align: center; color: #ffd700; margin-bottom: 20px; }
+    .hostel-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
     }
-
     .logo {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      object-fit: cover;
+      width: 70px; height: 70px;
+      border-radius: 50%; object-fit: cover;
     }
-
-    .title {
-      font-size: 24px;
-      font-weight: bold;
-      color: #ffd700;
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .nav-links a {
-      color: white;
-      text-decoration: none;
-      font-size: 16px;
-      transition: color 0.3s;
-    }
-
-    .nav-links a:hover {
-      color: #ffd700;
-    }
-
-    /* Search */
-    #searchContainer {
-      margin: 20px auto;
-      text-align: center;
-    }
-
-    #searchInput {
-      padding: 10px;
-      width: 300px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-
-    #searchBtn {
-      padding: 10px 15px;
-      border-radius: 5px;
-      border: none;
-      background-color: #007bff;
-      color: #fff;
-      cursor: pointer;
-      margin-left: 5px;
-    }
-
-    /* Hostel cards */
-    #hostelResults {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-      padding: 20px;
-      flex: 1;
-    }
-
     .hostel-card {
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 10px;
+      background: rgba(0,0,0,0.7);
       padding: 15px;
-      width: 260px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .hostel-card img {
-      width: 100%;
-      height: 150px;
-      object-fit: cover;
       border-radius: 10px;
-      margin-bottom: 10px;
+      overflow: hidden;
+      display: flex; flex-direction: column;
     }
-
-    .hostel-name {
-      font-weight: bold;
-      font-size: 18px;
-      margin-bottom: 5px;
-      text-align: center;
+    .hostel-card img {
+      width: 100%; height: 180px; object-fit: cover;
+      border-radius: 10px; margin-bottom: 10px;
     }
-
-    .hostel-info {
-      margin-bottom: 5px;
-      text-align: center;
-    }
-
-    .rating {
-      color: #FFD700;
-      margin-bottom: 10px;
-    }
-
-    .book-btn {
-      padding: 8px 12px;
-      border: none;
-      border-radius: 5px;
-      background-color: #28a745;
-      color: white;
-      cursor: pointer;
-      text-decoration: none;
-    }
-
-    footer {
-      text-align: center;
-      padding: 10px 0;
-      background: rgba(0,0,0,0.8);
-      font-size: 14px;
-      color: white;
-    }
+    .hostel-card h2 { margin: 0; color: #ffd700; font-size: 20px; }
+    .hostel-card p { margin: 5px 0; font-size: 14px; }
   </style>
 </head>
 <body>
-
 <header>
-  <div class="left-section">
+   <div class="left-section">
     <img src="images/ic.png" alt="Logo" class="logo">
-    <div class="title">Hostelio</div>
   </div>
+  <div class="title">Hostelio</div>
   <div class="nav-links">
-    <a href="user_home.html">Home</a>
     <a href="user_dashboard.html">Dashboard</a>
-    <a href="my_bookings.html">History</a>
-    <a href="index.html">Logout</a>
+    <a href="explore_hostels.html">Explore</a>
   </div>
 </header>
 
-<div id="searchContainer">
-  <input type="text" id="searchInput" placeholder="Search hostels by name...">
-  <button id="searchBtn">Search</button>
-</div>
+<main>
+  <h1>Available Hostels</h1>
+  <div class="hostel-list" id="hostelList"></div>
+</main>
 
-<div id="hostelResults"></div>
+<!-- ✅ Firebase SDK v8 -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
-<footer>
-  &copy; 2025 Hostelio. All rights reserved.
-</footer>
-
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-analytics.js";
-  import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-firestore.js";
-
+<script>
+  // ✅ Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyCLn45hIR-S75BEPypx1BFgOV8vA5MaqU0",
     authDomain: "hostelio-89130.firebaseapp.com",
-    databaseURL: "https://hostelio-89130-default-rtdb.firebaseio.com",
     projectId: "hostelio-89130",
-    storageBucket: "hostelio-89130.firebasestorage.app",
+    storageBucket: "hostelio-89130.appspot.com",
     messagingSenderId: "530522106867",
     appId: "1:530522106867:web:227d355ea3fcc63317c086",
     measurementId: "G-CYM1EHN5G5"
   };
+  firebase.initializeApp(firebaseConfig);
 
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-  const db = getFirestore(app);
+  const db = firebase.firestore();
+  const hostelList = document.getElementById("hostelList");
 
-  const searchInput = document.getElementById('searchInput');
-  const searchBtn = document.getElementById('searchBtn');
-  const hostelResults = document.getElementById('hostelResults');
+  // ✅ Fetch hostels from Firestore
+  async function loadHostels() {
+    const snapshot = await db.collection("hostels").orderBy("createdAt", "desc").get();
+    hostelList.innerHTML = "";
 
-  function displayResults(hostels) {
-    hostelResults.innerHTML = '';
-    if (hostels.length === 0) {
-      hostelResults.innerHTML = '<p>No hostels found.</p>';
-      return;
-    }
+    snapshot.forEach(doc => {
+      const hostel = doc.data();
 
-    hostels.forEach(hostel => {
-      const div = document.createElement('div');
-      div.className = 'hostel-card';
-      div.innerHTML = `
-        <img src="${hostel.image || 'images/default_hostel.jpg'}" alt="${hostel.name}">
-        <div class="hostel-name">${hostel.name}</div>
-        <div class="hostel-info">Location: ${hostel.location}</div>
-        <div class="hostel-info">Price per night: ₹${hostel.price}</div>
-        <div class="rating">${'★'.repeat(Math.round(hostel.rating || 0))}${'☆'.repeat(5 - Math.round(hostel.rating || 0))}</div>
-        <a href="hostel_details.html?id=${hostel.id}" class="book-btn">Book Now</a>
+      // Use the first image if available
+      const imgUrl = hostel.images && hostel.images.length > 0 
+        ? hostel.images[0] 
+        : "images/default-hostel.jpg"; // fallback image
+
+      const card = `
+        <div class="hostel-card">
+          <img src="${imgUrl}" alt="${hostel.name}">
+          <h2>${hostel.name}</h2>
+          <p><strong>Location:</strong> ${hostel.location}</p>
+          <p><strong>Rooms:</strong> ${hostel.rooms}</p>
+          <p><strong>Price:</strong> ₹${hostel.price}/month</p>
+          <p>${hostel.description}</p>
+        </div>
       `;
-      hostelResults.appendChild(div);
+      hostelList.innerHTML += card;
     });
   }
 
-  async function searchHostels(searchText) {
-    const hostelsRef = collection(db, 'hostels');
-    let q;
-    if (searchText.trim() === '') {
-      q = hostelsRef;
-    } else {
-      q = query(hostelsRef, where('searchKeywords', 'array-contains', searchText.toLowerCase()));
-    }
-    const snapshot = await getDocs(q);
-    const results = [];
-    snapshot.forEach(doc => results.push({ id: doc.id, ...doc.data() }));
-    displayResults(results);
-  }
-
-  // Initial load
-  searchHostels('');
-
-  searchBtn.addEventListener('click', () => searchHostels(searchInput.value));
-  searchInput.addEventListener('input', () => searchHostels(searchInput.value));
-
+  loadHostels();
 </script>
 </body>
 </html>
