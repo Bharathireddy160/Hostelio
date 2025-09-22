@@ -5,44 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Add Hostel - Hostelio Admin</title>
 <style>
-body {
-  margin: 0; font-family: Arial, sans-serif;
-  background: url('images/bg.jpeg') no-repeat center center fixed;
-  background-size: cover; color: white;
-  display: flex; flex-direction: column; min-height: 100vh;
-}
-.logo {
-  width: 70px; height: 70px;
-  border-radius: 50%; object-fit: cover}
-header {
-  background: rgba(0,0,0,0.8); padding: 15px 30px;
-  display: flex; justify-content: space-between; align-items: center;
-}
-.title { font-size: 24px; font-weight: bold; color: #ffd700; }
-.nav-links a { color: white; margin-left: 20px; text-decoration: none; }
-.nav-links a:hover { color: #ffd700; }
-main {
-  flex: 1; background: rgba(0, 0, 0, 0.6);
-  max-width: 600px; margin: 30px auto; padding: 20px; border-radius: 10px;
-}
-h1 { text-align: center; color: #ffd700; margin-bottom: 20px; }
-form { display: flex; flex-direction: column; gap: 12px; }
-label { font-weight: bold; }
-input, textarea { padding: 10px; border-radius: 6px; border: none; font-size: 16px; }
-button {
-  background-color: #007bff; color: white; padding: 14px;
-  font-size: 18px; border: none; border-radius: 8px; cursor: pointer;
-}
-button:hover { background-color: #0056b3; }
-#statusMsg { text-align: center; margin-top: 15px; font-weight: bold; }
+body { margin:0; font-family: Arial,sans-serif; background:url('images/bg.jpeg') no-repeat center center fixed; background-size:cover; color:white; display:flex; flex-direction:column; min-height:100vh; }
+.logo{width:70px;height:70px;border-radius:50%;object-fit:cover}
+header{background:rgba(0,0,0,0.8);padding:15px 30px;display:flex;justify-content:space-between;align-items:center}
+.title{font-size:24px;font-weight:bold;color:#ffd700}
+.nav-links a{color:white;margin-left:20px;text-decoration:none}
+.nav-links a:hover{color:#ffd700}
+main{flex:1;background:rgba(0,0,0,0.6);max-width:600px;margin:30px auto;padding:20px;border-radius:10px}
+h1{text-align:center;color:#ffd700;margin-bottom:20px}
+form{display:flex;flex-direction:column;gap:12px}
+label{font-weight:bold}
+input,textarea{padding:10px;border-radius:6px;border:none;font-size:16px}
+button{background-color:#007bff;color:white;padding:14px;font-size:18px;border:none;border-radius:8px;cursor:pointer}
+button:hover{background-color:#0056b3}
+#statusMsg{text-align:center;margin-top:15px;font-weight:bold}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">
-    <img src="images/ic.png" alt="Logo" class="logo">
-  </div>
+  <div class="logo"><img src="images/ic.png" alt="Logo" class="logo"></div>
   <div class="title">Hostelio - Admin</div>
   <div class="nav-links">
     <a href="admin_dashboard.html">Dashboard</a>
@@ -53,38 +35,31 @@ button:hover { background-color: #0056b3; }
 </header>
 
 <main>
-  <h1>Add Hostel</h1>
+<h1>Add Hostel</h1>
 
-  <!-- Admin Login Form -->
-  <div id="loginSection">
-    <label>Email:</label>
-    <input type="email" id="adminEmail" placeholder="admin@example.com">
-    <label>Password:</label>
-    <input type="password" id="adminPassword" placeholder="password">
-    <button id="loginBtn">Login as Admin</button>
-  </div>
+<!-- Admin Login Form -->
+<div id="loginSection">
+<label>Email:</label>
+<input type="email" id="adminEmail" placeholder="admin@example.com">
+<label>Password:</label>
+<input type="password" id="adminPassword" placeholder="password">
+<button id="loginBtn">Login</button>
+</div>
 
-  <!-- Hostel Form (hidden until admin logs in) -->
-  <form id="hostelForm" style="display:none;">
-    <label>Hostel Name</label>
-    <input type="text" id="name" required>
-    <label>Location</label>
-    <input type="text" id="location" required>
-    <label>Description</label>
-    <textarea id="description" rows="3" required></textarea>
-    <label>No. of Rooms</label>
-    <input type="number" id="rooms" required>
-    <label>Price (per month)</label>
-    <input type="number" id="price" required>
-    <label>Image URLs (comma separated)</label>
-    <input type="text" id="images">
-    <button type="submit">Add Hostel</button>
-  </form>
+<!-- Hostel Form -->
+<form id="hostelForm" style="display:none;">
+<label>Hostel Name</label><input type="text" id="name" required>
+<label>Location</label><input type="text" id="location" required>
+<label>Description</label><textarea id="description" rows="3" required></textarea>
+<label>No. of Rooms</label><input type="number" id="rooms" required>
+<label>Price (per month)</label><input type="number" id="price" required>
+<label>Image URLs (comma separated)</label><input type="text" id="images">
+<button type="submit">Add Hostel</button>
+</form>
 
-  <p id="statusMsg"></p>
+<p id="statusMsg"></p>
 </main>
 
-<!-- Firebase SDK v8 -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
@@ -96,63 +71,54 @@ const firebaseConfig = {
   projectId: "hostelio-89130",
   storageBucket: "hostelio-89130.appspot.com",
   messagingSenderId: "530522106867",
-  appId: "1:530522106867:web:227d355ea3fcc63317c086",
-  measurementId: "G-CYM1EHN5G5"
+  appId: "1:530522106867:web:227d355ea3fcc63317c086"
 };
 firebase.initializeApp(firebaseConfig);
-
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// Admin Login
-document.getElementById("loginBtn").addEventListener("click", () => {
+// Login (bypassing admin claim check)
+document.getElementById("loginBtn").addEventListener("click", ()=>{
   const email = document.getElementById("adminEmail").value;
   const password = document.getElementById("adminPassword").value;
   document.getElementById("statusMsg").innerText = "⏳ Logging in...";
-
-  auth.signInWithEmailAndPassword(email, password)
-    .then((userCredential) => {
-      document.getElementById("statusMsg").innerText = "✅ Logged in as " + email;
-      document.getElementById("userEmail").innerText = email;
-      document.getElementById("loginSection").style.display = "none";
-      document.getElementById("hostelForm").style.display = "flex";
-    })
-    .catch(err => {
-      console.error(err);
-      document.getElementById("statusMsg").innerText = "❌ " + err.message;
-    });
+  
+  auth.signInWithEmailAndPassword(email,password)
+  .then(userCred=>{
+    document.getElementById("statusMsg").innerText = "✅ Logged in as " + email;
+    document.getElementById("userEmail").innerText = email;
+    document.getElementById("loginSection").style.display = "none";
+    document.getElementById("hostelForm").style.display = "flex";
+  })
+  .catch(err=>{console.error(err); document.getElementById("statusMsg").innerText="❌ "+err.message});
 });
 
 // Logout
-document.getElementById("logoutBtn").addEventListener("click", () => {
-  auth.signOut().then(() => {
-    location.reload();
-  });
+document.getElementById("logoutBtn").addEventListener("click", ()=>{
+  auth.signOut().then(()=>{location.reload()});
 });
 
-// Add Hostel Form
-document.getElementById("hostelForm").addEventListener("submit", async (e) => {
+// Add Hostel
+document.getElementById("hostelForm").addEventListener("submit", async e=>{
   e.preventDefault();
   const name = document.getElementById("name").value;
   const location = document.getElementById("location").value;
   const description = document.getElementById("description").value;
   const rooms = parseInt(document.getElementById("rooms").value);
   const price = parseFloat(document.getElementById("price").value);
-  const images = document.getElementById("images").value
-    .split(",").map(img => img.trim()).filter(img => img.length > 0);
+  const images = document.getElementById("images").value.split(",").map(i=>i.trim()).filter(i=>i.length>0);
 
-  try {
+  try{
     await db.collection("hostels").add({
-      name, location, description, rooms, price,
-      images,
+      name, location, description, rooms, price, images,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       addedBy: auth.currentUser.email
     });
     document.getElementById("statusMsg").innerText = "✅ Hostel added successfully!";
     document.getElementById("hostelForm").reset();
-  } catch (error) {
-    console.error(error);
-    document.getElementById("statusMsg").innerText = "❌ " + error.message;
+  } catch(err){
+    console.error(err);
+    document.getElementById("statusMsg").innerText = "❌ " + err.message;
   }
 });
 </script>

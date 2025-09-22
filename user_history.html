@@ -113,14 +113,21 @@
 
         const card = document.createElement("div");
         card.classList.add("booking-card");
+
         card.innerHTML = `
           <h2>${data.hostelName}</h2>
           <p><strong>Check-in:</strong> ${data.checkIn}</p>
           <p><strong>Check-out:</strong> ${data.checkOut}</p>
           <p><strong>Guests:</strong> ${data.guests}</p>
           <p><strong>Status:</strong> ${data.status}</p>
-          <button onclick='downloadReceipt(${JSON.stringify(data)})'>Download Receipt</button>
         `;
+
+        // ✅ Create button properly
+        const btn = document.createElement("button");
+        btn.textContent = "Download Receipt";
+        btn.addEventListener("click", () => downloadReceipt(data));
+        card.appendChild(btn);
+
         bookingsDiv.appendChild(card);
       });
     });
@@ -166,23 +173,20 @@
     doc.save(`Booking_Receipt_${data.hostelName}.pdf`);
   }
 
-  // Expose downloadReceipt globally
-  window.downloadReceipt = downloadReceipt;
-
   // Auth state listener
   onAuthStateChanged(auth, (user) => {
     if (user) {
       currentUser = user;
       loadBookings(user);
     } else {
-      window.location.href = "user_login.html";
+      window.location.href = "userlogin.html";
     }
   });
 
   // Sign out
   document.getElementById("sign-out").addEventListener("click", () => {
     signOut(auth).then(() => {
-      window.location.href = "user_login.html";
+      window.location.href = "userlogin.html";
     });
   });
 </script>

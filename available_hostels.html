@@ -43,6 +43,20 @@
     }
     .hostel-card h2 { margin: 0; color: #ffd700; font-size: 20px; }
     .hostel-card p { margin: 5px 0; font-size: 14px; }
+    .book-btn {
+      margin-top: 10px;
+      padding: 10px;
+      border: none;
+      background: #ffd700;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: 0.3s;
+    }
+    .book-btn:hover {
+      background: #ffcc00;
+    }
   </style>
 </head>
 <body>
@@ -89,6 +103,7 @@
 
     snapshot.forEach(doc => {
       const hostel = doc.data();
+      const hostelId = doc.id;
 
       // Use the first image if available
       const imgUrl = hostel.images && hostel.images.length > 0 
@@ -103,10 +118,16 @@
           <p><strong>Rooms:</strong> ${hostel.rooms}</p>
           <p><strong>Price:</strong> ₹${hostel.price}/month</p>
           <p>${hostel.description}</p>
+          <button class="book-btn" onclick="bookNow('${hostelId}')">Book Now</button>
         </div>
       `;
       hostelList.innerHTML += card;
     });
+  }
+
+  function bookNow(id) {
+    // ✅ Redirect to hostel details page with the ID
+    window.location.href = `hostel_details.html?id=${id}`;
   }
 
   loadHostels();

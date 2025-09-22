@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hostel Reviews | Hostelio</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url('images/bg.jpeg') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .logo {
+      width: 70px; height: 70px;
+      border-radius: 50%; object-fit: cover;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      background: rgba(0, 0, 0, 0.8);
+    }
+    .title {
+      font-size: 28px;
+      font-weight: bold;
+      color: #ffd700;
+    }
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-size: 16px;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover {
+      color: #ffd700;
+    }
+    main {
+      flex: 1;
+      max-width: 900px;
+      margin: 20px auto;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 30px;
+      border-radius: 12px;
+    }
+    h1, h2, h3 {
+      text-align: center;
+      color: #ffd700;
+      margin-bottom: 20px;
+    }
+    /* Reviews */
+    .reviews { margin-top: 30px; }
+    .review {
+      background-color: #f9fbe7;
+      border-left: 5px solid #cddc39;
+      padding: 14px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      color: #333;
+    }
+    .review-name { font-weight: bold; color: #444; }
+    .review-rating { color: #ff9800; margin: 5px 0; }
+    .review-message { font-style: italic; }
+    /* Review Form */
+    .review-form label { display: block; margin-top: 12px; font-weight: bold; color: #fff; }
+    .review-form input, .review-form textarea {
+      width: 100%; padding: 10px; margin-top: 5px;
+      border: 1px solid #ccc; border-radius: 4px;
+      font-size: 15px; resize: vertical;
+    }
+    .review-form button {
+      background: linear-gradient(to right, #66bb6a, #43a047);
+      color: white; padding: 12px 25px; font-size: 16px;
+      border: none; border-radius: 6px; margin-top: 18px;
+      cursor: pointer; transition: background 0.3s ease;
+    }
+    .review-form button:hover {
+      background: linear-gradient(to right, #388e3c, #2e7d32);
+    }
+    /* Toast */
+    #toast {
+      visibility: hidden;
+      min-width: 250px;
+      margin-left: -125px;
+      background-color: #4CAF50;
+      color: white;
+      text-align: center;
+      border-radius: 6px;
+      padding: 14px;
+      position: fixed;
+      left: 50%;
+      bottom: 30px;
+      font-size: 16px;
+      z-index: 9999;
+      opacity: 0;
+      transition: opacity 0.5s, bottom 0.5s;
+    }
+    #toast.show { visibility: visible; opacity: 1; bottom: 50px; }
+    #toast.error { background-color: #f44336; }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="left-section">
+      <img src="images/ic.png" alt="Logo" class="logo">
+    </div>
+    <div class="title">Hostelio</div>
+    <div class="nav-links">
+      <a href="explore_hostels.html">Explore</a>
+      <a href="my_bookings.html">My Bookings</a>
+      <a href="index.html">Logout</a>
+    </div>
+  </header>
+
+  <main>
+    <h1>Hostel Details</h1>
+    <div class="details" id="hostelDetails">Loading...</div>
+
+    <h2>User Reviews</h2>
+    <form class="review-form">
+      <label for="rName">Your Name</label>
+      <input type="text" id="rName" required />
+      <label for="rEmail">Your Email</label>
+      <input type="email" id="rEmail" required />
+      <label for="rating">Rating (1 to 5)</label>
+      <input type="number" id="rating" min="1" max="5" required />
+      <label for="message">Your Review</label>
+      <textarea id="message" rows="4" required></textarea>
+      <button type="submit">Submit Review</button>
+    </form>
+
+    <h3 id="averageRating">Average Rating: ⭐ 0</h3>
+    <div class="reviews"></div>
+  </main>
+
+  <footer>
+    &copy; 2025 Hostelio. All rights reserved.
+  </footer>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCLn45hIR-S75BEPypx1BFgOV8vA5MaqU0",
+      authDomain: "hostelio-89130.firebaseapp.com",
+      projectId: "hostelio-89130",
+      storageBucket: "hostelio-89130.appspot.com",
+      messagingSenderId: "530522106867",
+      appId: "1:530522106867:web:227d355ea3fcc63317c086",
+      measurementId: "G-CYM1EHN5G5"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    function showToast(message, isError = false) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.className = "show" + (isError ? " error" : "");
+      setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+    }
+
+    const hostelId = new URLSearchParams(window.location.search).get("id");
+    const hostelDetails = document.getElementById("hostelDetails");
+    const reviewsContainer = document.querySelector(".reviews");
+
+    async function loadHostel() {
+      if (!hostelId) {
+        hostelDetails.innerHTML = "<p>No hostel selected.</p>";
+        return;
+      }
+      const doc = await db.collection("hostels").doc(hostelId).get();
+      if (doc.exists) {
+        const h = doc.data();
+        const img = (h.imageUrls && h.imageUrls.length > 0) ? h.imageUrls[0] : "images/default.jpg";
+        hostelDetails.innerHTML = `
+          <img src="${img}" alt="${h.name}" style="width:100%; max-height:280px; border-radius:8px; margin-bottom:15px;">
+          <p><strong>Name:</strong> ${h.name}</p>
+          <p><strong>Location:</strong> ${h.location}</p>
+          <p><strong>Price per Month:</strong> ₹${h.price}</p>
+          <p><strong>Description:</strong> ${h.description}</p>`;
+      } else {
+        hostelDetails.innerHTML = "<p>Hostel not found.</p>";
+      }
+    }
+    loadHostel();
+
+    document.querySelector(".review-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = document.getElementById("rName").value.trim();
+      const email = document.getElementById("rEmail").value.trim();
+      const rating = Number(document.getElementById("rating").value);
+      const message = document.getElementById("message").value.trim();
+
+      if (rating < 1 || rating > 5) {
+        showToast("⚠️ Rating must be between 1 and 5.", true);
+        return;
+      }
+
+      try {
+        await db.collection("reviews").add({
+          hostelId, name, email, rating, message, timestamp: new Date()
+        });
+        showToast("✅ Review submitted successfully!");
+        e.target.reset();
+      } catch (err) {
+        console.error("Review error:", err);
+        showToast("❌ Failed to submit review.", true);
+      }
+    });
+
+    db.collection("reviews").where("hostelId", "==", hostelId)
+      .orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+        reviewsContainer.innerHTML = "";
+        let total = 0, count = 0;
+        snapshot.forEach(doc => {
+          const d = doc.data();
+          total += Number(d.rating);
+          count++;
+          reviewsContainer.innerHTML += `
+            <div class="review">
+              <div class="review-name">${d.name}</div>
+              <div class="review-rating">${"⭐".repeat(d.rating)} (${d.rating})</div>
+              <div class="review-message">${d.message}</div>
+            </div>`;
+        });
+        document.getElementById("averageRating").textContent =
+          count > 0 ? "Average Rating: ⭐ " + (total / count).toFixed(1) : "Average Rating: ⭐ 0";
+      });
+  </script>
+</body>
+</html>
