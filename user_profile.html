@@ -127,23 +127,41 @@
   const userPic = document.getElementById("profilePic");
   const verifiedBadge = document.getElementById("verifiedBadge");
 
+  function getProfileImage(user) {
+    // Check all possible sources for user image
+    return (
+      localStorage.getItem("profileImage") ||
+      localStorage.getItem("userProfilePic") ||
+      localStorage.getItem("userImg") ||
+      user?.photoURL ||
+      localStorage.getItem("userPhoto") ||
+      "https://www.gravatar.com/avatar?d=mp"
+    );
+  }
+
   function loadProfile(user) {
-    let name = user?.displayName || localStorage.getItem("userName") || "Hostelio User";
-    let email = user?.email || localStorage.getItem("userEmail") || "example@example.com";
-    let photo = user?.photoURL || localStorage.getItem("userPhoto") || "https://www.gravatar.com/avatar?d=mp";
-    let verified = user?.emailVerified || localStorage.getItem("userVerified") === "true";
+    const name = user?.displayName || localStorage.getItem("userName") || "Hostelio User";
+    const email = user?.email || localStorage.getItem("userEmail") || "example@example.com";
+    const verified = user?.emailVerified || localStorage.getItem("userVerified") === "true";
+
+    const photo = getProfileImage(user);
 
     userName.innerHTML = `${name} <span class="verified-badge" id="verifiedBadge">✔ Verified</span>`;
-    document.getElementById("userEmail").textContent = email;
+    userEmail.textContent = email;
     userPic.src = photo;
-    document.getElementById("verifiedBadge").style.display = verified ? "inline-block" : "none";
+
+    const badge = document.getElementById("verifiedBadge");
+    badge.style.display = verified ? "inline-block" : "none";
+
+    // Debugging line (remove later)
+    console.log("Loaded profile image:", photo);
   }
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
       localStorage.setItem("userName", user.displayName || "Hostelio User");
       localStorage.setItem("userEmail", user.email);
-      localStorage.setItem("userPhoto", user.photoURL || "https://www.gravatar.com/avatar?d=mp");
+      localStorage.setItem("userPhoto", user.photoURL || "");
       localStorage.setItem("userVerified", user.emailVerified);
 
       loadProfile(user);
@@ -156,9 +174,11 @@
     }
   });
 
+  // Re-load profile when localStorage changes (e.g., dashboard updates photo)
   window.addEventListener("storage", () => {
-    loadProfile(null);
+    loadProfile(auth.currentUser);
   });
 </script>
+
 </body>
 </html>

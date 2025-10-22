@@ -121,7 +121,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+  import { getAuth, onAuthStateChanged, reload } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCLn45hIR-S75BEPypx1BFgOV8vA5MaqU0",
@@ -136,16 +136,55 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, async (user) => {
     if (user) {
-      document.getElementById('admin-name').textContent = user.displayName || 'Hostelio Admin';
-      document.getElementById('admin-email').textContent = 'Email: ' + user.email;
-      document.getElementById('admin-photo').src = user.photoURL || 'default_admin.jpg';
-      document.getElementById('verified-badge').style.display = user.emailVerified ? 'inline' : 'none';
+      // Force refresh user info
+      await reload(user);
+      const currentUser = auth.currentUser;
+
+      let name = currentUser.displayName || "Hostelio Admin";
+      let email = currentUser.email || "No email";
+      let photoURL = currentUser.photoURL;
+
+      // Fallback: use providerData (Google’s info)
+      if (!photoURL && currentUser.providerData && currentUser.providerData.length > 0) {
+        const googleProvider = currentUser.providerData.find(
+          (p) => p.providerId === "google.com"
+        );
+        if (googleProvider && googleProvider.photoURL) {
+          photoURL = googleProvider.photoURL;
+        }
+      }
+
+      // Fallback image if all else fails
+      photoURL = photoURL || "images/default_admin.jpg";
+
+      // Update UI
+      document.getElementById("admin-name").textContent = name;
+      document.getElementById("admin-email").textContent = "Email: " + email;
+      document.getElementById("admin-photo").src = photoURL;
+      document.getElementById("verified-badge").style.display = currentUser.emailVerified ? "inline" : "none";
+
+      // Optionally cache for reload
+      localStorage.setItem("adminName", name);
+      localStorage.setItem("adminEmail", email);
+      localStorage.setItem("adminPhoto", photoURL);
     } else {
-      window.location.href = 'adminlogin.html';
+      // Fallback: load from localStorage
+      const name = localStorage.getItem("adminName");
+      const email = localStorage.getItem("adminEmail");
+      const photo = localStorage.getItem("adminPhoto");
+
+      if (name && email) {
+        document.getElementById("admin-name").textContent = name;
+        document.getElementById("admin-email").textContent = "Email: " + email;
+        document.getElementById("admin-photo").src = photo || "images/default_admin.jpg";
+      } else {
+        window.location.href = "adminlogin.html";
+      }
     }
   });
 </script>
+
 </body>
 </html>

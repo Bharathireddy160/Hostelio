@@ -169,35 +169,57 @@
   };
   firebase.initializeApp(firebaseConfig);
 
-  // Get user info from Firebase or fallback to localStorage
   firebase.auth().onAuthStateChanged((user) => {
     if (user) {
-      document.getElementById("user-name").textContent = user.displayName || "Hostelio User";
-      document.getElementById("user-email").textContent = "Email: " + user.email;
+      // Sometimes displayName/photoURL are missing unless reloaded
+      user.reload().then(() => {
+        const currentUser = firebase.auth().currentUser;
 
-      // Use user's photo or default image
-      document.getElementById("user-photo").src = user.photoURL || "images/default_user.png";
+        let name = currentUser.displayName || "Hostelio User";
+        let email = currentUser.email || "No email";
+        let photoURL = currentUser.photoURL;
 
-      document.getElementById("verified-badge").style.display = user.emailVerified ? "inline" : "none";
+        // If photoURL is still null, try to get it from provider data
+        if (!photoURL && currentUser.providerData && currentUser.providerData.length > 0) {
+          const googleInfo = currentUser.providerData.find(
+            (p) => p.providerId === "google.com"
+          );
+          if (googleInfo && googleInfo.photoURL) {
+            photoURL = googleInfo.photoURL;
+          }
+        }
 
-      // Store in localStorage for backup
-      localStorage.setItem("userName", user.displayName || "Hostelio User");
-      localStorage.setItem("userEmail", user.email);
+        // Fallback to default image if still missing
+        photoURL = photoURL || "images/default_user.png";
+
+        // Update UI
+        document.getElementById("user-name").textContent = name;
+        document.getElementById("user-email").textContent = "Email: " + email;
+        document.getElementById("user-photo").src = photoURL;
+        document.getElementById("verified-badge").style.display = currentUser.emailVerified ? "inline" : "none";
+
+        // Save to localStorage
+        localStorage.setItem("userName", name);
+        localStorage.setItem("userEmail", email);
+        localStorage.setItem("userPhoto", photoURL);
+      });
     } else {
-      // Fallback to localStorage if still available
+      // Fallback from localStorage
       const name = localStorage.getItem("userName");
       const email = localStorage.getItem("userEmail");
+      const photo = localStorage.getItem("userPhoto");
+
       if (name && email) {
         document.getElementById("user-name").textContent = name;
         document.getElementById("user-email").textContent = "Email: " + email;
-        document.getElementById("user-photo").src = "images/default_user.png";
+        document.getElementById("user-photo").src = photo || "images/default_user.png";
       } else {
-        // Redirect if not logged in
         window.location.href = "userlogin.html";
       }
     }
   });
 </script>
+
 
 </body>
 </html>
